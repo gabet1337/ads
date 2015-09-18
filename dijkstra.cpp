@@ -9,7 +9,7 @@ typedef std::vector<int> vi;
 typedef std::vector<ii> vii;
 typedef std::vector<vii> vvii;
 
-void dijkstra(priority_queue<std::pair<int, int> > &pq, vvii &AdjList, vi &dist, int V, int s) {
+void dijkstra(priority_queue<ii> &pq, vvii &AdjList, vi &dist, int V, int s) {
   dist.assign(V, INF);
   dist[s] = 0;
   pq.push(ii(0,s));
@@ -39,7 +39,7 @@ int main() {
   AdjList[4].push_back(ii(3,2));
   AdjList[5].push_back(ii(4,2));
   vi dist;
-  pq::binary_heap<std::pair<int,int> > pq;
+  pq::binary_heap<ii> pq;
   dijkstra(pq, AdjList, dist, V, 0);
   std::cout << dist[5] << std::endl;
   return 0;
