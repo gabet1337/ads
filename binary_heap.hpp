@@ -1,9 +1,11 @@
 #ifndef BINARY_HEAP_HPP
 #define BINARY_HEAP_HPP
 #include <vector>
+#include "priority_queue.hpp"
 namespace pq {
+  
   template <class T>
-  class binary_heap {
+  class binary_heap : public priority_queue<T> {
   public:
     binary_heap();
     ~binary_heap();
@@ -20,7 +22,7 @@ namespace pq {
     int left(int i);
     int right(int i);
     void max_heapify(int i);
-    void heap_increase_key(int i, T key);
+    void heap_decrease_key(int i, T key);
   };
 
 
@@ -28,7 +30,6 @@ namespace pq {
   template <class T>
   binary_heap<T>::binary_heap() {
     _size = 0;
-    container.push_back(0); // we dont use this element
   }
 
   template <class T>
@@ -48,58 +49,56 @@ namespace pq {
 
   template <class T>
   T binary_heap<T>::top() {
-    if (size() > 0) return container[1];
-    else return 0; //throw some error
+    return container[0];
   }
 
   template <class T>
   void binary_heap<T>::push(T k) {
-    _size++;
     container.push_back(k);
-    heap_increase_key(_size, k);
+    heap_decrease_key(_size++, k);
   }
 
   template <class T>
   void binary_heap<T>::pop() {
     if (size() < 1) return; // throw some error
-    container[1] = container[_size];
+    container[0] = container[_size-1];
     _size--;
     container.pop_back();
-    max_heapify(1);
+    max_heapify(0);
   }
 
   template <class T>
   int binary_heap<T>::parent(int i) {
-    return i/2;
+    return (i-1)/2;
   }
 
   template <class T>
   int binary_heap<T>::left(int i) {
-    return 2*i;
+    return 2*i+1;
   }
 
   template <class T>
   int binary_heap<T>::right(int i) {
-    return 2*i+1;
+    return 2*(i+1);
   }
 
   template <class T>
   void binary_heap<T>::max_heapify(int i) {
     int l = left(i), r = right(i);
-    int largest;
-    if (l <= size() && container[l] > container[i]) largest = l;
-    else largest = i;
-    if (r <= size() && container[r] > container[largest]) largest = r;
-    if (largest != i) {
-      std::swap(container[i],container[largest]);
-      max_heapify(largest);
+    int smallest;
+    if (l < size() && container[l] < container[i]) smallest = l;
+    else smallest = i;
+    if (r < size() && container[r] < container[smallest]) smallest = r;
+    if (smallest != i) {
+      std::swap(container[i],container[smallest]);
+      max_heapify(smallest);
     }
   }
 
   template <class T>
-  void binary_heap<T>::heap_increase_key(int i, T key) {
+  void binary_heap<T>::heap_decrease_key(int i, T key) {
     container[i] = key;
-    while (i > 1 && container[parent(i)] < container[i]) {
+    while (i > 0 && container[parent(i)] > container[i]) {
       std::swap(container[i], container[parent(i)]);
       i = parent(i);
     }

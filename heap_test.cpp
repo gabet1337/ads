@@ -3,16 +3,13 @@
 
 using namespace std;
 
-int main() {
+void test(priority_queue<pair<int,int> > &pq) {
+  pq.push(make_pair(0,0));
+  cout << pq.top().first << endl;
+}
 
-  pq::binary_heap<int> pq;
-  pq.push(5);
-  pq.push(10);
-  pq.push(15);
-  cout << pq.top() << endl;
-  pq.pop();
-  cout << pq.top() << endl;
-  pq.push(100);
-  cout << pq.top() << endl;
+int main() {
+  pq::binary_heap<pair<int,int> > pq;
+  test(pq);
   return 0;
 }
