@@ -1,5 +1,6 @@
 #include "binary_heap.hpp"
 #include "priority_queue.hpp"
+#include "fibonacci_heap.hpp"
 #include <vector>
 #include <iostream>
 #include <algorithm>
@@ -38,9 +39,12 @@ int main() {
   AdjList[3].push_back(ii(4,1));
   AdjList[4].push_back(ii(3,2));
   AdjList[5].push_back(ii(4,2));
-  vi dist;
+  vi dist,dist2;
   pq::binary_heap<ii> pq;
+  pq::fibonacci_heap<ii> pq2;
   dijkstra(pq, AdjList, dist, V, 0);
-  std::cout << dist[5] << std::endl;
+  dijkstra(pq2, AdjList, dist2, V, 0);
+  std::cout << dist[4] << std::endl;
+  std::cout << dist2[4] << std::endl;
   return 0;
 }
