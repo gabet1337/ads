@@ -4,11 +4,10 @@
 
 #include <math.h>
 #include <cstddef>
-#include "priority_queue.hpp"
 
 namespace pq {
   template<class T>
-  class fibonacci_heap : public priority_queue<T> {
+  class fibonacci_heap {
   public:
 
     fibonacci_heap();
@@ -19,18 +18,17 @@ namespace pq {
     void push(T k);
     void pop();
 
-  private:
-
     class Node {
     public:
-      Node(T _key)
+      Node(T _key, int _payload)
         :key(_key),
          degree(0),
          marked(false),
          parent(nullptr),
          left(nullptr),
          right(nullptr),
-         child(nullptr)
+         child(nullptr),
+         payload(_payload)
       {}
 
       ~Node() {}
@@ -42,6 +40,7 @@ namespace pq {
       Node *left;
       Node *right;
       Node *child;
+      int payload;
     };
 
     std::size_t n;
@@ -55,6 +54,7 @@ namespace pq {
     void DecreaseKey(Node* x, int key);
     void Cut(Node* x, Node* y);
     void CascadingCut(Node* y);
+    Node* push(T k, int pl);
   };
 
   // To make an empty Fibonacci heap, the Make-Fib-Heap procedure allocates and returns the Fibonacci heap object H, where H.n = 0 and H.min = NIL.
@@ -309,6 +309,8 @@ namespace pq {
     else {
       x->left->right = x->right;
       x->right->left = x->left;
+      if (y->child == x)
+        y->child = x->right;
     }
     y->degree--;
 
@@ -352,8 +354,15 @@ namespace pq {
   }
 
   template <class T>
+  typename fibonacci_heap<T>::Node* fibonacci_heap<T>::push(T k, int pl) {
+    Node *x = new Node(k,pl);
+    Insert(x);
+    return x;
+  }
+
+  template <class T>
   void fibonacci_heap<T>::push(T k) {
-    Insert(new fibonacci_heap<T>::Node(k));
+    Insert(new fibonacci_heap<T>::Node(k,-1));
   }
 
   template <class T>
