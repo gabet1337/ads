@@ -11,12 +11,17 @@ int main(int argc, char* argv[]) {
   cout << fh.size() << endl;
   fh.push(20);
   cout << fh.top() << endl;
+  fh.push(15);
+  fh.push(820);
   fh.pop();
   fh.pop();
   cout << fh.top() << endl;
   fh.push(5);
   fh.push(80);
-
+  fh.push(8);
+  fh.push(860);
+  fh.push(56);
+  fh.push(820);
   cout << fh.top() << endl;
 
   fh.pop();
