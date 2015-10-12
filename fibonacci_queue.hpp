@@ -5,6 +5,7 @@
 #include "fibonacci_heap.hpp"
 #include <unordered_map>
 #include <iostream>
+#include <vector>
 
 namespace pq {
   class fibonacci_queue : public priority_queue {

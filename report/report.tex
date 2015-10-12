@@ -47,13 +47,33 @@ The code can be found at: \\\url{CODE HERE}.
 
 \pagebreak
 
-%@TODO
 \tableofcontents
 
 \pagebreak
 
 \chapter{Introduction}
 INTRO
+
+\chapter{Implementation}
+Talk about implementing fibonacci heap and binary heap
+
+Implement
+the Fibonnacci Heaps of Fredman and Tarjan,
+the binary heaps of Williams (Algorithm 232, CACM 21(4), 1964).
+As a minimum the following opeartions should be supported: MakeHeap, FindMin, Insert, DeleteMin, and DecreaseKey.
+
+\chapter{Experiments}
+Design and perform experiments where you try to measure the running time and number of comparisons of the operations for both priority queue implementations.
+
+\chapter{Theory}
+Argue about the worst-case (as opposed to amortized) time bounds for each of the operations of Fibonnacci Heaps and binary heaps.
+
+\chapter{Dijkstra's algorithm}
+Implement Dijkstra's algorithm for the single-source shortest path problem for a weighted graph with non-negative edge-weigths, such that is can switch between the two priority queue implementations.
+Describe families of graphs where Dijkstra's algorithm performs many respectively few DecreaseKey operations.
+
+\chapter{Experiments on Dijkstra's}
+Perform experiments on your implementation of Dijkstra's algorithm - in particular, try to observe if the version using Fibonacci heaps achieves an improved performance because of the amortized O(1) time DecreaseKey operation.
 
 
 \bibliography{references}

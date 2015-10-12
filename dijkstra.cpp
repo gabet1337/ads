@@ -1,6 +1,6 @@
 #include "binary_heap.hpp"
 #include "priority_queue.hpp"
-//#include "fibonacci_heap.hpp"
+#include "fibonacci_queue.hpp"
 #include <vector>
 #include <iostream>
 #include <algorithm>
@@ -35,39 +35,39 @@ void dijkstra(priority_queue &pq, vvii &AdjList, vi &dist, int V, int s) {
 }
 
 void stress_test() {
-  int TEST_SIZE = 500;
+  long long TEST_SIZE = 1000000;
   srand(time(NULL));
   vvii G(TEST_SIZE, vii());
-  vvi F(TEST_SIZE, vi(TEST_SIZE,0));
-  for (int i = 0; i < TEST_SIZE*TEST_SIZE*TEST_SIZE; i++) {
+  // vvi F(TEST_SIZE, vi(TEST_SIZE,0));
+  for (size_t i = 0; i < 1000000000; i++) {
     int x = rand()%TEST_SIZE, y = rand()%TEST_SIZE;
     int w = rand()%1000;
     w++;
     if (x == y) continue;
-    if (F[x][y] == 0) {
-      G[x].push_back(ii(y,w));
-      G[y].push_back(ii(x,w));
-      F[x][y] = F[y][x] = w;
-    }
+    // if (F[x][y] == 0) {
+    G[x].push_back(ii(y,w));
+    G[y].push_back(ii(x,w));
+      // F[x][y] = F[y][x] = w;
+    
   }
 
-  for (int k = 0; k < TEST_SIZE; k++) {
-    for (int i = 0; i < TEST_SIZE; i++) {
-      for (int j = 0; j < TEST_SIZE; j++) {
-        if (F[i][j] > F[i][k] + F[k][j])
-          F[i][j] = F[i][k] + F[k][j];
-      }
-    }
-  }
+  // for (int k = 0; k < TEST_SIZE; k++) {
+  //   for (int i = 0; i < TEST_SIZE; i++) {
+  //     for (int j = 0; j < TEST_SIZE; j++) {
+  //       if (F[i][j] > F[i][k] + F[k][j])
+  //         F[i][j] = F[i][k] + F[k][j];
+  //     }
+  //   }
+  // }
 
   pq::binary_heap pq(TEST_SIZE);
   vi dist;
   dijkstra(pq, G, dist, TEST_SIZE, 0);
   
-  for (int i = 0; i < TEST_SIZE; i++) {
-    if (dist[i] != F[0][i]) std::cout << "MISMATCH " << dist[i] << " " << F[i][0] << std::endl;
-    // else std::cout << "MATCH " << dist[i] << " " << F[0][i] << std::endl;
-  }
+  // for (int i = 0; i < TEST_SIZE; i++) {
+  //   // if (dist[i] != F[0][i]) std::cout << "MISMATCH " << dist[i] << " " << F[i][0] << std::endl;
+  //   // else std::cout << "MATCH " << dist[i] << " " << F[0][i] << std::endl;
+  // }
 }
 
 int main() {
