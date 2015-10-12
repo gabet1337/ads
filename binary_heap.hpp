@@ -1,127 +1,114 @@
 #ifndef BINARY_HEAP_HPP
 #define BINARY_HEAP_HPP
 #include <vector>
+#include <iostream>
 #include "priority_queue.hpp"
+typedef std::pair<int,int> ii;
 namespace pq {
   
-  template <class T>
-  class binary_heap : public priority_queue<T> {
+  class binary_heap : public priority_queue {
   public:
-    binary_heap();
+    binary_heap(std::size_t max_size);
     ~binary_heap();
     bool empty();
     std::size_t size();
-    T top();
-    void push(T k);
+    ii top();
+    void push(ii k);
     void pop();
-
+    void decrease_key( int id, int key );
   private:
-    std::size_t _size;
-    std::vector<T> container;
+    std::size_t _size, max_size;
+    std::vector<ii> container;
+    std::vector<int> id_to_index;
     int parent(int i);
     int left(int i);
     int right(int i);
-    void max_heapify(int i);
-    void heap_decrease_key(int i, T key);
+    void min_heapify(int i);
+    void bubble_up(int i);
   };
 
-
-
-  template <class T>
-  binary_heap<T>::binary_heap() {
+  binary_heap::binary_heap(std::size_t max_size) {
+    this->max_size = max_size;
+    id_to_index.resize(max_size);
     _size = 0;
   }
 
-  template <class T>
-  binary_heap<T>::~binary_heap() {
+  binary_heap::~binary_heap() {
+    id_to_index.clear();
+    id_to_index.shrink_to_fit();
     container.clear();
+    container.shrink_to_fit();
   }
 
-  template <class T>
-  bool binary_heap<T>::empty() {
+  bool binary_heap::empty() {
     return _size == 0;
   }
 
-  template <class T>
-  std::size_t binary_heap<T>::size() {
+  std::size_t binary_heap::size() {
     return _size;
   }
 
-  template <class T>
-  T binary_heap<T>::top() {
+  ii binary_heap::top() {
     return container[0];
   }
 
-  template <class T>
-  void binary_heap<T>::push(T k) {
+  void binary_heap::push(ii k) {
+    //store the index of the node
+    int node = k.second;
+    id_to_index[node] = _size++;
+    //insert and push up!
     container.push_back(k);
-    heap_decrease_key(_size++, k);
+    bubble_up(id_to_index[node]);
   }
 
-  template <class T>
-  void binary_heap<T>::pop() {
-    if (size() < 1) return; // throw some error
+  void binary_heap::pop() {
+    if (size() < 1) { std::cerr << "cannot pop from empty queue" << std::endl; return; } // throw some error
     container[0] = container[_size-1];
+    //update the last elements position to 0
+    id_to_index[container[0].second] = 0;
     _size--;
     container.pop_back();
-    max_heapify(0);
+    min_heapify(0);
   }
 
-  template <class T>
-  int binary_heap<T>::parent(int i) {
-    return (i-1)/2;
+  int binary_heap::parent(int i) {
+    return (i-1)>>1;
   }
 
-  template <class T>
-  int binary_heap<T>::left(int i) {
-    return 2*i+1;
+  int binary_heap::left(int i) {
+    return (i<<1)|1;
   }
 
-  template <class T>
-  int binary_heap<T>::right(int i) {
-    return 2*(i+1);
+  int binary_heap::right(int i) {
+    return (i+1)<<1;
   }
 
-  template <class T>
-  void binary_heap<T>::max_heapify(int i) {
+  void binary_heap::min_heapify(int i) {
     int l = left(i), r = right(i);
     int smallest;
-    if (l < size() && container[l] < container[i]) smallest = l;
+    if (l < (int)size() && container[l] < container[i]) smallest = l;
     else smallest = i;
-    if (r < size() && container[r] < container[smallest]) smallest = r;
+    if (r < (int)size() && container[r] < container[smallest]) smallest = r;
     if (smallest != i) {
+      //swap the indices of nodes at index i and index smallest
+      std::swap(id_to_index[container[i].second], id_to_index[container[smallest].second]);
       std::swap(container[i],container[smallest]);
-      max_heapify(smallest);
+      min_heapify(smallest);
     }
   }
 
-  template <class T>
-  void binary_heap<T>::heap_decrease_key(int i, T key) {
-    container[i] = key;
+  void binary_heap::bubble_up(int i) {
     while (i > 0 && container[parent(i)] > container[i]) {
+      std::swap(id_to_index[container[i].second], id_to_index[container[parent(i)].second]);
       std::swap(container[i], container[parent(i)]);
       i = parent(i);
     }
   }
+  
+  void binary_heap::decrease_key(int id, int key) {
+    container[id_to_index[id]].first = key;
+    bubble_up(id_to_index[id]);
+  }
 }
-
-// void build_max_heap(vector<int> &A) {
-//   for (int i = (int)A.size()/2; i >= 1; i--)
-//     max_heapify(i);
-// }
-
-// int heap_extract_max() {
-//   int res = A[1];
-//   A[1] = A[heap_size()];
-//   heap_size--;
-//   max_heapify(1);
-//   return res;
-// }
-
-// void heap_insert(int key) {
-//   heap_size++;
-//   A[heap_size()] = -INF;
-//   heap_increase_key(heap_size(), key);
-// }
 
 #endif

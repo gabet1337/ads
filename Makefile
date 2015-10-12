@@ -19,7 +19,7 @@ h_dijkstra : h_dijkstra_tester.cpp
 	$(CC) $(LFLAGS) h_dijkstra_tester.cpp -o h_dijkstra
 
 dijkstra.o : priority_queue.hpp binary_heap.hpp dijkstra.cpp
-	$(CC) $(CFLAGS) dijkstra.cpp
+	$(CC) $(CFLAGS) priority_queue.hpp binary_heap.hpp dijkstra.cpp
 
 heap_test.o : priority_queue.hpp binary_heap.hpp heap_test.cpp
 	$(CC) $(CFLAGS) heap_test.cpp
