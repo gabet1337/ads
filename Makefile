@@ -15,8 +15,8 @@ fib_test : $(FOBJS)
 dijkstra : $(DOBJS)
 	$(CC) $(LFLAGS) $(DOBJS) -o dijkstra
 
-h_dijkstra : h_dijkstra_tester.cpp
-	$(CC) $(LFLAGS) h_dijkstra_tester.cpp -o h_dijkstra
+h_dijkstra : h_dijkstra_tester.cpp priority_queue.hpp fibonacci_heap.hpp fibonacci_queue.hpp
+	$(CC) $(LFLAGS) h_dijkstra_tester.cpp priority_queue.hpp fibonacci_heap.hpp fibonacci_queue.hpp -o h_dijkstra
 
 dijkstra.o : priority_queue.hpp binary_heap.hpp dijkstra.cpp
 	$(CC) $(CFLAGS) priority_queue.hpp binary_heap.hpp dijkstra.cpp

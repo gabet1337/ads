@@ -1,90 +1,84 @@
 #ifndef FIBONACCI_QUEUE_HPP
 #define FIBONACCI_QUEUE_HPP
 
-#include "h_priority_queue.hpp"
+#include "priority_queue.hpp"
 #include "fibonacci_heap.hpp"
 #include <unordered_map>
 #include <iostream>
 
 namespace pq {
-  template<class T>
-  class fibonacci_queue : public fibonacci_heap<T>, h_priority_queue<T> {
+  class fibonacci_queue : public priority_queue {
 	
   public:
 
-    std::unordered_multimap<T,typename fibonacci_heap<T>::Node*> fstore;
-
-    fibonacci_queue();
+    fibonacci_queue(std::size_t _max_size);
     ~fibonacci_queue();
 
-    void push(T v, int k);
+    void push(std::pair<int,int> k);
     void pop();
-    void decrease_key(T v, int k);
-    T top();
+    void decrease_key(int v, int k);
+    std::pair<int,int> top();
     bool empty();
+    std::size_t size();
 
-    typename fibonacci_heap<T>::Node* findNode(T vert) {
-      typename std::unordered_map<T,typename fibonacci_heap<T>::Node*>::iterator mit = find(vert);
-      if (mit == fstore.end()) return nullptr;
-      return (*mit).second;
-    }
-
-    typename std::unordered_map<T,typename fibonacci_heap<T>::Node*>::iterator find(T k)  {
-      typename std::unordered_map<T,typename fibonacci_heap<T>::Node*>::iterator mit = fstore.find(k);
-      return mit;
-    }
+  private:
+    
+    std::vector<fibonacci_heap::Node*> lookup;
+    fibonacci_heap fib_heap;
 
   };
 
-  template <class T>
-  fibonacci_queue<T>::fibonacci_queue()
-    :fibonacci_heap<T>()
+  
+  fibonacci_queue::fibonacci_queue(size_t _max_size) {
+    lookup.resize(_max_size, nullptr);
+  }
+  
+  
+  fibonacci_queue::~fibonacci_queue()
   {}
 
-  template <class T>
-  fibonacci_queue<T>::~fibonacci_queue()
-  {}
-
-  template <class T>
-  void fibonacci_queue<T>::push(T v, int k) {
-    typename fibonacci_heap<T>::Node *x = fibonacci_heap<T>::push(k,v);
-    fstore.insert(std::pair<T,typename fibonacci_heap<T>::Node*>(v,x));
+  
+  void fibonacci_queue::push(std::pair<int,int> k) {
+    fibonacci_heap::Node *x = fib_heap.push(k);
+    lookup[k.second] = x;
   }
  
-  template <class T>
-  void fibonacci_queue<T>::pop() {
-    if (fibonacci_heap<T>::empty())
+  
+  void fibonacci_queue::pop() {
+
+    if (empty())
       return;
-    typename fibonacci_heap<T>::Node *x = fibonacci_heap<T>::DeleteMin();
-    if (!x)
-      std::cerr << "Brændvarm Indianer (should never happen)";
-    typename std::unordered_map<T,typename fibonacci_heap<T>::Node*>::iterator mit = find(x->payload);
-    if (mit != fstore.end())
-      fstore.erase(mit);
-    else
-      std::cerr << "key " << x->key << " cannot be found in hashmap" << std::endl;
+
+    typename fibonacci_heap::Node *x = fib_heap.DeleteMin();
+    lookup[x->key.second] = nullptr;
     delete x;
   }
 
-  template <class T>
-  void fibonacci_queue<T>::decrease_key(T v, int k) {
+  
+  void fibonacci_queue::decrease_key(int v, int k) {
 
-    typename fibonacci_heap<T>::Node *x = findNode(v);
+    typename fibonacci_heap::Node *x = lookup[v];
 
     if (x != nullptr)
-      fibonacci_heap<T>::DecreaseKey(findNode(v),k);
+      fib_heap.DecreaseKey(lookup[v],std::make_pair(k,v));
     else
-      push(v, k);
+      push(std::make_pair(k,v));
   }
 
-  template <class T>
-  T fibonacci_queue<T>::top() {
-    return fibonacci_heap<T>::min->payload;
+  
+  std::pair<int,int> fibonacci_queue::top() {
+    return fib_heap.FindMin()->key;
   }
 
-  template <class T>
-  bool fibonacci_queue<T>::empty() {
-    return fibonacci_heap<T>::empty();
+  
+  bool fibonacci_queue::empty() {
+    return size() == 0;
   }
+
+  
+  std::size_t fibonacci_queue::size() {
+    return fib_heap.size();
+  }
+  
 }
 #endif

@@ -4,9 +4,12 @@
 
 #include <math.h>
 #include <cstddef>
+#include <utility>
 
 namespace pq {
-  template<class T>
+
+  typedef std::pair<int,int> ii;
+
   class fibonacci_heap {
   public:
 
@@ -14,63 +17,61 @@ namespace pq {
     ~fibonacci_heap();
     bool empty();
     std::size_t size();
-    T top();
-    void push(T k);
-    void pop();
 
     class Node {
     public:
-      Node(T _key, int _payload)
+      Node(ii _key)
         :key(_key),
          degree(0),
          marked(false),
          parent(nullptr),
          left(nullptr),
          right(nullptr),
-         child(nullptr),
-         payload(_payload)
+         child(nullptr)
       {}
 
       ~Node() {}
 
-      T key;
+      ii key;
       int degree;
       bool marked;
       Node *parent;
       Node *left;
       Node *right;
       Node *child;
-      int payload;
     };
 
-    std::size_t n;
-    Node *min;
-
+    void DecreaseKey(Node* x, ii key);
+    Node* push(std::pair<int,int> k);    
     void Insert(Node *x);
     Node* FindMin();
     Node* DeleteMin();
+
+  private:
+
+    Node *min;
+    std::size_t n = 0;
     void Consolidate();
     void Fib_Heap_Link(Node* y, Node* x);
-    void DecreaseKey(Node* x, int key);
     void Cut(Node* x, Node* y);
     void CascadingCut(Node* y);
-    Node* push(T k, int pl);
+
   };
 
   // To make an empty Fibonacci heap, the Make-Fib-Heap procedure allocates and returns the Fibonacci heap object H, where H.n = 0 and H.min = NIL.
-  template <class T>	
-  fibonacci_heap<T>::fibonacci_heap()
-    :n(0),
-     min(nullptr)
-  {}
+  	
+  fibonacci_heap::fibonacci_heap() {
+    n = 0;
+    min = nullptr;
+  }
 
-  template <class T>	
-  fibonacci_heap<T>::~fibonacci_heap()
+  	
+  fibonacci_heap::~fibonacci_heap()
   {}
 
   // The following procedure inserts node x into Fibonacci heap H, assuming that the node has already been allocated and that x.key has alread been filled in.
-  template <class T>
-  void fibonacci_heap<T>::Insert(Node *x) {
+  
+  void fibonacci_heap::Insert(Node *x) {
     //1 X.degree = 0
     x->degree = 0;
 		
@@ -104,15 +105,15 @@ namespace pq {
   }
 
 
-  template <class T>
-  typename fibonacci_heap<T>::Node* fibonacci_heap<T>::FindMin() {
+  
+  typename fibonacci_heap::Node* fibonacci_heap::FindMin() {
     return min;
   }
 
   // First make a root out of each of the minimum node's children and remove the minimum node from the root list.
   // Then CONSOLIDATE the root list by linking roots of equal degree undtil at most one root remains of each degree.
-  template <class T>
-  typename fibonacci_heap<T>::Node* fibonacci_heap<T>::DeleteMin() {
+  
+  typename fibonacci_heap::Node* fibonacci_heap::DeleteMin() {
     // z = H.min
     Node *z = min;
     // If z != NIL
@@ -162,8 +163,8 @@ namespace pq {
 
   // The procedure Consolidate uses an auxiliary array A[0 .. D(H.n)] to keep track of roots according to their degrees.
   // If A[i] = y, then y is currently root with y.degree = i. It is shown in CLRS 19.4 that D(H.n) is upper bounded by log by golden ratio of n (nice!).
-  template <class T>
-  void fibonacci_heap<T>::Consolidate() {
+  
+  void fibonacci_heap::Consolidate() {
 
     //int golden_ratio = static_cast<int>(floor(log(static_cast<double>(n))/log(static_cast<double>(1 + sqrt(static_cast<double>(5)))/2)));
     int max_degree = (int)floor(log((double)n)/log(GOLDEN_RATIO));
@@ -253,9 +254,8 @@ namespace pq {
     }
     delete [] A;
   }
-
-  template <class T>
-  void fibonacci_heap<T>::Fib_Heap_Link(Node* y, Node* x) {
+  
+  void fibonacci_heap::Fib_Heap_Link(Node* y, Node* x) {
 
     // remove y from the root list of H
     y->left->right = y->right;
@@ -282,8 +282,7 @@ namespace pq {
 
   }
 
-  template <class T>
-  void fibonacci_heap<T>::DecreaseKey(Node* x, int key) {
+  void fibonacci_heap::DecreaseKey(Node* x, std::pair<int,int> key) {
 
     if (key > x->key)
       return; // error: new key is greater than current key
@@ -300,8 +299,7 @@ namespace pq {
       min = x;
   }
 
-  template <class T>
-  void fibonacci_heap<T>::Cut(Node* x, Node* y) {
+  void fibonacci_heap::Cut(Node* x, Node* y) {
 
     // remove x from the child list of y, decrementing y.degree
     if (y->degree == 1) // test if x is only child
@@ -325,8 +323,7 @@ namespace pq {
 
   }
 
-  template <class T>
-  void fibonacci_heap<T>::CascadingCut(Node* y) {
+  void fibonacci_heap::CascadingCut(Node* y) {
     Node* z = y->parent;
     if (z != nullptr) {
       if (y->marked == false) {
@@ -338,37 +335,19 @@ namespace pq {
     }
   }
 
-  template <class T>
-  bool fibonacci_heap<T>::empty() {
+  bool fibonacci_heap::empty() {
     return n == 0;
   }
 
-  template <class T>
-  std::size_t fibonacci_heap<T>::size() {
+  std::size_t fibonacci_heap::size() {
     return n;
   }
 
-  template <class T>
-  T fibonacci_heap<T>::top() {
-    return min->key;
-  }
-
-  template <class T>
-  typename fibonacci_heap<T>::Node* fibonacci_heap<T>::push(T k, int pl) {
-    Node *x = new Node(k,pl);
+  typename fibonacci_heap::Node* fibonacci_heap::push(std::pair<int,int> k) {
+    Node *x = new Node(k);
     Insert(x);
     return x;
   }
 
-  template <class T>
-  void fibonacci_heap<T>::push(T k) {
-    Insert(new fibonacci_heap<T>::Node(k,-1));
-  }
-
-  template <class T>
-  void fibonacci_heap<T>::pop() {
-    if (n < 1) return; // throw some error
-    DeleteMin();
-  }
 }
 #endif

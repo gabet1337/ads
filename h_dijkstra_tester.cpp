@@ -1,5 +1,7 @@
 #include <vector>
 #include "h_dijkstra.cpp"
+#include <time.h>
+#include <stdlib.h>
 
 int main() {
 
