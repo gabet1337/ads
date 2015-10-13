@@ -21,6 +21,7 @@ namespace pq {
     ii top();
     bool empty();
     std::size_t size();
+    void print();
 
   private:
     
@@ -79,6 +80,10 @@ namespace pq {
   
   std::size_t fibonacci_queue::size() {
     return fib_heap.size();
+  }
+
+  void fibonacci_queue::print() {
+    fib_heap.print();
   }
   
 }
