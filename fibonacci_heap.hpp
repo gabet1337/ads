@@ -50,6 +50,7 @@ namespace pq {
     Node* DeleteMin();
     void pop();
     Node* top();
+    void print();
     
   private:
 
@@ -60,6 +61,7 @@ namespace pq {
     void Cut(Node* x, Node* y);
     void CascadingCut(Node* y);
     void DeleteNodes(Node *x);
+    void printNode(Node *x);
 
   };
 
@@ -78,6 +80,40 @@ namespace pq {
       delete cur;
     } while (next != x);
 
+  }
+
+  void fibonacci_heap::print() {
+
+    std::cout << " digraph fibheap {" << std::endl;
+
+    printNode(min);
+    
+    std::cout << "}" << std::endl;
+    
+  }
+
+  void fibonacci_heap::printNode(Node* x) {
+
+    if (x == nullptr)
+      return;
+    
+    Node *next = x;
+
+    do {
+      Node* cur = next;
+      next = next->right;
+      if (cur->degree > 0) {
+	std::cout << cur->key.second << " -> " << cur->child->key.second << " [label=\"c\"]" << std::endl;
+	std::cout << cur->child->key.second << " -> " << cur->key.second << " [label=\"p\"]" << std::endl;
+	printNode(cur->child);
+      }
+      if (cur != next) {
+	std::cout << cur->key.second << " -> " << next->key.second << " [label=\"r\"]" << std::endl;
+	std::cout << next->key.second << " -> " << cur->key.second << " [label=\"l\"]" << std::endl;
+      }
+      
+    } while (next != x);
+    
   }
   
   // To make an empty Fibonacci heap, the Make-Fib-Heap procedure allocates and returns the Fibonacci heap object H, where H.n = 0 and H.min = NIL.
