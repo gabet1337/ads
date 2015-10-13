@@ -9,6 +9,7 @@
 #include <sys/resource.h>
 #include <sys/ioctl.h>
 #include <cstring>
+#include <unistd.h>
 namespace test {
   class clock {
     typedef std::chrono::high_resolution_clock hsc;
