@@ -6,26 +6,22 @@ using namespace std;
 int main(int argc, char* argv[]) {
 
   pq::fibonacci_heap fh;
-  //cout << fh.size() << endl;
-  fh.push(std::make_pair(10, 10));
-  //cout << fh.size() << endl;
-  fh.push(std::make_pair(20, 20));
-  //cout << fh.top() << endl;
-  fh.push(std::make_pair(30,30));
-  fh.push(std::make_pair(40,40));
-  fh.pop();
-  //fh.pop();
-  //cout << fh.top() << endl;
-  fh.push(std::make_pair(5,5));
-  fh.push(std::make_pair(80,80));
-  fh.push(std::make_pair(8,8));
-  fh.push(std::make_pair(860,860));
-  fh.push(std::make_pair(56,56));
-  fh.push(std::make_pair(820,820));
-  //cout << fh.top() << endl;
+
+
+  for (size_t i = 0; i < 65; i++) {
+    fh.push(std::make_pair(i,i));
+  }
+
 
   fh.pop();
+  
 
+  //cout << fh.top() << endl;
+
+
+
+  fh.print();
+  
   //cout << fh.top() << endl;
 
   //cout << fh.empty() << endl;

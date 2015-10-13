@@ -102,15 +102,17 @@ namespace pq {
     do {
       Node* cur = next;
       next = next->right;
-      if (cur->degree > 0) {
-	std::cout << cur->key.second << " -> " << cur->child->key.second << " [label=\"c\"]" << std::endl;
-	std::cout << cur->child->key.second << " -> " << cur->key.second << " [label=\"p\"]" << std::endl;
-	printNode(cur->child);
-      }
       if (cur != next) {
-	std::cout << cur->key.second << " -> " << next->key.second << " [label=\"r\"]" << std::endl;
-	std::cout << next->key.second << " -> " << cur->key.second << " [label=\"l\"]" << std::endl;
-      }
+	std::cout << cur->key.second << " [label=\"" << cur->key.second << "," << cur->key.first << "\"]" << std::endl;
+	std::cout << cur->key.second << " -> " << next->key.second << " [dir=\"both\",minlen=2.0]" << std::endl;
+	std::cout << "{ rank=same " << cur->key.second << " " << next->key.second << " }" << std::endl;
+	}
+      if (cur->degree > 0) {
+	std::cout << cur->key.second << " -> " << cur->child->key.second << " [dir=\"both\"]" << std::endl;
+	printNode(cur->child);
+      } else
+	std::cout << cur->key.second << " [label=\"" << cur->key.second << "," << cur->key.first << "\"]" << std::endl;
+
       
     } while (next != x);
     
