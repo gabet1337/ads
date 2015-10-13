@@ -1,15 +1,17 @@
 #ifndef TEST_LIB
 #define TEST_LIB
+#include <cstring>
 #include <iostream>
+#include <fstream>
 #include <chrono>
 #include <papi.h>
+#include <sys/resource.h>
+#include <sys/ioctl.h>
+#include <unistd.h>
 #include <linux/perf_event.h>
 #include <linux/hw_breakpoint.h>
 #include <asm/unistd.h>
-#include <sys/resource.h>
-#include <sys/ioctl.h>
-#include <cstring>
-#include <unistd.h>
+
 namespace test {
   class clock {
     typedef std::chrono::high_resolution_clock hsc;
@@ -68,8 +70,9 @@ namespace test {
     pagefaults();
     void start();
     void stop();
-    long long count();
+    uint64_t count();
   private:
+    long perf_event_open(perf_event_attr*, pid_t, int, int, long unsigned int);
     struct perf_event_attr pe_attr_page_faults;
     int page_faults_fd;
     uint64_t page_faults_count;
@@ -87,6 +90,16 @@ namespace test {
       printf("perf_event_open failed for page faults %s\n", strerror(errno));
       return;
     }
+  }
+
+  long pagefaults::perf_event_open(struct perf_event_attr *hw_event,
+				   pid_t pid,
+				   int cpu,
+				   int group_fd,
+				   unsigned long flags) {
+    int ret = syscall(__NR_perf_event_open, hw_event, pid, cpu,
+		      group_fd, flags);
+    return ret;
   }
 
   void pagefaults::start() {
