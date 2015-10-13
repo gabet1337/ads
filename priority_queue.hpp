@@ -12,6 +12,7 @@ public:
   virtual void push(std::pair<int,int> k) = 0;
   virtual void pop() = 0;
   virtual void decrease_key( int id, int key ) = 0;
+  virtual void print() = 0;
 };
 
 #endif
