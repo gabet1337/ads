@@ -1,6 +1,7 @@
 HOBJS = heap_test.o
 FOBJS = fibo_tester.o
 DOBJS = dijkstra.o
+PAPI = /usr/lib/x86_64-linux-gnu/libpapi.so
 CC = c++
 DEBUG = -g
 CFLAGS = -Wall -c -std=c++11 $(DEBUG)
@@ -26,6 +27,9 @@ heap_test.o : priority_queue.hpp binary_heap.hpp heap_test.cpp
 
 fibo_tester.o : priority_queue.hpp fibonacci_heap.hpp fibo_tester.cpp
 	$(CC) $(CFLAGS) fibo_tester.cpp
+
+test_lib : test_lib.hpp test_lib_tester.cpp
+	$(CC) $(LFLAGS)  test_lib.hpp test_lib_tester.cpp $(PAPI) -o test_lib_tester
 
 clean :
 	\rm *.o *~ binary_heap_test
