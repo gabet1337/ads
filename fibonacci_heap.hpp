@@ -5,6 +5,8 @@
 #include <math.h>
 #include <cstddef>
 #include <utility>
+#include <iostream>
+#include <string>
 
 namespace pq {
 
@@ -46,7 +48,9 @@ namespace pq {
     void Insert(Node *x);
     Node* FindMin();
     Node* DeleteMin();
-
+    void pop();
+    Node* top();
+    
   private:
 
     Node *min;
@@ -55,19 +59,37 @@ namespace pq {
     void Fib_Heap_Link(Node* y, Node* x);
     void Cut(Node* x, Node* y);
     void CascadingCut(Node* y);
+    void DeleteNodes(Node *x);
 
   };
 
+  void fibonacci_heap::DeleteNodes(Node *x) {
+
+    if (x == nullptr)
+      return;
+
+    Node *next = x;
+
+    do {
+      Node* cur = next;
+      next = next->right;
+      if (cur->degree > 0)
+	DeleteNodes(cur->child);   
+      delete cur;
+    } while (next != x);
+
+  }
+  
   // To make an empty Fibonacci heap, the Make-Fib-Heap procedure allocates and returns the Fibonacci heap object H, where H.n = 0 and H.min = NIL.
-  	
   fibonacci_heap::fibonacci_heap() {
     n = 0;
     min = nullptr;
   }
 
-  	
   fibonacci_heap::~fibonacci_heap()
-  {}
+  {
+    DeleteNodes(min);
+  }
 
   // The following procedure inserts node x into Fibonacci heap H, assuming that the node has already been allocated and that x.key has alread been filled in.
   
@@ -347,6 +369,14 @@ namespace pq {
     Node *x = new Node(k);
     Insert(x);
     return x;
+  }
+
+  void fibonacci_heap::pop() {
+    DeleteMin();
+  }
+
+  typename fibonacci_heap::Node* fibonacci_heap::top() {
+    return FindMin();
   }
 
 }
