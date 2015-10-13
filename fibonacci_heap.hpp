@@ -42,7 +42,7 @@ namespace pq {
     };
 
     void DecreaseKey(Node* x, ii key);
-    Node* push(std::pair<int,int> k);    
+    Node* push(ii k);    
     void Insert(Node *x);
     Node* FindMin();
     Node* DeleteMin();
@@ -282,7 +282,7 @@ namespace pq {
 
   }
 
-  void fibonacci_heap::DecreaseKey(Node* x, std::pair<int,int> key) {
+  void fibonacci_heap::DecreaseKey(Node* x, ii key) {
 
     if (key > x->key)
       return; // error: new key is greater than current key
@@ -343,7 +343,7 @@ namespace pq {
     return n;
   }
 
-  typename fibonacci_heap::Node* fibonacci_heap::push(std::pair<int,int> k) {
+  typename fibonacci_heap::Node* fibonacci_heap::push(ii k) {
     Node *x = new Node(k);
     Insert(x);
     return x;

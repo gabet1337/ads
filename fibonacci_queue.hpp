@@ -3,9 +3,9 @@
 
 #include "priority_queue.hpp"
 #include "fibonacci_heap.hpp"
-#include <unordered_map>
-#include <iostream>
 #include <vector>
+
+typedef std::pair<int,int> ii;
 
 namespace pq {
   class fibonacci_queue : public priority_queue {
@@ -15,10 +15,10 @@ namespace pq {
     fibonacci_queue(std::size_t _max_size);
     ~fibonacci_queue();
 
-    void push(std::pair<int,int> k);
+    void push(ii k);
     void pop();
     void decrease_key(int v, int k);
-    std::pair<int,int> top();
+    ii top();
     bool empty();
     std::size_t size();
 
@@ -35,20 +35,20 @@ namespace pq {
   }
   
   
-  fibonacci_queue::~fibonacci_queue()
-  {}
+  fibonacci_queue::~fibonacci_queue() {
+    lookup.clear();
+    lookup.shrink_to_fit();
+  }
 
   
-  void fibonacci_queue::push(std::pair<int,int> k) {
+  void fibonacci_queue::push(ii k) {
     fibonacci_heap::Node *x = fib_heap.push(k);
     lookup[k.second] = x;
   }
  
   
   void fibonacci_queue::pop() {
-
-    if (empty())
-      return;
+    if (empty()) return;
 
     typename fibonacci_heap::Node *x = fib_heap.DeleteMin();
     lookup[x->key.second] = nullptr;
@@ -61,13 +61,13 @@ namespace pq {
     typename fibonacci_heap::Node *x = lookup[v];
 
     if (x != nullptr)
-      fib_heap.DecreaseKey(lookup[v],std::make_pair(k,v));
+      fib_heap.DecreaseKey(lookup[v],ii(k,v));
     else
-      push(std::make_pair(k,v));
+      push(ii(k,v));
   }
 
   
-  std::pair<int,int> fibonacci_queue::top() {
+  ii fibonacci_queue::top() {
     return fib_heap.FindMin()->key;
   }
 
