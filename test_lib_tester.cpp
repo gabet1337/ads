@@ -32,11 +32,17 @@ void test_pf() {
   cout << pf.count() << endl;
 }
 
+void test_random() {
+  test::random r;
+  cout << r.next() << " " << r.next() << endl;
+}
+
 int main() {
 
   test_clock();
   test_papi();
   test_pf();
+  test_random();
   
   return 0;
 }

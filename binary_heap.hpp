@@ -16,6 +16,7 @@ namespace pq {
     void push(ii k);
     void pop();
     void decrease_key( int id, int key );
+    void print();
   private:
     std::size_t _size, max_size;
     std::vector<ii> container;
@@ -109,6 +110,22 @@ namespace pq {
     container[id_to_index[id]].first = key;
     bubble_up(id_to_index[id]);
   }
+
+  void binary_heap::print() {
+    std::cout << "digraph bh {" << std::endl;
+    for (size_t i = 0; i < size(); i++) {
+      std::cout << i << " [label=\"" << container[i].first << ", " << container[i].second << "\"]" << std::endl;
+    }
+    for (int i = 0; i < (int)size(); i++) {
+      if (left(i) < (int)size())
+        std::cout << i << " -> " << left(i) << std::endl;
+      if (right(i) < (int)size())
+        std::cout << i << " -> " << right(i) << std::endl;
+    }
+    std::cout << "}" << std::endl;
+  }
+
+
 }
 
 #endif
