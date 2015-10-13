@@ -18,8 +18,8 @@ dijkstra : $(DOBJS)
 h_dijkstra : h_dijkstra_tester.cpp priority_queue.hpp fibonacci_heap.hpp fibonacci_queue.hpp
 	$(CC) $(LFLAGS) h_dijkstra_tester.cpp priority_queue.hpp fibonacci_heap.hpp fibonacci_queue.hpp -o h_dijkstra
 
-dijkstra.o : priority_queue.hpp binary_heap.hpp dijkstra.cpp fibonacci_heap.hpp fibonacci_queue.hpp
-	$(CC) $(CFLAGS) priority_queue.hpp fibonacci_heap.hpp fibonacci_queue.hpp binary_heap.hpp dijkstra.cpp
+dijkstra.o : priority_queue.hpp binary_heap.hpp dijkstra.cpp fibonacci_heap.hpp fibonacci_queue.hpp dijkstra.hpp
+	$(CC) $(CFLAGS) priority_queue.hpp fibonacci_heap.hpp fibonacci_queue.hpp binary_heap.hpp dijkstra.hpp dijkstra.cpp
 
 heap_test.o : priority_queue.hpp binary_heap.hpp heap_test.cpp
 	$(CC) $(CFLAGS) heap_test.cpp
