@@ -4,8 +4,8 @@ DOBJS = dijkstra.o
 PAPI = /usr/lib/x86_64-linux-gnu/libpapi.so
 CC = c++
 DEBUG = -g
-CFLAGS = -Wall -O2 -c -std=c++11 $(DEBUG)
-LFLAGS = -Wall -O2 -std=c++11 $(DEBUG)
+CFLAGS = -Wall -c -std=c++11 $(DEBUG)
+LFLAGS = -Wall -std=c++11 $(DEBUG)
 
 test : $(HOBJS)
 	$(CC) $(LFLAGS) $(HOBJS) -o binary_heap_test
