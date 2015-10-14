@@ -11,6 +11,7 @@
 #include <linux/perf_event.h>
 #include <linux/hw_breakpoint.h>
 #include <asm/unistd.h>
+#include <random>
 
 namespace test {
   class clock {
@@ -114,6 +115,38 @@ namespace test {
 
   uint64_t pagefaults::count() {
     return page_faults_count;
+  }
+
+  class random {
+
+  public:
+    random();
+    int next();
+  private:
+    long count;
+    std::random_device *rd;
+    std::mt19937 *gen;
+    std::uniform_int_distribution<int> *dis;
+  };
+
+  random::random() {
+    rd = new std::random_device();
+    gen = new std::mt19937((*rd)());
+    dis = new std::uniform_int_distribution<int>(0, INT_MAX);
+    count = 0;
+  }
+
+  int random::next() {
+    if (count > 1000000) {
+      count = 0;
+      delete rd;
+      delete gen;
+      delete dis;
+      rd = new std::random_device();
+      gen = new std::mt19937((*rd)());
+      dis = new std::uniform_int_distribution<int>(0, INT_MAX);
+    }
+    return (*dis)((*gen));
   }
 
 

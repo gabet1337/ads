@@ -4,8 +4,8 @@ DOBJS = dijkstra.o
 PAPI = /usr/lib/x86_64-linux-gnu/libpapi.so
 CC = c++
 DEBUG = -g
-CFLAGS = -Wall -c -std=c++11 $(DEBUG)
-LFLAGS = -Wall -std=c++11 $(DEBUG)
+CFLAGS = -Wall -O2 -c -std=c++11 $(DEBUG)
+LFLAGS = -Wall -O2 -std=c++11 $(DEBUG)
 
 test : $(HOBJS)
 	$(CC) $(LFLAGS) $(HOBJS) -o binary_heap_test
@@ -30,6 +30,12 @@ fibo_tester.o : priority_queue.hpp fibonacci_heap.hpp fibo_tester.cpp
 
 test_lib : test_lib.hpp test_lib_tester.cpp
 	$(CC) $(LFLAGS)  test_lib.hpp test_lib_tester.cpp $(PAPI) -o test_lib_tester
+
+bh_print : binary_heap.hpp priority_queue.hpp bh_test.cpp
+	$(CC) $(LFLAGS) binary_heap.hpp priority_queue.hpp bh_test.cpp -o bh_print
+
+run_comp : binary_heap.hpp priority_queue.hpp fibonacci_queue.hpp test_lib.hpp test_run_comp_prio.cpp
+	$(CC) $(LFLAGS) binary_heap.hpp priority_queue.hpp fibonacci_queue.hpp test_lib.hpp test_run_comp_prio.cpp $(PAPI) -o test_run_comp
 
 clean :
 	\rm *.o *~ binary_heap_test
