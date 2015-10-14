@@ -158,6 +158,7 @@ namespace test {
   }
 
   int random::next(int below) {
+    if (!below) return 0;
     return next()%below;
   }
 
