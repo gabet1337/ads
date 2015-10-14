@@ -37,5 +37,8 @@ bh_print : binary_heap.hpp priority_queue.hpp bh_test.cpp
 run_comp : binary_heap.hpp priority_queue.hpp fibonacci_queue.hpp test_lib.hpp test_run_comp_prio.cpp
 	$(CC) $(LFLAGS) binary_heap.hpp priority_queue.hpp fibonacci_queue.hpp test_lib.hpp test_run_comp_prio.cpp $(PAPI) -o test_run_comp
 
+dijkstra_tester : binary_heap.hpp priority_queue.hpp fibonacci_queue.hpp dijkstra.hpp dijkstra_tester.cpp
+	$(CC) $(LFLAGS) binary_heap.hpp priority_queue.hpp fibonacci_queue.hpp dijkstra.hpp dijkstra_tester.cpp -o dijkstra_tester
+
 clean :
 	\rm *.o *~ binary_heap_test

@@ -1,7 +1,9 @@
 #ifndef DIJKSTRA_HPP
 #define DIJKSTRA_HPP
+#define COUNT_DK
 
 #include <vector>
+#include <iostream>
 #include "priority_queue.hpp"
 
 #define INF 1000000000
@@ -18,7 +20,11 @@ void dijkstra(priority_queue &pq, vvii &AdjList, vi &dist, int V, int s) {
     if (i != s) dist[i] = INF;
     pq.push(ii(dist[i], i));
   }
-
+  
+  #ifdef COUNT_DK
+  size_t count = 0;
+  #endif
+  
   while (!pq.empty()) {
     ii front = pq.top(); pq.pop();
     int d = front.first, u = front.second;
@@ -27,9 +33,17 @@ void dijkstra(priority_queue &pq, vvii &AdjList, vi &dist, int V, int s) {
       if (dist[u] + v.second < dist[v.first]) {
         dist[v.first] = dist[u] + v.second;
         pq.decrease_key(v.first, dist[v.first]);
+	#ifdef COUNT_DK
+	count++;
+	#endif
       }
     }
   }
+
+  #ifdef COUNT_DK
+  std::cout << "decrease_key count: " << count << std::endl;
+  #endif
+  
 }
 
 
