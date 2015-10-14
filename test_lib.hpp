@@ -121,7 +121,9 @@ namespace test {
 
   public:
     random();
+    ~random();
     int next();
+    int next(int below);
   private:
     long count;
     std::random_device *rd;
@@ -136,6 +138,12 @@ namespace test {
     count = 0;
   }
 
+  random::~random() {
+    delete rd;
+    delete gen;
+    delete dis;
+  }
+
   int random::next() {
     if (count > 1000000) {
       count = 0;
@@ -147,6 +155,10 @@ namespace test {
       dis = new std::uniform_int_distribution<int>(0, INT_MAX);
     }
     return (*dis)((*gen));
+  }
+
+  int random::next(int below) {
+    return next()%below;
   }
 
 
