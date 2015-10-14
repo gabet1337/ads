@@ -121,6 +121,7 @@ namespace test {
 
   public:
     random();
+    ~random();
     int next();
   private:
     long count;
@@ -134,6 +135,12 @@ namespace test {
     gen = new std::mt19937((*rd)());
     dis = new std::uniform_int_distribution<int>(0, INT_MAX);
     count = 0;
+  }
+
+  random::~random() {
+    delete rd;
+    delete gen;
+    delete dis;
   }
 
   int random::next() {
