@@ -123,6 +123,7 @@ namespace test {
     random();
     ~random();
     int next();
+    int next(int below);
   private:
     long count;
     std::random_device *rd;
@@ -154,6 +155,10 @@ namespace test {
       dis = new std::uniform_int_distribution<int>(0, INT_MAX);
     }
     return (*dis)((*gen));
+  }
+
+  int random::next(int below) {
+    return next()%below;
   }
 
 
