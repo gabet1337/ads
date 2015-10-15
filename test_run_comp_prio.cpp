@@ -125,7 +125,7 @@ pair<results,results> test_findmin(size_t TEST_SIZE, size_t TEST_RUNS) {
     bh.push(ii(i,i));
     fq.push(ii(i,i));
   }
-  int events[1] = {PAPI_TOT_CYC};
+  int events[1] = {PAPI_BR_CN};
   long long values[1];
   test::PAPI p(events, values, 1);
   long long bh_tc = 0, fq_tc = 0;
@@ -148,9 +148,9 @@ pair<results,results> test_findmin(size_t TEST_SIZE, size_t TEST_RUNS) {
 void test_fm() {
   for (size_t i = 0; i < 23; i++) {
     size_t s = (1<<i);
-    rr temp = test_findmin(s, 100);
-    print_results(temp.first, "res/findmin/bh.dat");
-    print_results(temp.second, "res/findmin/fq.dat");
+    rr temp = test_findmin(s, 1000);
+    print_results(temp.first, "res/findmin/bh_br.dat");
+    print_results(temp.second, "res/findmin/fq_br.dat");
   }
 
 }
@@ -228,6 +228,15 @@ pair<results,results> test_decrease_key(size_t TEST_SIZE, size_t TEST_RUNS, size
 }
 //test_decrease_key(size_t TEST_SIZE, size_t TEST_RUNS, size_t NUM_DECREASE_KEY, bool is_random) {
 void test_dk() {
+
+  for (size_t i = 0; i < 23; i++) {
+    size_t s = (1<<i);
+    cout << "TESTING on input size: " << s << " where we decrease 1 element at worst" << endl;
+    rr temp = test_decrease_key(s, 100, 1, false);
+    print_results(temp.first, "res/dk/ndk_worst_bh_1.dat");
+    print_results(temp.second, "res/dk/ndk_worst_fq_1.dat");
+  }
+  return;
   size_t TEST_SIZE = (1<<15);
   //random, vary on num of decrease key operations!
 
@@ -320,8 +329,8 @@ void test_delmin() {
 int main() {
 
   // test_ins();
-  // test_fm();
-  // test_dk();
+  //test_fm();
+  test_dk();
   //test_delmin();
 
   // cout << "insert randomly" << endl;
