@@ -299,7 +299,7 @@ pair<results,results> test_deletemin(size_t TEST_SIZE, size_t TEST_RUNS, size_t 
     if (NUM_DELETES > 1) { bh.pop(); fq.pop();}
     pf.start();
     c.start(); p.start();
-    for (size_t i = 0; i < max(1,NUM_DELETES-1); i++) {
+    for (size_t i = 0; i < (size_t)max(1,((int)NUM_DELETES)-1); i++) {
       bh.pop();
     }
     p.stop(); c.stop(); pf.stop();
@@ -309,7 +309,7 @@ pair<results,results> test_deletemin(size_t TEST_SIZE, size_t TEST_RUNS, size_t 
     #endif
     
     c.start(); p.start(); pf.start();
-    for (size_t i = 0; i < max(1,NUM_DELETES-1); i++) {
+    for (size_t i = 0; i < max(1,((int)NUM_DELETES)-1); i++) {
       fq.pop();
     }
     p.stop(); c.stop(); pf.stop();
