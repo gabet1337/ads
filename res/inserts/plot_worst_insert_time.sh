@@ -1,7 +1,7 @@
 #!/usr/bin/gnuplot
 set terminal pngcairo enhanced font 'Verdana,12'
 set title "Inserting element in worst case order"
-set output 'insert_worst.png'
+set output 'insert_worst_time.png'
 set xlabel "N (# of inserts)"
 set ylabel "Runtime (ns per insert)"
 set style line 1 lc rgb '#0000FF' pt 5 ps 1 lt 1 lw 1

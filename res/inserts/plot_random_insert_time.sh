@@ -1,7 +1,7 @@
 #!/usr/bin/gnuplot
 set terminal pngcairo enhanced font 'Verdana,12'
 set title "Inserting elements with random priority"
-set output 'insert_random.png'
+set output 'insert_random_time.png'
 set xlabel "N (# of inserts)"
 set ylabel "Runtime (ns per insert)"
 set style line 1 lc rgb '#0000FF' pt 5 ps 1 lt 1 lw 1
@@ -14,7 +14,7 @@ set grid xtics lc rgb "#bbbbbb" lw 1 lt 0
 set logscale x 2
 #set logscale y 2
 set format x "2^{%L}"
-set key right bottom
+set key left top
 plot "inserts_random_bh.dat" using 1:($2/$1 * 1000) ls 1 with linespoints title 'binary heap' , \
      "inserts_random_fq.dat" using 1:($2/$1 * 1000) ls 2 with linespoints title 'fibonacci heap'
 
