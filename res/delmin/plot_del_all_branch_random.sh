@@ -2,7 +2,7 @@
 set terminal pngcairo enhanced font 'Verdana,12'
 set title "Delete entire heap random case"
 set output 'delmin_del_all_branch_random.png'
-set xlabel "N (# of delete min operations)"
+set xlabel "N (input size)"
 set ylabel "branch operations (branches per delete)"
 set style line 1 lc rgb '#0000FF' pt 5 ps 1 lt 1 lw 1
 set style line 2 lc rgb '#00FF00' pt 4 ps 1 lt 1 lw 1
@@ -15,6 +15,6 @@ set logscale x 2
 #set logscale y 2
 set format x "2^{%L}"
 set key left top
-plot "random_del_all_bh.dat" using 5:($3/$5) ls 1 with linespoints title 'binary heap' , \
-     "random_del_all_fq.dat" using 5:($3/$5) ls 2 with linespoints title 'fibonacci heap'
+plot "random_del_all_bh.dat" using 1:($3/$1) ls 1 with linespoints title 'binary heap' , \
+     "random_del_all_fq.dat" using 1:($3/$1) ls 2 with linespoints title 'fibonacci heap'
 

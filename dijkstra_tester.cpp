@@ -5,6 +5,7 @@
 #include "test_lib.hpp"
 #include <vector>
 #include <iostream>
+#include <map>
 
 using namespace std;
 
@@ -148,11 +149,10 @@ void test_hard(vvii &adjList) {
 }
 void color(int node, vvii &adjList, vi &c) {
 
-  if (c[node] == 1) return;
-  
   c[node] = 1;
 
   for (size_t i = 0; i < adjList[node].size(); i++) {
+    if (c[node] != 1)
       color(adjList[node][i].first, adjList, c);
   }
   
@@ -161,31 +161,23 @@ void color(int node, vvii &adjList, vi &c) {
 
 void connect(vvii &adjList) {
   
-  cout << "start connecting" << endl;
-  
   test::random rand;
   
   vi components;
 
   vi c;
-  c.resize(TEST_SIZE,0);
+  c.resize(adjList.size(),0);
 
-  cout << "all is good" << endl;
-  
   for (size_t i = 0; i < adjList.size(); i++) {
     if (c[i] == 1) continue;
     color(i, adjList, c);
     components.push_back(i);
   }
 
-  cout << "no problems..." << endl;
-  
   if (components.size() > 1)
     for (size_t i = 0; i < components.size(); i++)
       adjList[components[i]].push_back(ii(components[(i+1)%components.size()],rand.next(100)));
 
-  cout << "wtf??" << endl;
-  
   //std::cout << "Connected: " << components.size() << std::endl;
   
 }
@@ -233,25 +225,31 @@ void test_rand_3_edges(vvii &adjList) {
 
   adjList.resize(TEST_SIZE, vii());
   
-  size_t v_ins = 20; // ((2*((TEST_SIZE/3)*(TEST_SIZE/3))+((TEST_SIZE-1)/3)))/TEST_SIZE;
+  size_t v_ins = 100; // ((2*((TEST_SIZE/3)*(TEST_SIZE/3))+((TEST_SIZE-1)/3)))/TEST_SIZE;
 
   test::random rand;
 
   if (v_ins > 0) {
   
     for (size_t i = 0; i < adjList.size(); i++) {
-      vi pl;
-      pl.resize(TEST_SIZE,-1);
 
-      pl[i] = 1;
+      map<int,bool> m;
+      m[i] = true;
+
+      
+      //vi pl;
+      //pl.resize(TEST_SIZE,-1);
+
+      //pl[i] = 1;
 
       size_t count = 0;
       while(true) {
 	int r = rand.next(TEST_SIZE);
-	if (pl[r] == -1)
-	  pl[r] = 1;
+	if (m.find(r) == m.end())
+	  m[r] = true;
 	else {
-	  while(pl[(r++)%TEST_SIZE] == 1);
+	  while(m.find((r++)%TEST_SIZE) != m.end());
+	  m[r] = true;
 	}
 
 	adjList[i].push_back(ii(r%TEST_SIZE,rand.next(100)));
@@ -416,18 +414,17 @@ void test_powers_of_2_heavy() {
 
 void test_powers_of_2_rand_3_edges() {
 
-  for (size_t i = 18; i < 19; i++) {
+  for (size_t i = 8; i < 21; i++) {
 
     TEST_SIZE = (1<<i);
     
     vvii AdjList;
     test_rand_3_edges(AdjList);
     cout << "TESTING DIJKSTRA CHAIN ON RANDOM_3_E |V]=" << TEST_SIZE << " |E|=" << edge_counter(AdjList) << endl;
-
     pair<results,results> temp = test_sssp(TEST_SIZE, 2, AdjList);    
 
-    //print_results(temp.first, "res/dijkstra/sssp_heavy_bh.dat");
-    //print_results(temp.second, "res/dijkstra/sssp_heavy_fq.dat");
+    print_results(temp.first, "res/dijkstra/sssp_rand_3e_bh.dat");
+    print_results(temp.second, "res/dijkstra/sssp_rand_3e_fq.dat");
   }
   
 }
