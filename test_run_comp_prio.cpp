@@ -148,9 +148,9 @@ pair<results,results> test_findmin(size_t TEST_SIZE, size_t TEST_RUNS) {
 void test_fm() {
   for (size_t i = 0; i < 23; i++) {
     size_t s = (1<<i);
-    rr temp = test_findmin(s, 100);
-    print_results(temp.first, "res/findmin/bh.dat");
-    print_results(temp.second, "res/findmin/fq.dat");
+    rr temp = test_findmin(s, 10000);
+    print_results(temp.first, "res/findmin/bh_cyc.dat");
+    print_results(temp.second, "res/findmin/fq_br.dat");
   }
 
 }
@@ -228,6 +228,15 @@ pair<results,results> test_decrease_key(size_t TEST_SIZE, size_t TEST_RUNS, size
 }
 //test_decrease_key(size_t TEST_SIZE, size_t TEST_RUNS, size_t NUM_DECREASE_KEY, bool is_random) {
 void test_dk() {
+
+  for (size_t i = 0; i < 23; i++) {
+    size_t s = (1<<i);
+    cout << "TESTING on input size: " << s << " where we decrease 1 element at worst" << endl;
+    rr temp = test_decrease_key(s, 100, 1, false);
+    print_results(temp.first, "res/dk/ndk_worst_bh_1.dat");
+    print_results(temp.second, "res/dk/ndk_worst_fq_1.dat");
+  }
+  return;
   size_t TEST_SIZE = (1<<15);
   //random, vary on num of decrease key operations!
 
@@ -283,14 +292,14 @@ pair<results,results> test_deletemin(size_t TEST_SIZE, size_t TEST_RUNS, size_t 
     if (NUM_DELETES > 1) { bh.pop(); fq.pop();}
     pf.start();
     c.start(); p.start();
-    for (size_t i = 0; i < NUM_DELETES; i++) {
+    for (size_t i = 0; i < NUM_DELETES-1; i++) {
       bh.pop();
     }
     p.stop(); c.stop(); pf.stop();
     bh_c+=c.count(); bh_br+=values[0]; bh_pf+=pf.count();
 
     c.start(); p.start(); pf.start();
-    for (size_t i = 0; i < NUM_DELETES; i++) {
+    for (size_t i = 0; i < NUM_DELETES-1; i++) {
       fq.pop();
     }
     p.stop(); c.stop(); pf.stop();
@@ -306,22 +315,23 @@ pair<results,results> test_deletemin(size_t TEST_SIZE, size_t TEST_RUNS, size_t 
 
 //pair<results,results> test_deletemin(size_t TEST_SIZE, size_t TEST_RUNS, size_t NUM_DELETES, bool is_random) {
 void test_delmin() {
+  size_t TEST_SIZE = (1<<20);
   //lets try construct and delete everything (:
-  for (size_t i = 0; i < 23; i++) {
+  for (size_t i = 1; i < 20; i++) {
     size_t s = (1<<i);
-    cout << "TESTING : " << s << " with " << s << " DELETES random data" << endl;
-    rr temp = test_deletemin(s, 100, s-1, true);
-    print_results(temp.first, "res/delmin/random_del_all_bh.dat");
-    print_results(temp.second, "res/delmin/random_del_all_fq.dat");
+    cout << "TESTING : " << s << " with " << 1 << " DELETE random data" << endl;
+    rr temp = test_deletemin(s, 10000, 2, true);
+    print_results(temp.first, "res/delmin/random_del_1_bh.dat");
+    print_results(temp.second, "res/delmin/random_del_1_fq.dat");
   }
 }
 
 int main() {
 
   // test_ins();
-  // test_fm();
-  // test_dk();
-  test_delmin();
+  test_fm();
+  //test_dk();
+  //test_delmin();
 
   // cout << "insert randomly" << endl;
   // rr tir = test_insert(100000, 100,true);
