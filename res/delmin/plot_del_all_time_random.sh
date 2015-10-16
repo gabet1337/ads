@@ -2,7 +2,7 @@
 set terminal pngcairo enhanced font 'Verdana,12'
 set title "Delete entire heap random case"
 set output 'delmin_del_all_time_random.png'
-set xlabel "N (# of delete min operations)"
+set xlabel "N (input size)"
 set ylabel "running time (ns per delete)"
 set style line 1 lc rgb '#0000FF' pt 5 ps 1 lt 1 lw 1
 set style line 2 lc rgb '#00FF00' pt 4 ps 1 lt 1 lw 1
