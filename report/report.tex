@@ -351,7 +351,48 @@ After that we will perform a worst case experiment. Here we will always decrease
 \end{minipage}
 \end{figure}
 
-%TODO compiling using O2 makes bh better than fh but not in worst case MSP
+Figure~\ref{fig:dk_del_1_random} and figure~\ref{fig:dk_del_1_worst} shows the number of comparisons performed when doing decrease key in both the random case and in the worst case for the two heaps. The Fibonacci heap is clearly constant in both the random and worst case which is what we expected. The binary heap is logarithmic in the worst case and as previously seen when using random priorities we get a constant decrease key operation since the number of bubble ups are constant.
+
+\begin{figure}[H]
+\centering
+\begin{minipage}{0.48\columnwidth}
+  \centering
+  \includegraphics[width=\linewidth]{../res/dk/dk_random_fixed_size.png}%
+  \caption{INSERT TEXT}
+  \label{fig:dk_del_many_random}
+\end{minipage}%
+\hfill
+\begin{minipage}{0.48\columnwidth}
+  \centering
+  \includegraphics[width=\linewidth]{../res/dk/dk_worst_fixed_size.png}%
+  \caption{INSERT TEXT}
+  \label{fig:dk_del_many_worst}
+\end{minipage}
+\end{figure}
+
+Figure~\ref{fig:dk_del_many_random} and~\ref{fig:dk_del_many_worst} shows that the operations grows linearly in the number of decrease operations. In the random case the binary heap outperforms the Fibonacci heap but in the worst case the Fibonacci heap takes the lead by far.
+
+Figure~\ref{fig:dk_del_many_random_comp} and~\ref{fig:dk_del_many_worst_comp} gives the same picture.
+
+\begin{figure}[H]
+\centering
+\begin{minipage}{0.48\columnwidth}
+  \centering
+  \includegraphics[width=\linewidth]{../res/dk/dk_random_fixed_size_comp.png}%
+  \caption{INSERT TEXT}
+  \label{fig:dk_del_many_random_comp}
+\end{minipage}%
+\hfill
+\begin{minipage}{0.48\columnwidth}
+  \centering
+  \includegraphics[width=\linewidth]{../res/dk/dk_worst_fixed_size_comp.png}%
+  \caption{INSERT TEXT}
+  \label{fig:dk_del_many_worst_comp}
+\end{minipage}
+\end{figure}
+
+\section{Conclusion}
+%TODO discuss that Fibonacci is worse on the average random cases but better in the worst case!
 
 \chapter{Dijkstra's algorithm}
 In this section we introduce families of graphs that we believe makes Dijkstra's algorithm perform many respectively few \texttt{DecreaseKey} operations. It is obvious that the number of \texttt{DecreaseKey} operations is an exact measure of the number of edges we have to \textit{relax}.
