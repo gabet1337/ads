@@ -318,7 +318,7 @@ void test_powers_of_2_rand() {
     
     cout << "TESTING DIJKSTRA RANDOMLY ON SIZE |V]=" << TEST_SIZE << " |E|=" << edge_counter(AdjList) << endl;
 
-    pair<results,results> temp = test_sssp(TEST_SIZE, 2, AdjList);    
+    pair<results,results> temp = test_sssp(TEST_SIZE, 5, AdjList);    
 
     print_results(temp.first, "res/dijkstra/sssp_random_bh.dat");
     print_results(temp.second, "res/dijkstra/sssp_random_fq.dat");
@@ -339,7 +339,7 @@ void test_powers_of_2_chain() {
     
     cout << "TESTING DIJKSTRA CHAIN ON SIZE |V]=" << TEST_SIZE << " |E|=" << edge_counter(AdjList) << endl;
 
-    pair<results,results> temp = test_sssp(TEST_SIZE, 2, AdjList);    
+    pair<results,results> temp = test_sssp(TEST_SIZE, 5, AdjList);    
 
     print_results(temp.first, "res/dijkstra/sssp_chain_bh.dat");
     print_results(temp.second, "res/dijkstra/sssp_chain_fq.dat");
@@ -358,9 +358,9 @@ void test_powers_of_2_heavy() {
     test_hard(AdjList);
     //test_rand(AdjList);
     
-    cout << "TESTING DIJKSTRA CHAIN ON HEAVY |V]=" << TEST_SIZE << " |E|=" << edge_counter(AdjList) << endl;
+    cout << "TESTING DIJKSTRA HEAVY ON |V]=" << TEST_SIZE << " |E|=" << edge_counter(AdjList) << endl;
 
-    pair<results,results> temp = test_sssp(TEST_SIZE, 2, AdjList);    
+    pair<results,results> temp = test_sssp(TEST_SIZE, 5, AdjList);    
 
     print_results(temp.first, "res/dijkstra/sssp_heavy_bh.dat");
     print_results(temp.second, "res/dijkstra/sssp_heavy_fq.dat");
