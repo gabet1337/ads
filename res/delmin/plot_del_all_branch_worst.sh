@@ -15,6 +15,6 @@ set logscale x 2
 #set logscale y 2
 set format x "2^{%L}"
 set key left top
-plot "worst_del_all_bh.dat" using 5:($3/$5) ls 1 with linespoints title 'binary heap' , \
-     "worst_del_all_fq.dat" using 5:($3/$5) ls 2 with linespoints title 'fibonacci heap'
+plot "worst_del_all_bh.dat" using 1:($3/$1) ls 1 with linespoints title 'binary heap' , \
+     "worst_del_all_fq.dat" using 1:($3/$1) ls 2 with linespoints title 'fibonacci heap'
 
