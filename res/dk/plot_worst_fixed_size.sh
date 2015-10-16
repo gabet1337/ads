@@ -1,9 +1,9 @@
 #!/usr/bin/gnuplot
 set terminal pngcairo enhanced font 'Verdana,12'
-set title "Decrease key on 2^{20} worst case"
+set title "Decrease key on 2^{15} worst case"
 set output 'dk_worst_fixed_size.png'
 set xlabel "N (# of decrease key operations)"
-set ylabel "running time"
+set ylabel "running time (ns per decrease key)"
 set style line 1 lc rgb '#0000FF' pt 5 ps 1 lt 1 lw 1
 set style line 2 lc rgb '#00FF00' pt 4 ps 1 lt 1 lw 1
 set style line 3 lc rgb '#FF0000' pt 8 ps 1 lt 1 lw 1
