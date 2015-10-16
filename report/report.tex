@@ -57,6 +57,21 @@ INTRO
 \chapter{Implementation}
 We will in this section describe and discuss the design choices of our implementations of the binary heap and the Fibonacci heap.
 \subsection{Binary heap}
+The binary heap by Williams~\cite{williams} was implemented as a minimum heap using the pseudo code in CLRS~\cite[p.~151-170]{clrs}. Using this implementation we get the following time bounds for the heap operations:
+
+\begin{figure}[H]
+\centering
+\begin{tabular}{l|c}
+Operation & Bound \\\hline
+Insert & $\mathcal{O}(\log n)$ \\\hline
+Find min & $\mathcal{O}(1)$ \\\hline
+Delete min & $\mathcal{O}(\log n)$ \\\hline
+Decrease key & $\mathcal{O}(\log n)$
+\end{tabular}
+\caption{Time bounds of the binary heap.}
+\end{figure}
+
+In order to implement the decrease key operation we need some way to find the node in the binary heap corresponding to a node in our graph. To do this we have a table which given a node id from our graph gives us the index in the binary heap of that node id. We can then call decrease key. This way of implementing it gives an overhead in space usage of $n$, where $n$ is the number of vertices in the graph.
 
 \subsection{Fibonacci heap}
 
@@ -102,28 +117,219 @@ The worst case for the Fibonacci heap would be if we have a tree of height $\mat
 In this section we will design and perform experiments where we try to measure the running time and number of comparisons of the operations for both our priority queue implementations. We will give a summary of the design of each experiment, results, and discussion of the found results for each operation.
 
 \subsection{FindMin}
-Since finding the minimum element of both queues are constant time operations and basically just dereferencing a pointer we did not think it made sense to compare the running times in terms of wall clock. What we did instead is we measured the number of cycles for performing a single FindMin operation and the number of conditional branching operations needed. We would highly expect that the results do not depend on the size of the heap, why we made an experiment where the size of the heap was powers of two in the range from $\left[2^0, 2^{22}\right]$. The results can be found in figure~\ref{fig:findmin_cycles} and figure~\ref{fig:findmin_cr}.
-Our hypothesis was fortunately true and we do not think that there is much to discuss about the results.
+Since finding the minimum element of both queues are constant time operations and basically just dereferencing a pointer we did not think it made sense to compare the running times in terms of wall clock. What we did instead is we measured the number of cycles for performing a single FindMin operation and the number of conditional branching operations needed. We would highly expect that the results do not depend on the size of the heap, why we made an experiment where the size of the heap were powers of two in the range from $\left[2^0, 2^{22}\right]$. The experiment were repeated 10000 times and averaged. The results can be found in figure~\ref{fig:findmin_cycles} and~\ref{fig:findmin_br}.
+Our hypothesis were fortunately true and we do not think that there is much to discuss about the results.
+
+\begin{figure}[H]
+\centering
+\begin{minipage}{0.48\columnwidth}
+  \centering
+  \includegraphics[width=\linewidth]{../res/findmin/extract_min_cycles.png}%
+  \caption{The number of cycles fluctuates a little but this is to be expected.}
+  \label{fig:findmin_cycles}
+\end{minipage}%
+\hfill
+\begin{minipage}{0.48\columnwidth}
+  \centering
+  \includegraphics[width=\linewidth]{../res/findmin/extract_min_branch.png}%
+  \caption{It took exactly 37 branch operations to measure extract the minimum element.}
+  \label{fig:findmin_br}
+\end{minipage}
+\end{figure}
 
 \subsection{Insert}
 Inserting in the Fibonacci heap is a constant time operation while inserting into the binary heap is logarithmic. We would like to see that the binary heap performs worse. We will test both priority queues in both the average case and the worst case. In the average case we select a random priority in the integer range and insert it into the heap.
 %TODO how high can we expect the elemen to bubble on average?
 In the worst case we insert elements into the heap in reverse order. This will cause the elements to bubble all the way to the top on every insert.
 
-We expect to see that the Fibonacci heap is constant time in any case and that the binary heap is logarithmic in both cases. The number of comparisons performed in the Fibonacci heap should therefore also be constant on each insert while the number of comparisons should increase logarithmically in the size of the input.
+The experiments are repeated 100 times and the results are averaged. We plot the y-axis to depict the amount of time a single insert takes or how many branch operations are performed per insert.
 
-The results can be found in figure~\ref{fig:insert_t},~\ref{fig:insert_c}.
+We expect to see that the Fibonacci heap is constant time in any case and that the binary heap is logarithmic in both cases. The number of comparisons performed in the Fibonacci heap should therefore also be constant on each insert while the number of comparisons in the binary heap should increase logarithmically in the size of the input and increase even more drastically in the worse case.
+
+The results can be found in figure~\ref{fig:insert_t_random},~\ref{fig:insert_t_worst},~\ref{fig:insert_b_random}, and~\ref{fig:insert_b_worst}.
+
+\begin{figure}[H]
+\centering
+\begin{minipage}{0.48\columnwidth}
+  \centering
+  \includegraphics[width=\linewidth]{../res/inserts/insert_random_time.png}%
+  \caption{Inserting $n$ elements with random priority and the number of nanoseconds per insert.}
+  \label{fig:insert_t_random}
+\end{minipage}%
+\hfill
+\begin{minipage}{0.48\columnwidth}
+  \centering
+  \includegraphics[width=\linewidth]{../res/inserts/insert_worst_time.png}%
+  \caption{Inserting $n$ elements in reversed order and the number of nanoseconds per insert.}
+  \label{fig:insert_t_worst}
+\end{minipage}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\begin{minipage}{0.48\columnwidth}
+  \centering
+  \includegraphics[width=\linewidth]{../res/inserts/insert_random_branch.png}%
+  \caption{Inserting $n$ elements with random priority and the number of branch operations per insert.}
+  \label{fig:insert_b_random}
+\end{minipage}%
+\hfill
+\begin{minipage}{0.48\columnwidth}
+  \centering
+  \includegraphics[width=\linewidth]{../res/inserts/insert_worst_branch.png}%
+  \caption{Inserting $n$ elements in the reversed order and the number of branch operations per insert.}
+  \label{fig:insert_b_worst}
+\end{minipage}
+\end{figure}
+
 
 %TODO Add discussion of the results here!
+Figure~\ref{fig:insert_t_random} shows that inserting randomly into a Fibonacci heap does not depend on the input size beyond a little spike at $2^{12}$ which is the size at which we exceed the page size. It is interesting to see that inserting random elements into a binary heap is also constant time. This might be explained by the fact that we insert elements in the full integer range, which then results in very few bubble ups. To test this hypothesis we conducted an experiment where we did not use the entire integer range but limited the priority to take random values from $\left[ 0, \text{input size} \right]$. The results of this experiment can be found in figure~\ref{fig:insert_t_random_small} and~\ref{fig:insert_b_random_small}. The results are very similar to before and we conclude that number of bubble ups must be constant in the random case. To be fully sure about this we measure the number of bubble ups that each insert makes in the random case in the full integer range. The results of this experiment can be found in figure~\ref{fig:bubble_ups}. This results shows that indeed the number of bubble up operations is constant in the random case and in the worst case it is logarithmic.
 
+Figure~\ref{fig:insert_t_worst} supports that inserting in the binary heap in the worst case is logarithmic and that it does not matter for the Fibonacci heap.
+
+Finally figure~\ref{fig:insert_b_random} and~\ref{fig:insert_b_worst} also shows that inserting in the random case is constant for both the binary heap and the Fibonacci heap which were explained in the number of bubble up operations, and in the worst case the binary heap performs logarithmically.
+
+\begin{figure}[H]
+\centering
+\begin{minipage}{0.48\columnwidth}
+  \centering
+  \includegraphics[width=\linewidth]{../res/inserts/insert_random_time_small.png}%
+  \caption{INSERT TEXT}
+  \label{fig:insert_t_random_small}
+\end{minipage}%
+\hfill
+\begin{minipage}{0.48\columnwidth}
+  \centering
+  \includegraphics[width=\linewidth]{../res/inserts/insert_random_branch_small.png}%
+  \caption{INSERT TEXT}
+  \label{fig:insert_b_random_small}
+\end{minipage}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+  \includegraphics[scale=0.5]{../res/inserts/insert_bubble_up.png}%
+  \caption{INSERT TEXT}
+  \label{fig:bubble_ups}
+\end{figure}
 
 \subsection{DeleteMin}
-Deleting the minimum element takes logarithmic time both priority queues. It can however take linear time in the worst case for the Fibonacci queue if a delete minimum operation is performed right after $n$ insert operations. We measure deleting the minimum in the average case where we randomly insert $n$ elements and then first pop one element from both queues such that the Fibonacci queue has consolidated. We then measure the on deleting one element for different heap sizes. We expect to see both have a logarithmic running time and comparisons.
+Deleting the minimum element takes logarithmic time both priority queues. It can however take linear time in the worst case for the Fibonacci queue if a delete minimum operation is performed right after $n$ insert operations. We measure deleting the minimum in the average case where we randomly insert $n$ elements and then first pop one element from both queues such that the Fibonacci queue has consolidated. We then measure deleting one element for different heap sizes. We expect to see both have a logarithmic running time and logarithmic number of comparisons.
 Testing in the worst case we will do the same but not consolidate the Fibonacci heap first and the binary heap should be inserted in sorted order.
+
+We will also make an experiment where we fill the heap with $n$ elements and then pop them all again. This experiment is repeated 100 times and averaged where as the other with a single and two pops will be repeated 1000 times and averaged.
 
 The results can be found in figure~\ref{fig:delmin_c} and \ref{fig:delmin_t}.
 
-%TODO add discussion of results.
+\begin{figure}[H]
+\centering
+\begin{minipage}{0.48\columnwidth}
+  \centering
+  \includegraphics[width=\linewidth]{../res/delmin/delmin_del_all_time_random.png}%
+  \caption{INSERT TEXT}
+  \label{fig:delmin_all_random_time}
+\end{minipage}%
+\hfill
+\begin{minipage}{0.48\columnwidth}
+  \centering
+  \includegraphics[width=\linewidth]{../res/delmin/delmin_del_all_time_worst.png}%
+  \caption{INSERT TEXT}
+  \label{fig:delmin_all_worst_time}
+\end{minipage}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\begin{minipage}{0.48\columnwidth}
+  \centering
+  \includegraphics[width=\linewidth]{../res/delmin/delmin_del_all_branch_random.png}%
+  \caption{INSERT TEXT}
+  \label{fig:delmin_all_random_branch}
+\end{minipage}%
+\hfill
+\begin{minipage}{0.48\columnwidth}
+  \centering
+  \includegraphics[width=\linewidth]{../res/delmin/delmin_del_all_branch_worst.png}%
+  \caption{INSERT TEXT}
+  \label{fig:delmin_all_worst_branch}
+\end{minipage}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\begin{minipage}{0.48\columnwidth}
+  \centering
+  \includegraphics[width=\linewidth]{../res/delmin/delmin_del_1_time_random.png}%
+  \caption{INSERT TEXT}
+  \label{fig:delmin_1_random_time}
+\end{minipage}%
+\hfill
+\begin{minipage}{0.48\columnwidth}
+  \centering
+  \includegraphics[width=\linewidth]{../res/delmin/delmin_del_1_time_worst.png}%
+  \caption{INSERT TEXT}
+  \label{fig:delmin_1_worst_time}
+\end{minipage}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\begin{minipage}{0.48\columnwidth}
+  \centering
+  \includegraphics[width=\linewidth]{../res/delmin/delmin_del_1_branch_random.png}%
+  \caption{INSERT TEXT}
+  \label{fig:delmin_1_random_branch}
+\end{minipage}%
+\hfill
+\begin{minipage}{0.48\columnwidth}
+  \centering
+  \includegraphics[width=\linewidth]{../res/delmin/delmin_del_1_branch_worst.png}%
+  \caption{INSERT TEXT}
+  \label{fig:delmin_1_worst_branch}
+\end{minipage}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\begin{minipage}{0.48\columnwidth}
+  \centering
+  \includegraphics[width=\linewidth]{../res/delmin/delmin_del_2_time_random.png}%
+  \caption{INSERT TEXT}
+  \label{fig:delmin_2_random_time}
+\end{minipage}%
+\hfill
+\begin{minipage}{0.48\columnwidth}
+  \centering
+  \includegraphics[width=\linewidth]{../res/delmin/delmin_del_2_time_worst.png}%
+  \caption{INSERT TEXT}
+  \label{fig:delmin_2_worst_time}
+\end{minipage}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\begin{minipage}{0.48\columnwidth}
+  \centering
+  \includegraphics[width=\linewidth]{../res/delmin/delmin_del_2_branch_random.png}%
+  \caption{INSERT TEXT}
+  \label{fig:delmin_2_random_branch}
+\end{minipage}%
+\hfill
+\begin{minipage}{0.48\columnwidth}
+  \centering
+  \includegraphics[width=\linewidth]{../res/delmin/delmin_del_2_branch_worst.png}%
+  \caption{INSERT TEXT}
+  \label{fig:delmin_2_worst_branch}
+\end{minipage}
+\end{figure}
+
+
+
+\subsection{DecreaseKey}
+Decreasing the key in the Fibonacci heap should be amortized constant time as opposed to the logarithmic time in the binary heap. We would like to see this so we conduct an experiment where first randomly insert elements into the heap, and then perform some decrease key operations decreasing the key with some random number for a random element.
+
+After that we will perform a worst case experiment. Here we will always decrease the key such that it will bubble to the top in the case of the binary heap. The worst case for the Fibonacci heap is really tricky to make a test case for, why the test will be the same as for the binary heap in the worst case.
 
 
 %TODO compiling using O2 makes bh better than fh but not in worst case MSP
