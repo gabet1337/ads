@@ -63,10 +63,10 @@ The binary heap by Williams~\cite{williams} was implemented as a minimum heap us
 \centering
 \begin{tabular}{l|c}
 Operation & Bound \\\hline
-Insert & $\mathcal{O}(\log n)$ \\\hline
-Find min & $\mathcal{O}(1)$ \\\hline
-Delete min & $\mathcal{O}(\log n)$ \\\hline
-Decrease key & $\mathcal{O}(\log n)$
+\texttt{Insert} & $\mathcal{O}(\log n)$ \\\hline
+\texttt{FindMin} & $\mathcal{O}(1)$ \\\hline
+\texttt{DeleteMin} & $\mathcal{O}(\log n)$ \\\hline
+\texttt{DecreaseKey} & $\mathcal{O}(\log n)$
 \end{tabular}
 \caption{Time bounds of the binary heap.}
 \end{figure}
@@ -95,21 +95,21 @@ We used \texttt{perf} to measure page faults.
 \chapter{Worst case time bounds of the heaps}
 In this section we will argue about how the algorithms perform in the worst case as opposed to the amortized time bounds. We will for each operations on the heaps argue how the worst cases are obtained.
 
-\subsection{FindMin}
+\subsection{\texttt{FindMin}}
 Finding the minimum element is in both the Fibonacci heap and the binary heap a constant time operation. We keep a pointer to the minimum element in the Fibonacci heap and in the binary heap we just return the first element in the array which holds the heap.
 
-\subsection{Insert}
+\subsection{\texttt{Insert}}
 Inserting into the binary heap is simple. We insert the element at the last position in the binary tree, i.e. the heap, and bubble the element up to its correct position. In the worst case we need to bubble the element to the top, which means bubbling through $\mathcal{O}(\log n)$ layers which gives a logarithmic complexity in the worst case for this operation.
 
 Inserting in the Fibonacci heap is even simpler. We simply just add the element to the root list which just involves manipulating a doubly linked list, i.e. some pointer calculations. 
 %This constant time operation is what allows us to give the amortized analysis of decrease key?
 
-\subsection{DeleteMin}
+\subsection{\texttt{DeleteMin}}
 Delete the minimum element is $\mathcal{O}(\log{n})$ for the binary heap and $\mathcal{O}(\log{n})$ amortized for the Fibonacci heap. This upper bound is trivially obtained in the binary heap by having the heap ordered as a sorted array. This way, whenever we delete the minimum we would move the largest element to the top and bubble it $\log n$ levels down again to the bottom.
 
 It can however be extremely expensive to delete the minimum in the Fibonacci heap. When we delete the minimum from a Fibonacci heap we need to consolidate the heap. This operations is linear in the size of the root list. The root list can grow linearly in the worst case if we do $n$ inserts in a row, then the root list will contain at least $n$ nodes, which needs to be consolidated in time $\mathcal{O}(\vert root\_list \vert)$.
 
-\subsection{DecreaseKey}
+\subsection{\texttt{DecreaseKey}}
 Decreasing a key in the binary heap is done by giving the element a new priority and then bubble it up to its new position. The worst case is that the element decreased is the last element and its new priority is the lowest in the tree, which means that it needs to bubble to the top of the heap. This costs $\mathcal{O}(\log n)$.
 
 The worst case for the Fibonacci heap would be if we have a tree of height $\mathcal{O}(\log n)$ where every internal node on the path to the lowest leaf, which is decreased, is marked. This will cause a chain of cuts and cascading cuts all the way up to the root, which will take $\mathcal{O}(\log n)$ time.
@@ -117,7 +117,7 @@ The worst case for the Fibonacci heap would be if we have a tree of height $\mat
 \chapter{Heap experiments}
 In this section we will design and perform experiments where we try to measure the running time and number of comparisons of the operations for both our priority queue implementations. We will give a summary of the design of each experiment, results, and discussion of the found results for each operation.
 
-\subsection{FindMin}
+\subsection{\texttt{FindMin}}
 Since finding the minimum element of both queues are constant time operations and basically just dereferencing a pointer we did not think it made sense to compare the running times in terms of wall clock. What we did instead is we measured the number of cycles for performing a single FindMin operation and the number of conditional branching operations needed. We would highly expect that the results do not depend on the size of the heap, why we made an experiment where the size of the heap were powers of two in the range from $\left[2^0, 2^{22}\right]$. The experiment were repeated 10000 times and averaged. The results can be found in figure~\ref{fig:findmin_cycles} and~\ref{fig:findmin_br}.
 Our hypothesis were fortunately true and we do not think that there is much to discuss about the results.
 
@@ -138,7 +138,7 @@ Our hypothesis were fortunately true and we do not think that there is much to d
 \end{minipage}
 \end{figure}
 
-\subsection{Insert}
+\subsection{\texttt{Insert}}
 Inserting in the Fibonacci heap is a constant time operation while inserting into the binary heap is logarithmic. We would like to see that the binary heap performs worse. We will test both priority queues in both the average case and the worst case. In the average case we select a random priority in the integer range and insert it into the heap.
 %TODO how high can we expect the elemen to bubble on average?
 In the worst case we insert elements into the heap in reverse order. This will cause the elements to bubble all the way to the top on every insert.
@@ -215,13 +215,11 @@ Finally figure~\ref{fig:insert_b_random} and~\ref{fig:insert_b_worst} also shows
   \label{fig:bubble_ups}
 \end{figure}
 
-\subsection{DeleteMin}
+\subsection{\texttt{DeleteMin}}
 Deleting the minimum element takes logarithmic time both priority queues. It can however take linear time in the worst case for the Fibonacci queue if a delete minimum operation is performed right after $n$ insert operations. We measure deleting the minimum in the average case where we randomly insert $n$ elements and then first pop one element from both queues such that the Fibonacci queue has consolidated. We then measure deleting one element for different heap sizes. We expect to see both have a logarithmic running time and logarithmic number of comparisons.
 Testing in the worst case we will do the same but not consolidate the Fibonacci heap first and the binary heap should be inserted in sorted order.
 
 We will also make an experiment where we fill the heap with $n$ elements and then pop them all again. This experiment is repeated 100 times and averaged where as the other with a single and two pops will be repeated 1000 times and averaged.
-
-The results can be found in figure~\ref{fig:delmin_c} and \ref{fig:delmin_t}.
 
 \begin{figure}[H]
 \centering
@@ -325,13 +323,33 @@ The results can be found in figure~\ref{fig:delmin_c} and \ref{fig:delmin_t}.
 \end{minipage}
 \end{figure}
 
+Figure~\ref{fig:delmin_all_random_time} and ~\ref{fig:delmin_all_worst_time} shows that delete min takes logarithmic time in the size of the  input. The Fibonacci heap does however use a good deal more comparisons in both the random and the worst case as figure~\ref{fig:delmin_all_random_branch} and ~\ref{fig:delmin_all_worst_branch} shows.
 
+Deleting one element from the Fibonacci heap after $n$ inserts is really expensive as figure~\ref{fig:delmin_1_random_time} and ~\ref{fig:delmin_1_random_branch} shows. This is also what we expected due to the really expensive consolidate that has to be run which takes linear time. We have the same picture in the worst case in figure~\ref{fig:delmin_1_worst_time} and ~\ref{fig:delmin_1_worst_branch}.
 
-\subsection{DecreaseKey}
+However if we first consolidate the Fibonacci heap by first performing a delete minimum which we do not measure and then run a delete min after we get the same running time as the binary heap. The results of this are shown in figure~\ref{fig:delmin_2_random_time},~\ref{fig:delmin_2_worst_time},~\ref{fig:delmin_2_random_branch}, and~\ref{fig:delmin_2_worst_branch}. It can be seen from the number of comparisons that the operations runs in logarithmic number of operations which is what we expected.
+
+\subsection{\texttt{DecreaseKey}}
 Decreasing the key in the Fibonacci heap should be amortized constant time as opposed to the logarithmic time in the binary heap. We would like to see this so we conduct an experiment where first randomly insert elements into the heap, and then perform some decrease key operations decreasing the key with some random number for a random element.
 
 After that we will perform a worst case experiment. Here we will always decrease the key such that it will bubble to the top in the case of the binary heap. The worst case for the Fibonacci heap is really tricky to make a test case for, why the test will be the same as for the binary heap in the worst case.
 
+\begin{figure}[H]
+\centering
+\begin{minipage}{0.48\columnwidth}
+  \centering
+  \includegraphics[width=\linewidth]{../res/dk/dk_random_fixed_size_1.png}%
+  \caption{INSERT TEXT}
+  \label{fig:dk_del_1_random}
+\end{minipage}%
+\hfill
+\begin{minipage}{0.48\columnwidth}
+  \centering
+  \includegraphics[width=\linewidth]{../res/dk/dk_worst_fixed_size_1.png}%
+  \caption{INSERT TEXT}
+  \label{fig:dk_del_1_worst}
+\end{minipage}
+\end{figure}
 
 %TODO compiling using O2 makes bh better than fh but not in worst case MSP
 
