@@ -14,7 +14,7 @@ set grid xtics lc rgb "#bbbbbb" lw 1 lt 0
 set logscale x 2
 #set logscale y 2
 set format x "2^{%L}"
-set key left top
+set key right top
 plot "bh_cyc.dat" using 1:3 ls 1 with linespoints title 'binary heap' , \
      "fq_cyc.dat" using 1:3 ls 2 with linespoints title 'fibonacci heap'
 
