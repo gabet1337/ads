@@ -106,29 +106,35 @@ void test_hard(vvii &adjList) {
 
   int h = (TEST_SIZE / 3);
 
-  int x = 1000;
+  //int x = 1000;
+  int x = TEST_SIZE;
 
   for (int i = 0; i < h; i++) {
     for (int j = 0; j < h; j++) {
       if (i == 0) { // layer 0 -> 0
 	if (j == 0) {
-	  adjList[0*h+j].push_back(ii(0*h+j+1,x*x+h+1));
+	  //adjList[0*h+j].push_back(ii(0*h+j+1,x*x+h+1));
+	  adjList[0*h+j].push_back(ii(0*h+j+1,x*x));
 	}
 	else if (j < h-1) {
+	  //adjList[0*h+j].push_back(ii(0*h+j+1,0));
 	  adjList[0*h+j].push_back(ii(0*h+j+1,0));
 	}
 	for (int k = 0; k < h; k++) { // layer 0 -> 1
 	  if (j == 0) {
+	    //adjList[0*h+j].push_back(ii(1*h+k,x+k));
 	    adjList[0*h+j].push_back(ii(1*h+k,x+k));
 	  }
 	}
 	if (j > 0)
 	  for (int k = 0; k < h; k++) { // layer 0 -> 2
+	    //adjList[0*h+j].push_back(ii(2*h+k,x-2*j));
 	    adjList[0*h+j].push_back(ii(2*h+k,x-2*j));
 	}
       } else if (i == 1) { // layer 1 - > 2
 	for (int k = 0; k < h; k++) {
-	  adjList[1*h+j].push_back(ii(2*h+k,2*x*x-2*j));
+	  //adjList[1*h+j].push_back(ii(2*h+k,2*x*x-2*j));
+	  adjList[1*h+j].push_back(ii(2*h+k,x*x+2*x-2*j));
 	}
       }
     }
@@ -167,7 +173,7 @@ void connect(vvii &adjList) {
     for (size_t i = 0; i < components.size(); i++)
       adjList[components[i]].push_back(ii(components[(i+1)%components.size()],rand.next(100)));
   
-  std::cout << "Connected: " << components.size() << std::endl;
+  //std::cout << "Connected: " << components.size() << std::endl;
   
 }
 
@@ -212,15 +218,17 @@ int main() {
 
   vvii AdjList;
   //test_easy(AdjList);
-  //test_hard(AdjList);
-  test_rand(AdjList);
-  //print(AdjList);
+  //test_hard_illegal(AdjList);
+  test_hard(AdjList);
+  //test_rand(AdjList);
+  print(AdjList);
+
   vi dist_bh, dist_fh;
 
   //edge_counter(AdjList);
   
-  pq::binary_heap bh(TEST_SIZE);
-  dijkstra(bh, AdjList, dist_bh, TEST_SIZE, 0);
+  //pq::binary_heap bh(TEST_SIZE);
+  //dijkstra(bh, AdjList, dist_bh, TEST_SIZE, 0);
 
   //std::cout << "got here";
   
