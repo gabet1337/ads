@@ -13,7 +13,11 @@ typedef std::vector<vi> vvi;
 typedef std::vector<ii> vii;
 typedef std::vector<vii> vvii;
 
+#ifdef COUNT_DK
+size_t dijkstra(priority_queue &pq, vvii &AdjList, vi &dist, int V, int s) {
+#else
 void dijkstra(priority_queue &pq, vvii &AdjList, vi &dist, int V, int s) {
+#endif
   dist.resize(V);
   dist[s] = 0;
   for (int i = 0; i < V; i++) {
@@ -41,7 +45,7 @@ void dijkstra(priority_queue &pq, vvii &AdjList, vi &dist, int V, int s) {
   }
 
   #ifdef COUNT_DK
-  std::cout << "decrease_key count: " << count << std::endl;
+  return count;
   #endif
   
 }
