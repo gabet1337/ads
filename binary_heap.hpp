@@ -1,5 +1,6 @@
 #ifndef BINARY_HEAP_HPP
 #define BINARY_HEAP_HPP
+#define BUBBLE_COUNT
 #include <vector>
 #include <iostream>
 #include "priority_queue.hpp"
@@ -16,6 +17,9 @@ namespace pq {
     void push(ii k);
     void pop();
     void decrease_key( int id, int key );
+    #ifdef BUBBLE_COUNT
+    size_t bcount;
+    #endif
     void print();
   private:
     std::size_t _size, max_size;
@@ -29,6 +33,9 @@ namespace pq {
   };
 
   binary_heap::binary_heap(std::size_t max_size) {
+    #ifdef BUBBLE_COUNT
+    bcount = 0;
+    #endif
     this->max_size = max_size;
     id_to_index.resize(max_size);
     _size = 0;
@@ -100,6 +107,9 @@ namespace pq {
 
   void binary_heap::bubble_up(int i) {
     while (i > 0 && container[parent(i)] > container[i]) {
+      #ifdef BUBBLE_COUNT
+      bcount++;
+      #endif
       std::swap(id_to_index[container[i].second], id_to_index[container[parent(i)].second]);
       std::swap(container[i], container[parent(i)]);
       i = parent(i);
