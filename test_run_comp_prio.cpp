@@ -60,6 +60,7 @@ pair<results,results> test_insert(size_t TEST_SIZE, size_t TEST_RUNS, bool is_ra
   long long bh_clock = 0, fq_clock = 0;
   long long bh_br = 0, fq_br = 0;
   uint64_t bh_pf = 0, fq_pf = 0;
+  size_t bh_bc = 0;
   for (size_t i = 0; i < TEST_RUNS; i++) {
 
     pq::binary_heap bh(TEST_SIZE);
@@ -84,6 +85,7 @@ pair<results,results> test_insert(size_t TEST_SIZE, size_t TEST_RUNS, bool is_ra
     c.stop();
     pf.stop();
     bh_clock+=c.count();
+    bh_bc += bh.bcount;
     bh_br += values[0];
     bh_pf += pf.count();
 
@@ -93,7 +95,7 @@ pair<results,results> test_insert(size_t TEST_SIZE, size_t TEST_RUNS, bool is_ra
   cout << bh_clock << "\t" << fq_clock << endl;
   cout << bh_pf << "\t" << fq_pf << endl;
 
-  return { results(bh_clock, bh_br, bh_pf, TEST_SIZE, TEST_RUNS, is_random,0),
+  return { results(bh_clock, bh_br, bh_pf, TEST_SIZE, TEST_RUNS, is_random, bh_bc),
       results(fq_clock, fq_br, fq_pf, TEST_SIZE, TEST_RUNS, is_random,0)};
 }
 
@@ -104,8 +106,8 @@ void test_ins() {
     size_t s = (1<<i);
     cout << "TESTING INSERTS RANDOMLY ON SIZE: " << s << endl;
     rr temp = test_insert(s,100,true);
-    print_results(temp.first, "res/inserts/inserts_random_bh.dat");
-    print_results(temp.second, "res/inserts/inserts_random_fq.dat");
+    print_results(temp.first, "res/inserts/inserts_random_bh_count.dat");
+    print_results(temp.second, "res/inserts/inserts_random_fq_count.dat");
   }
 
   //worst case:
@@ -113,8 +115,8 @@ void test_ins() {
     size_t s = (1<<i);
     cout << "TESTING INSERTS WORST CASE ON SIZE: " << s << endl;
     rr temp = test_insert(s,100,false);
-    print_results(temp.first, "res/inserts/inserts_worst_bh.dat");
-    print_results(temp.second, "res/inserts/inserts_worst_fq.dat");
+    print_results(temp.first, "res/inserts/inserts_worst_bh_count.dat");
+    print_results(temp.second, "res/inserts/inserts_worst_fq_count.dat");
   }
   
 }
