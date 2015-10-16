@@ -238,18 +238,17 @@ void test_dk() {
   for (size_t i = 0; i < 23; i++) {
     size_t s = (1<<i);
     cout << "TESTING on input size: " << s << " where we decrease 1 element at worst" << endl;
-    rr temp = test_decrease_key(s, 100, 1, false);
+    rr temp = test_decrease_key(s, 40, 1, false);
     print_results(temp.first, "res/dk/ndk_worst_bh_1.dat");
     print_results(temp.second, "res/dk/ndk_worst_fq_1.dat");
   }
-  return;
-  size_t TEST_SIZE = (1<<15);
-  //random, vary on num of decrease key operations!
 
+  size_t TEST_SIZE = (1<<20);
+  //random, vary on num of decrease key operations!
   for (size_t i = 0; i < 23; i++) {
     size_t s = (1<<i);
     cout << "TESTING : " << s << " DECREASE KEYS randomly" << endl;
-    rr temp = test_decrease_key(TEST_SIZE, 100, s, true);
+    rr temp = test_decrease_key(TEST_SIZE, 40, s, true);
     print_results(temp.first, "res/dk/ndk_random_bh.dat");
     print_results(temp.second, "res/dk/ndk_random_fq.dat");
   }
@@ -258,10 +257,12 @@ void test_dk() {
   for (size_t i = 0; i < 23; i++) {
     size_t s = (1<<i);
     cout << "TESTING : " << s << " DECREASE KEYS worst case" << endl;
-    rr temp = test_decrease_key(TEST_SIZE, 100, s, false);
+    rr temp = test_decrease_key(TEST_SIZE, 40, s, false);
     print_results(temp.first, "res/dk/ndk_worst_bh.dat");
     print_results(temp.second, "res/dk/ndk_worst_fq.dat");
   }
+
+  
 
 }
 
@@ -380,8 +381,8 @@ int main() {
 
   //test_ins();
   //test_fm();
-  //test_dk();
-  test_delmin();
+  test_dk();
+  //test_delmin();
 
   // cout << "insert randomly" << endl;
   // rr tir = test_insert(100000, 100,true);
