@@ -15,7 +15,7 @@ set grid xtics lc rgb "#bbbbbb" lw 1 lt 0
 set logscale x 2
 #set logscale y 2
 set format x "2^{%L}"
-set yrange [0:0.20]
+#set yrange [0:0.20]
 #set logscale x 2
 #set format x "%L/10000"
 
