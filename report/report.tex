@@ -396,27 +396,29 @@ We construct each graph following the algorithm presented as \textit{Candidate 2
 We construct each graph with $n$ vertices having $\dfrac{2(\nicefrac{n}{3})^2 + (\nicefrac{n}{3})-1}{n}$ outgoing edges. Each edge is connected uniformly random to another vertex. We avoid having edges connecting a vertex to itself and we avoid to have multiple outgoing edges to the same vertex. Edge weights are taken uniformly random in the interval $[0, .., 100]$. After construction we make sure that all components are connected. We do this by colouring all components and afterwards connecting different coloured components with a random edge. This scheme have a very limited overhead in number of extra edges.
 
 \subsection{Experimental setup}
-Please refer to chapter~\ref{chtp:experiment_setup} for a general overview of the experimental setup. Each experiment was performed ??? times and the average was used.
+Please refer to chapter~\ref{chtp:experiment_setup} for a general overview of the experimental setup. We performed experiments on Dijkstra's algorithm using both heap implementations and using graphs from \texttt{ChainGraph}, \texttt{RandomGraph} and \texttt{HeavyGraph}. Each experiment was performed 5 times and the average was used.
 
 \section{Expectations}
-fdsa
+In general we expect Dijkstra's algorithm to achieve better running times, when using the Fibonacci heap, because of the amortised $\mathcal{O}(1)$ \texttt{DecreaseKey} operation. We expect to see the best running times on graphs from \texttt{ChainGraph} and the worst running times on graphs from \texttt{HeavyGraph} as argued in section~\ref{sec:few_decreasekey} and section~\ref{sec:many_decreasekey}.
 
 \section{Results}
+
+In figure~\ref{fig:dijkstra_chain_rt}, \ref{fig:dijkstra_random_rt} and \ref{fig:dijkstra_heavy_rt} we present plots of the total running time with Dijkstra on graphs with $\lvert V \lvert = N \in [2^2, 2^3, .., 2^{16}]$ on \texttt{ChainGraph}, \texttt{RandomGraph} and \texttt{HeavyGraph} respectively. In figure~\ref{fig:dijkstra_chain_rt_div_n}, \ref{fig:dijkstra_random_rt_div_n} and \ref{fig:dijkstra_heavy_rt_div_n} we present plots of the total running time divided by N. In figure~\ref{fig:dijkstra_chain_dk}, \ref{fig:dijkstra_random_dk} and \ref{fig:dijkstra_heavy_dk} we present plots of the total number of \texttt{DecreaseKey} operations initiated by Dijkstra's algorithm. In figure~\ref{fig:dijkstra_chain_br}, \ref{fig:dijkstra_random_br} and \ref{fig:dijkstra_heavy_br} we present the total number of conditional branches caused when running on \texttt{ChainGraph}, \texttt{RandomGraph} and \texttt{HeavyGraph} respectively. 
 
 \begin{figure}[H]
 \centering
 \begin{minipage}{0.48\columnwidth}
   \centering
   \includegraphics[width=\linewidth]{../res/dijkstra/d_chain_rt.png}%
-  \caption{INSERT TEXT}
-  \label{fig:delmin_2_random_branch}
+  \caption{Dijkstra running time on ChainGraph}
+  \label{fig:dijkstra_chain_rt}
 \end{minipage}%
 \hfill
 \begin{minipage}{0.48\columnwidth}
   \centering
   \includegraphics[width=\linewidth]{../res/dijkstra/d_random_rt.png}%
-  \caption{INSERT TEXT}
-  \label{fig:delmin_2_worst_branch}
+  \caption{Dijkstra running time on RandomGraph}
+  \label{fig:dijkstra_random_rt}
 \end{minipage}
 \end{figure}
 
@@ -425,15 +427,15 @@ fdsa
 \begin{minipage}{0.48\columnwidth}
   \centering
   \includegraphics[width=\linewidth]{../res/dijkstra/d_heavy_rt.png}%
-  \caption{INSERT TEXT}
-  \label{fig:delmin_2_random_branch}
+  \caption{Dijkstra running time on HeavyGraph}
+  \label{fig:dijkstra_heavy_rt}
 \end{minipage}%
 \hfill
 \begin{minipage}{0.48\columnwidth}
   \centering
   \includegraphics[width=\linewidth]{../res/dijkstra/d_chain_rt_div_n.png}%
-  \caption{INSERT TEXT}
-  \label{fig:delmin_2_worst_branch}
+  \caption{Dijkstra running time per vertex on ChainGraph}
+  \label{fig:dijkstra_chain_rt_div_n}
 \end{minipage}
 \end{figure}
 
@@ -442,15 +444,15 @@ fdsa
 \begin{minipage}{0.48\columnwidth}
   \centering
   \includegraphics[width=\linewidth]{../res/dijkstra/d_random_rt_div_n.png}%
-  \caption{INSERT TEXT}
-  \label{fig:delmin_2_random_branch}
+  \caption{Dijkstra running time per vertex on RandomGraph}
+  \label{fig:dijkstra_random_rt_div_n}
 \end{minipage}%
 \hfill
 \begin{minipage}{0.48\columnwidth}
   \centering
   \includegraphics[width=\linewidth]{../res/dijkstra/d_heavy_rt_div_n.png}%
-  \caption{INSERT TEXT}
-  \label{fig:delmin_2_worst_branch}
+  \caption{Dijkstra running time per vertex on HeavyGraph}
+  \label{fig:dijkstra_heavy_rt_div_n}
 \end{minipage}
 \end{figure}
 
@@ -459,15 +461,15 @@ fdsa
 \begin{minipage}{0.48\columnwidth}
   \centering
   \includegraphics[width=\linewidth]{../res/dijkstra/d_chain_dk.png}%
-  \caption{INSERT TEXT}
-  \label{fig:delmin_2_random_branch}
+  \caption{DecreaseKey operations on ChainGraph}
+  \label{fig:dijkstra_chain_dk}
 \end{minipage}%
 \hfill
 \begin{minipage}{0.48\columnwidth}
   \centering
   \includegraphics[width=\linewidth]{../res/dijkstra/d_random_dk.png}%
-  \caption{INSERT TEXT}
-  \label{fig:delmin_2_worst_branch}
+  \caption{DecreaseKey operations on RandomGraph}
+  \label{fig:dijkstra_random_dk}
 \end{minipage}
 \end{figure}
 
@@ -476,15 +478,15 @@ fdsa
 \begin{minipage}{0.48\columnwidth}
   \centering
   \includegraphics[width=\linewidth]{../res/dijkstra/d_heavy_dk.png}%
-  \caption{INSERT TEXT}
-  \label{fig:delmin_2_random_branch}
+  \caption{DecreaseKey operations on HeavyGraph}
+  \label{fig:dijkstra_heavy_dk}
 \end{minipage}%
 \hfill
 \begin{minipage}{0.48\columnwidth}
   \centering
   \includegraphics[width=\linewidth]{../res/dijkstra/d_chain_br.png}%
-  \caption{INSERT TEXT}
-  \label{fig:delmin_2_worst_branch}
+  \caption{Conditional Branches on ChainGraph}
+  \label{fig:dijkstra_chain_br}
 \end{minipage}
 \end{figure}
 
@@ -493,15 +495,15 @@ fdsa
 \begin{minipage}{0.48\columnwidth}
   \centering
   \includegraphics[width=\linewidth]{../res/dijkstra/d_random_br.png}%
-  \caption{INSERT TEXT}
-  \label{fig:delmin_2_random_branch}
+  \caption{Conditional Branches on RandomGraph}
+  \label{fig:dijkstra_random_br}
 \end{minipage}%
 \hfill
 \begin{minipage}{0.48\columnwidth}
   \centering
   \includegraphics[width=\linewidth]{../res/dijkstra/d_heavy_br.png}%
-  \caption{INSERT TEXT}
-  \label{fig:delmin_2_worst_branch}
+  \caption{Conditional Branches on HeavyGraph}
+  \label{fig:dijkstra_heavy_br}
 \end{minipage}
 \end{figure}
 
