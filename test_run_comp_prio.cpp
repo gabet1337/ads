@@ -69,17 +69,19 @@ pair<results,results> test_insert(size_t TEST_SIZE, size_t TEST_RUNS, bool is_ra
     c.start();
     pf.start();
     for (size_t j = 0; j < TEST_SIZE; j++) fq.push(ii(data[j],j));
-    pf.stop();
-    c.stop();
     p.stop();
+    c.stop();
+    pf.stop();
     fq_clock+=c.count();
     fq_br += values[0];
     fq_pf += pf.count();
 
+    p.start();
+    c.start();
     pf.start();
-    c.start(); p.start();
     for (size_t j = 0; j < TEST_SIZE; j++) bh.push(ii(data[j],j));
-    c.stop(); p.stop();
+    p.stop();
+    c.stop();
     pf.stop();
     bh_clock+=c.count();
     bh_br += values[0];
@@ -98,7 +100,7 @@ pair<results,results> test_insert(size_t TEST_SIZE, size_t TEST_RUNS, bool is_ra
 //test powers of 2
 void test_ins() {
   //random:
-  for (size_t i = 0; i < 22; i++) {
+  for (size_t i = 0; i < 23; i++) {
     size_t s = (1<<i);
     cout << "TESTING INSERTS RANDOMLY ON SIZE: " << s << endl;
     rr temp = test_insert(s,100,true);
@@ -107,7 +109,7 @@ void test_ins() {
   }
 
   //worst case:
-  for (size_t i = 0; i < 22; i++) {
+  for (size_t i = 0; i < 23; i++) {
     size_t s = (1<<i);
     cout << "TESTING INSERTS WORST CASE ON SIZE: " << s << endl;
     rr temp = test_insert(s,100,false);
@@ -328,8 +330,8 @@ void test_delmin() {
 
 int main() {
 
-  // test_ins();
-  test_fm();
+  test_ins();
+  //test_fm();
   //test_dk();
   //test_delmin();
 
