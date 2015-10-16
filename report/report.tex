@@ -399,7 +399,7 @@ We construct each graph with $n$ vertices having $\dfrac{2(\nicefrac{n}{3})^2 + 
 Please refer to chapter~\ref{chtp:experiment_setup} for a general overview of the experimental setup. We performed experiments on Dijkstra's algorithm using both heap implementations and using graphs from \texttt{ChainGraph}, \texttt{RandomGraph} and \texttt{HeavyGraph}. Each experiment was performed 5 times and the average was used.
 
 \section{Expectations}
-In general we expect Dijkstra's algorithm to achieve better running times, when using the Fibonacci heap, because of the amortised $\mathcal{O}(1)$ \texttt{DecreaseKey} operation. We expect to see the best running times on graphs from \texttt{ChainGraph} and the worst running times on graphs from \texttt{HeavyGraph} as argued in section~\ref{sec:few_decreasekey} and section~\ref{sec:many_decreasekey}.
+In general we expect Dijkstra's algorithm to achieve better running times, when using the Fibonacci heap, because of the amortised $\mathcal{O}(1)$ \texttt{DecreaseKey} operation. We expect to see the best running times on graphs from \texttt{ChainGraph} and the worst running times on graphs from \texttt{HeavyGraph} as argued in section~\ref{sec:few_decreasekey} and section~\ref{sec:many_decreasekey}. When running on graphs in \texttt{RandomGraph} we expect to see a slightly worse running time compared with runs on graphs from \texttt{ChainGraph}, but we expect to be far better than the runs on the worst case graphs from \texttt{HeavyGraph}.
 
 \section{Results}
 
@@ -508,7 +508,7 @@ In figure~\ref{fig:dijkstra_chain_rt}, \ref{fig:dijkstra_random_rt} and \ref{fig
 \end{figure}
 
 \section{Discussion}
-fads
+Comparing the running times on \texttt{ChainGraph} respectively \texttt{RandomGraph} in figure~\ref{fig:dijkstra_chain_rt} and \ref{fig:dijkstra_random_rt} we see that our hypothesis of seeing close to the same running times on graphs from \texttt{ChainGraph} and \texttt{RandomGraph} holds. We are surprised to see that the running times is almost the exact same for both heap implementations. We believe we see this behaviour because we have chosen graphs with relatively few vertices. Furthermore we have implemented Dijkstra's algorithm such that it fills 
 
 \bibliography{references}
 
