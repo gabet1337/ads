@@ -1,44 +1,46 @@
-#size	time	papi	pfs
-1	0	118	0
-#size	time	papi	pfs
-2	0	189	0
-#size	time	papi	pfs
-4	0	293	0
-#size	time	papi	pfs
-8	0	419	0
-#size	time	papi	pfs
-16	0	669	0
-#size	time	papi	pfs
-32	0	1107	0
-#size	time	papi	pfs
-64	0	2051	0
-#size	time	papi	pfs
-128	0	4167	0
-#size	time	papi	pfs
-256	0	8731	0
-#size	time	papi	pfs
-512	0	18798	0
-#size	time	papi	pfs
-1024	0	40898	0
-#size	time	papi	pfs
-2048	1	89111	8
-#size	time	papi	pfs
-4096	2	193645	16
-#size	time	papi	pfs
-8192	6	419040	32
-#size	time	papi	pfs
-16384	13	902484	64
-#size	time	papi	pfs
-32768	29	1934792	128
-#size	time	papi	pfs
-65536	63	4130340	257
-#size	time	papi	pfs
-131072	133	8783514	512
-#size	time	papi	pfs
-262144	286	18614032	1024
-#size	time	papi	pfs
-524288	601	39323526	1537
-#size	time	papi	pfs
-1048576	1285	82839646	2052
-#size	time	papi	pfs
-2097152	2693	174065809	2571
+#size	time	papi	pfs	ndk
+1	0	123	0	0
+#size	time	papi	pfs	ndk
+2	0	191	0	0
+#size	time	papi	pfs	ndk
+4	0	295	0	0
+#size	time	papi	pfs	ndk
+8	0	421	0	0
+#size	time	papi	pfs	ndk
+16	0	671	0	0
+#size	time	papi	pfs	ndk
+32	0	1109	0	0
+#size	time	papi	pfs	ndk
+64	0	2053	0	0
+#size	time	papi	pfs	ndk
+128	0	4169	0	0
+#size	time	papi	pfs	ndk
+256	0	8733	0	0
+#size	time	papi	pfs	ndk
+512	0	18800	0	0
+#size	time	papi	pfs	ndk
+1024	0	40900	0	0
+#size	time	papi	pfs	ndk
+2048	1	89113	0	0
+#size	time	papi	pfs	ndk
+4096	3	193647	0	0
+#size	time	papi	pfs	ndk
+8192	6	419017	0	0
+#size	time	papi	pfs	ndk
+16384	14	902436	0	0
+#size	time	papi	pfs	ndk
+32768	31	1934719	0	0
+#size	time	papi	pfs	ndk
+65536	66	4130267	0	0
+#size	time	papi	pfs	ndk
+131072	141	8783489	0	0
+#size	time	papi	pfs	ndk
+262144	300	18613888	10	0
+#size	time	papi	pfs	ndk
+524288	639	39323555	1537	0
+#size	time	papi	pfs	ndk
+1048576	1351	82839571	2052	0
+#size	time	papi	pfs	ndk
+2097152	2832	174065765	2571	0
+#size	time	papi	pfs	ndk
+4194304	5958	364906755	3099	0
