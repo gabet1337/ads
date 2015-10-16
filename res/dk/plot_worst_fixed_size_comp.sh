@@ -12,7 +12,7 @@ set grid ytics lc rgb "#bbbbbb" lw 1 lt 0
 set grid xtics lc rgb "#bbbbbb" lw 1 lt 0
 #set xrange [2**13:2**22]
 set logscale x 2
-#set logscale y 2
+set logscale y 2
 set format x "2^{%L}"
 set key left top
 plot "ndk_worst_bh.dat" using 5:3 ls 1 with linespoints title 'binary heap' , \
