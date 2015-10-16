@@ -125,7 +125,7 @@ pair<results,results> test_findmin(size_t TEST_SIZE, size_t TEST_RUNS) {
     bh.push(ii(i,i));
     fq.push(ii(i,i));
   }
-  int events[1] = {PAPI_BR_CN};
+  int events[1] = {PAPI_TOT_CYC};
   long long values[1];
   test::PAPI p(events, values, 1);
   long long bh_tc = 0, fq_tc = 0;
@@ -148,8 +148,8 @@ pair<results,results> test_findmin(size_t TEST_SIZE, size_t TEST_RUNS) {
 void test_fm() {
   for (size_t i = 0; i < 23; i++) {
     size_t s = (1<<i);
-    rr temp = test_findmin(s, 1000);
-    print_results(temp.first, "res/findmin/bh_br.dat");
+    rr temp = test_findmin(s, 10000);
+    print_results(temp.first, "res/findmin/bh_cyc.dat");
     print_results(temp.second, "res/findmin/fq_br.dat");
   }
 
@@ -329,8 +329,8 @@ void test_delmin() {
 int main() {
 
   // test_ins();
-  //test_fm();
-  test_dk();
+  test_fm();
+  //test_dk();
   //test_delmin();
 
   // cout << "insert randomly" << endl;
