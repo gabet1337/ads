@@ -98,6 +98,9 @@ namespace pq {
     else smallest = i;
     if (r < (int)size() && container[r] < container[smallest]) smallest = r;
     if (smallest != i) {
+      #ifdef BUBBLE_COUNT
+      bcount++;
+      #endif
       //swap the indices of nodes at index i and index smallest
       std::swap(id_to_index[container[i].second], id_to_index[container[smallest].second]);
       std::swap(container[i],container[smallest]);
@@ -107,9 +110,6 @@ namespace pq {
 
   void binary_heap::bubble_up(int i) {
     while (i > 0 && container[parent(i)] > container[i]) {
-      #ifdef BUBBLE_COUNT
-      bcount++;
-      #endif
       std::swap(id_to_index[container[i].second], id_to_index[container[parent(i)].second]);
       std::swap(container[i], container[parent(i)]);
       i = parent(i);

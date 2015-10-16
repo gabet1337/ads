@@ -85,7 +85,9 @@ pair<results,results> test_insert(size_t TEST_SIZE, size_t TEST_RUNS, bool is_ra
     c.stop();
     pf.stop();
     bh_clock+=c.count();
+    #ifdef BUBBLE_COUNT
     bh_bc += bh.bcount;
+    #endif
     bh_br += values[0];
     bh_pf += pf.count();
 
@@ -285,6 +287,7 @@ pair<results,results> test_deletemin(size_t TEST_SIZE, size_t TEST_RUNS, size_t 
   test::clock c;
   test::pagefaults pf;
   long long bh_c = 0, fq_c = 0, bh_br = 0, fq_br = 0, bh_pf =0, fq_pf = 0;
+  size_t bcount = 0;
   for (size_t t = 0; t < TEST_RUNS; t++) {
     pq::binary_heap bh(TEST_SIZE);
     pq::fibonacci_queue fq(TEST_SIZE);
@@ -293,17 +296,20 @@ pair<results,results> test_deletemin(size_t TEST_SIZE, size_t TEST_RUNS, size_t 
       fq.push(ii(fq_data[i], i));
     }
     // pop one element
-    if (NUM_DELETES > 1) { bh.pop(); fq.pop();}
+    if (NUM_DELETES > 1) { bh.pop(); fq.pop(); NUM_DELETES--;}
     pf.start();
     c.start(); p.start();
-    for (size_t i = 0; i < NUM_DELETES-1; i++) {
+    for (size_t i = 0; i < NUM_DELETES; i++) {
       bh.pop();
     }
     p.stop(); c.stop(); pf.stop();
     bh_c+=c.count(); bh_br+=values[0]; bh_pf+=pf.count();
-
+    #ifdef BUBBLE_COUNT
+    bcount+=bh.bcount;
+    #endif
+    
     c.start(); p.start(); pf.start();
-    for (size_t i = 0; i < NUM_DELETES-1; i++) {
+    for (size_t i = 0; i < NUM_DELETES; i++) {
       fq.pop();
     }
     p.stop(); c.stop(); pf.stop();
@@ -313,29 +319,69 @@ pair<results,results> test_deletemin(size_t TEST_SIZE, size_t TEST_RUNS, size_t 
   cout << bh_c << "\t" << fq_c << endl;
   cout << bh_br << "\t" << fq_br << endl;
   cout << bh_pf << "\t" << fq_pf << endl;
-  return { results(bh_c, bh_br, bh_pf, TEST_SIZE, TEST_RUNS, is_random, NUM_DELETES),
-      results(fq_c, fq_br, fq_pf, TEST_SIZE, TEST_RUNS, is_random, NUM_DELETES)};
+  return { results(bh_c, bh_br, bh_pf, TEST_SIZE, TEST_RUNS, bcount, NUM_DELETES),
+      results(fq_c, fq_br, fq_pf, TEST_SIZE, TEST_RUNS, bcount, NUM_DELETES)};
 }
 
 //pair<results,results> test_deletemin(size_t TEST_SIZE, size_t TEST_RUNS, size_t NUM_DELETES, bool is_random) {
 void test_delmin() {
-  size_t TEST_SIZE = (1<<20);
+  // size_t TEST_SIZE = (1<<20);
   //lets try construct and delete everything (:
-  for (size_t i = 1; i < 20; i++) {
+  for (size_t i = 1; i < 22; i++) {
+    size_t s = (1<<i);
+    cout << "TESTING : " << s << " with " << s-1 << " DELETE random data" << endl;
+    rr temp = test_deletemin(s, 100, s, true);
+    print_results(temp.first, "res/delmin/random_del_all_bh.dat");
+    print_results(temp.second, "res/delmin/random_del_all_fq.dat");
+  }
+
+  for (size_t i = 1; i < 22; i++) {
+    size_t s = (1<<i);
+    cout << "TESTING : " << s << " with " << s-1 << " DELETE worst data" << endl;
+    rr temp = test_deletemin(s, 100, s, false);
+    print_results(temp.first, "res/delmin/worst_del_all_bh.dat");
+    print_results(temp.second, "res/delmin/worst_del_all_fq.dat");
+  }
+
+  for (size_t i = 1; i < 22; i++) {
+    size_t s = (1<<i);
+    cout << "TESTING : " << s << " with " << 1 << " DELETE worst data" << endl;
+    rr temp = test_deletemin(s, 1000, 1, false);
+    print_results(temp.first, "res/delmin/worst_del_1_bh.dat");
+    print_results(temp.second, "res/delmin/worst_del_1_fq.dat");
+  }
+
+  for (size_t i = 1; i < 22; i++) {
     size_t s = (1<<i);
     cout << "TESTING : " << s << " with " << 1 << " DELETE random data" << endl;
-    rr temp = test_deletemin(s, 10000, 2, true);
+    rr temp = test_deletemin(s, 1000, 1, true);
     print_results(temp.first, "res/delmin/random_del_1_bh.dat");
     print_results(temp.second, "res/delmin/random_del_1_fq.dat");
+  }
+
+    for (size_t i = 1; i < 22; i++) {
+    size_t s = (1<<i);
+    cout << "TESTING : " << s << " with " << 2 << " DELETE worst data" << endl;
+    rr temp = test_deletemin(s, 1000, 2, false);
+    print_results(temp.first, "res/delmin/worst_del_2_bh.dat");
+    print_results(temp.second, "res/delmin/worst_del_2_fq.dat");
+  }
+
+  for (size_t i = 1; i < 22; i++) {
+    size_t s = (1<<i);
+    cout << "TESTING : " << s << " with " << 2 << " DELETE random data" << endl;
+    rr temp = test_deletemin(s, 1000, 2, true);
+    print_results(temp.first, "res/delmin/random_del_2_bh.dat");
+    print_results(temp.second, "res/delmin/random_del_2_fq.dat");
   }
 }
 
 int main() {
 
-  test_ins();
+  //test_ins();
   //test_fm();
   //test_dk();
-  //test_delmin();
+  test_delmin();
 
   // cout << "insert randomly" << endl;
   // rr tir = test_insert(100000, 100,true);
