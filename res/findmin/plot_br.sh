@@ -2,7 +2,7 @@
 set terminal pngcairo enhanced font 'Verdana,12'
 set title "Extract minimum"
 set output 'extract_min_branch.png'
-set xlabel "N (# of inserts)"
+set xlabel "N (input size)"
 set ylabel "Total branch operations"
 set style line 1 lc rgb '#0000FF' pt 5 ps 1 lt 1 lw 1
 set style line 2 lc rgb '#00FF00' pt 4 ps 1 lt 1 lw 1
