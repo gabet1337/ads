@@ -526,7 +526,10 @@ In figure~\ref{fig:dijkstra_chain_rt}, \ref{fig:dijkstra_random_rt} and \ref{fig
 \end{figure}
 
 \section{Discussion}
-Comparing the running times on \texttt{ChainGraph} respectively \texttt{RandomGraph} in figure~\ref{fig:dijkstra_chain_rt} and \ref{fig:dijkstra_random_rt} we see that our hypothesis of seeing close to the same running times on graphs from \texttt{ChainGraph} and \texttt{RandomGraph} holds. We are surprised to see that the running times is almost the exact same for both heap implementations. We believe we see this behaviour because we have chosen graphs with relatively few vertices. Furthermore we have implemented Dijkstra's algorithm such that it fills 
+Comparing the running times on \texttt{ChainGraph} respectively \texttt{RandomGraph} in figure~\ref{fig:dijkstra_chain_rt} and \ref{fig:dijkstra_random_rt} we see that our hypothesis of seeing close to the same running times on graphs from \texttt{ChainGraph} and \texttt{RandomGraph} holds. We are surprised to see that the running times is almost the exact same for both heap implementations. We believe we see this behaviour because we have chosen graphs with relatively few vertices. Even including the $log_2(n)$ cost of performing an \texttt{DecreaseKey} operation on the Binary Heap, we are only penalised with a relatively small overhead of $log_2(2^{16}) = 16$.
+
+
+It could be that the the constant work we have to do when cutting out a node on a \texttt{DecreaseKey} operation on the Fibonacci Heap is so hight that we see no difference in terms of actual running time on the test data we have chosen. In figure~\ref{fig:dijkstra_heavy_rt} we are pleased to see that the overall running time has increased. This is what we would expect because of the topology of the graphs in \texttt{HeavyGraph}. What surprises us is that the Binary Heap seem to outperform the Fibonacci Heap as graphs grows bigger. We would have expected to see the opposite behaviour. In figures~\ref{fig:dijkstra_chain_br}, \ref{fig:dijkstra_random_br} and \ref{fig:dijkstra_heavy_br} we measure conditional branches. We believe the figures supports our hypothesis of seeing the heavier constant work done by the Fibonacci Heap in terms of more branches and ultimately in slower actual running time than the asymptotic bound would have suggested.
 
 \bibliography{references}
 
