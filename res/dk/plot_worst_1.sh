@@ -1,7 +1,7 @@
 #!/usr/bin/gnuplot
 set terminal pngcairo enhanced font 'Verdana,12'
-set title "1 decrease key on different input sizes"
-set output 'dk_worst_fixed_size.png'
+set title "1 decrease key on different input sizes worst case"
+set output 'dk_worst_fixed_size_1.png'
 set xlabel "N (input size)"
 set ylabel "comparisons"
 set style line 1 lc rgb '#0000FF' pt 5 ps 1 lt 1 lw 1
@@ -15,6 +15,6 @@ set logscale x 2
 #set logscale y 2
 set format x "2^{%L}"
 set key left top
-plot "ndk_random_bh_1.dat" using 1:3 ls 1 with linespoints title 'binary heap' , \
-     "ndk_random_fq_1.dat" using 1:3 ls 2 with linespoints title 'fibonacci heap'
+plot "ndk_worst_bh_1.dat" using 1:3 ls 1 with linespoints title 'binary heap' , \
+     "ndk_worst_fq_1.dat" using 1:3 ls 2 with linespoints title 'fibonacci heap'
 
