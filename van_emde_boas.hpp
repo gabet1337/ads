@@ -32,8 +32,8 @@ namespace pq {
     van_emde_boas *summary;
     van_emde_boas **cluster;
   };
-
-  van_emde_boas::van_emde_boas() : van_emde_boas(16777216) {}
+  //16777216
+  van_emde_boas::van_emde_boas() : van_emde_boas(16) {}
 
   van_emde_boas::van_emde_boas(int u) {
     this->u = u;
@@ -58,24 +58,24 @@ namespace pq {
   bool van_emde_boas::member(int x) {
     if (x == minimum || x == maximum) return true;
     else if (u == 2) return false;
-    else return cluster[high(x)]->member(x);
+    else return cluster[high(x)]->member(low(x));
   }
 
   int van_emde_boas::predecessor(int x) {
     if (u == 2) {
       if (x == 1 && minimum == 0) return 0;
-      else return UNDEF;
-    } else if (maximum != -UNDEF && x > maximum) return maximum;
+      else return -UNDEF;
+    } else if (std::abs(maximum) != UNDEF && x > maximum) return maximum;
     else {
       int min_low = cluster[high(x)]->minimum;
-      if (min_low != UNDEF && low(x) > min_low) {
+      if (std::abs(min_low) != UNDEF && low(x) > min_low) {
         int offset = cluster[high(x)]->predecessor(low(x));
         return index(high(x), offset);
       } else {
         int pred_cluster = summary->predecessor(high(x));
-        if (pred_cluster == UNDEF)
-          if  (minimum != UNDEF && x > minimum) return minimum;
-          else return UNDEF;
+        if (std::abs(pred_cluster) == UNDEF)
+          if  (std::abs(minimum) != UNDEF && x > minimum) return minimum;
+          else return -UNDEF;
         else {
           int offset = cluster[pred_cluster]->maximum;
           return index(pred_cluster, offset);
@@ -89,11 +89,11 @@ namespace pq {
   }
 
   void van_emde_boas::insert(int x) {
-    if (minimum == UNDEF) empty_insert(x);
+    if (std::abs(minimum) == UNDEF) empty_insert(x);
     else {
       if (x < minimum) std::swap(x, minimum);
       if (u > 2) {
-        if (cluster[high(x)]->minimum == UNDEF) {
+        if (std::abs(cluster[high(x)]->minimum) == UNDEF) {
           summary->insert(high(x));
           cluster[high(x)]->empty_insert(low(x));
         } else cluster[high(x)]->insert(low(x));
@@ -103,7 +103,7 @@ namespace pq {
   }
 
   void van_emde_boas::delete_min() {
-    if (minimum == UNDEF) return;
+    if (std::abs(minimum == UNDEF)) return;
     erase(minimum);
   }
 
@@ -121,11 +121,11 @@ namespace pq {
         minimum = x;
       }
       cluster[high(x)]->erase(low(x));
-      if (cluster[high(x)]->minimum == UNDEF) {
+      if (std::abs(cluster[high(x)]->minimum) == UNDEF) {
         summary->erase(high(x));
         if (x == maximum) {
           int summary_max = summary->maximum;
-          if (summary_max == -UNDEF) maximum = minimum;
+          if (std::abs(summary_max) == UNDEF) maximum = minimum;
           else maximum = index(summary_max, cluster[summary_max]->maximum);
         }
       } else if (x == maximum) maximum = index(high(x), cluster[high(x)]->maximum);
