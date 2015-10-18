@@ -7,6 +7,9 @@ DEBUG = -g
 CFLAGS = -Wall -c -std=c++11 $(DEBUG)
 LFLAGS = -Wall -std=c++11 $(DEBUG)
 
+veb : van_emde_boas.hpp veb_test.cpp
+	$(CC) $(LFLAGS) van_emde_boas.hpp veb_test.cpp -o veb
+
 test : $(HOBJS)
 	$(CC) $(LFLAGS) $(HOBJS) -o binary_heap_test
 
