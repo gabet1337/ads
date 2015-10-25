@@ -24,7 +24,7 @@
 
 \bibliographystyle{plain}
 
-\title{Advanced Data Structures \\ Project 1 - Fibonacci heaps}
+\title{Advanced Data Structures \\ Project 1 - Heaps}
 \author{Peter Gabrielsen 20114179 \\
 Christoffer Hansen 20114637}
 \newcounter{qcounter}
@@ -37,7 +37,7 @@ Christoffer Hansen 20114637}
 \thispagestyle{empty}
 
 \begin{abstract}
-ABSTRACT HERE
+In this project, we compare the practical performance for \textit{Fibonacci Heaps} and \textit{Binary Heaps}. The implementations of the Heaps are done in C++ and supports the operations \texttt{MakeHeap}, \texttt{FindMin}, \texttt{Insert}, \texttt{DeleteMin} and \texttt{DecreaseKey}. We argue about the worst-case time bounds for each of the operations and design and perform experiments where we measure the running times and number of comparisons of the operations for both priority queue implementations. Continuing our studies, we implement Dijkstra's algorithms for the single-source shortest path problem for weighted graphs with non-negative edge-weights, such that it can switch between the two priority queue implementations. Finally we describe families of graphs where Dijkstra's algorithm performs many respectively few \texttt{DecreaseKey} operations and perform experiments focussing on how the amortized $\mathcal{O}(1)$ \texttt{DecreaseKey} operation performs in our experimental setup.
 \\
 \\
 \\
@@ -63,9 +63,10 @@ The binary heap by Williams~\cite{williams} was implemented as a minimum heap us
 \centering
 \begin{tabular}{l|c}
 Operation & Bound \\\hline
-\texttt{Insert} & $\mathcal{O}(\log n)$ \\\hline
-\texttt{FindMin} & $\mathcal{O}(1)$ \\\hline
-\texttt{DeleteMin} & $\mathcal{O}(\log n)$ \\\hline
+\texttt{MakeHeap} & $\Theta(1)$ \\\hline
+\texttt{Insert} & $\Theta(\log n)$ \\\hline
+\texttt{FindMin} & $\Theta(1)$ \\\hline
+\texttt{DeleteMin} & $\Theta(\log n)$ \\\hline
 \texttt{DecreaseKey} & $\mathcal{O}(\log n)$
 \end{tabular}
 \caption{Time bounds of the binary heap.}
@@ -74,6 +75,23 @@ Operation & Bound \\\hline
 In order to implement the decrease key operation we need some way to find the node in the binary heap corresponding to a node in our graph. To do this we have a table which given a node id from our graph gives us the index in the binary heap of that node id. We can then call decrease key. This way of implementing it gives an overhead in space usage of $n$, where $n$ is the number of vertices in the graph.
 
 \subsection{Fibonacci heap}
+
+The Fibonacci heaps of Fredman and Tarjan~\cite{fred87} was implemented using the pseudo code in CLRS~\cite[p.~505-522]{clrs}. Using this implementation we get following time bounds for the heap operations:
+
+\begin{figure}[H]
+\centering
+\begin{tabular}{l|c}
+Operation & Bound \\\hline
+\texttt{MakeHeap} & $\Theta(1)$ \\\hline
+\texttt{Insert} & $\Theta(1)$ \\\hline
+\texttt{FindMin} & $\Theta(1)$ \\\hline
+\texttt{DeleteMin} & $\mathcal{O}(\log n)$ \\\hline
+\texttt{DecreaseKey} & $\Theta(1)$ (am.)
+\end{tabular}
+\caption{Time bounds of the binary heap.}
+\end{figure}
+
+In order to implement the decrease key operation we include a table which maps node id from our graphs to a pointer to the node within the heap. The mapping was implemented as a $\mathcal{O}(1)$ lookup such that it does not affect our asymptotic time bound. Following the same reasoning as for our binary heap we add an extra $n$ in space usage by using this strategy.
 
 \chapter{Experimental setup}
 \label{chtp:experiment_setup}
