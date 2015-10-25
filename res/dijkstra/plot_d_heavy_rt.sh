@@ -2,7 +2,7 @@
 set terminal pngcairo enhanced font 'Verdana,12'
 
 set title "Dijkstra on Heavy Graph (running time)"
-set output 'd_heavy_rt_div_n.png'
+set output 'd_heavy_rt.png'
 set xlabel "N (# of vertices)"
 set ylabel "Running time (ms)"
 set style line 1 lc rgb '#0000FF' pt 5 ps 1 lt 1 lw 1
