@@ -37,8 +37,7 @@ Christoffer Hansen 20114637}
 \thispagestyle{empty}
 
 \begin{abstract}
-In this project, we compare the practical performance for \textit{Fibonacci Heaps} and \textit{Binary Heaps}. The implementations of the Heaps are done in C++ and supports the operations \texttt{MakeHeap}, \texttt{FindMin}, \texttt{Insert}, \texttt{DeleteMin} and \texttt{DecreaseKey}. We argue about the worst-case time bounds for each of the operations and design and perform experiments where we measure the running times and number of comparisons of the operations for both priority queue implementations. Continuing our studies, we implement Dijkstra's algorithms for the single-source shortest path problem for weighted graphs with non-negative edge-weights, such that it can switch between the two priority queue implementations. Finally we describe families of graphs where Dijkstra's algorithm performs many respectively few \texttt{DecreaseKey} operations and perform experiments focussing on how the amortized $\mathcal{O}(1)$ \texttt{DecreaseKey} operation performs in our experimental setup.
-\\
+In this project, we compare the practical performance for \textit{Fibonacci Heaps} and \textit{Binary Heaps} by utilizing throughout experimentations and evaluation of the actual implementations. This report documents our theoretical, implementation and experimental design considerations and present our experimental results.\\
 \\
 \\
 The code can be found at: \\\url{CODE HERE}.
@@ -52,7 +51,8 @@ The code can be found at: \\\url{CODE HERE}.
 \pagebreak
 
 \chapter{Introduction}
-INTRO
+%TODO insert references to sections.
+The implementations of the Heaps are done in C++ and supports the operations \texttt{MakeHeap}, \texttt{FindMin}, \texttt{Insert}, \texttt{DeleteMin} and \texttt{DecreaseKey}. We argue about the worst-case time bounds for each of the operations and design and perform experiments where we measure the running times and number of comparisons of the operations for both priority queue implementations. Continuing our studies, we implement Dijkstra's algorithms for the single-source shortest path problem for weighted graphs with non-negative edge-weights, such that it can switch between the two priority queue implementations. Finally we describe families of graphs where Dijkstra's algorithm performs many respectively few \texttt{DecreaseKey} operations and perform experiments focussing on how the amortized $\mathcal{O}(1)$ \texttt{DecreaseKey} operation performs in our experimental setup.
 
 \chapter{Implementation}
 We will in this section describe and discuss the design choices of our implementations of the binary heap and the Fibonacci heap.
@@ -589,6 +589,10 @@ Comparing the running times on \texttt{ChainGraph} respectively \texttt{RandomGr
 
 
 It could be that the the constant work we have to do when cutting out a node on a \texttt{DecreaseKey} operation on the Fibonacci Heap is so hight that we see no difference in terms of actual running time on the test data we have chosen. In figure~\ref{fig:dijkstra_heavy_rt} we are pleased to see that the overall running time has increased. This is what we would expect because of the topology of the graphs in \texttt{HeavyGraph}. What surprises us is that the Binary Heap seem to outperform the Fibonacci Heap as graphs grows bigger. We would have expected to see the opposite behaviour. In figures~\ref{fig:dijkstra_chain_br}, \ref{fig:dijkstra_random_br} and \ref{fig:dijkstra_heavy_br} we measure conditional branches. We believe the figures supports our hypothesis of seeing the heavier constant work done by the Fibonacci Heap in terms of more branches and ultimately in slower actual running time than the asymptotic bound would have suggested.
+
+\section{Conclusion}
+
+Conclude on shit.
 
 \bibliography{references}
 
