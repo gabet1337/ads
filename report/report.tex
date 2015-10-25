@@ -52,10 +52,12 @@ The code can be found at: \\\url{CODE HERE}.
 
 \chapter{Introduction}
 %TODO insert references to sections.
-The implementations of the Heaps are done in C++ and supports the operations \texttt{MakeHeap}, \texttt{FindMin}, \texttt{Insert}, \texttt{DeleteMin} and \texttt{DecreaseKey}. We argue about the worst-case time bounds for each of the operations and design and perform experiments where we measure the running times and number of comparisons of the operations for both priority queue implementations. Continuing our studies, we implement Dijkstra's algorithms for the single-source shortest path problem for weighted graphs with non-negative edge-weights, such that it can switch between the two priority queue implementations. Finally we describe families of graphs where Dijkstra's algorithm performs many respectively few \texttt{DecreaseKey} operations and perform experiments focussing on how the amortized $\mathcal{O}(1)$ \texttt{DecreaseKey} operation performs in our experimental setup.
+In section~\ref{cpt:implementation} we present an overview of our implementations and argue about the worst-case time bounds for each of the operations in section~\ref{cpt:worst_case_bounds}. We describe our overall experimental setup in section~\ref{chtp:experiment_setup} and design and perform experiments where we measure the running times and number of comparisons of the operations for both priority queue implementations in section~\ref{heap_experiments}. Continuing our studies, we implement Dijkstra's algorithms for the single-source shortest path problem for weighted graphs with non-negative edge-weights, such that it can switch between the two priority queue implementations. Finally we describe families of graphs where Dijkstra's algorithm performs many respectively few \texttt{DecreaseKey} operations in section~\ref{cpt:dijkstra} and perform experiments focussing on how the amortized $\mathcal{O}(1)$ \texttt{DecreaseKey} operation performs in our experimental setup in section~\ref{cpt:dijksta_experiments}.
 
 \chapter{Implementation}
-We will in this section describe and discuss the design choices of our implementations of the binary heap and the Fibonacci heap.
+\label{cpt:implementation}
+The implementations of the Heaps are done in C++ and supports the operations \texttt{MakeHeap}, \texttt{FindMin}, \texttt{Insert}, \texttt{DeleteMin} and \texttt{DecreaseKey}. We will in this section describe and discuss the design choices of our implementations of the binary heap and the Fibonacci heap.
+
 \subsection{Binary heap}
 The binary heap by Williams~\cite{williams} was implemented as a minimum heap using the pseudo code in CLRS~\cite[p.~151-170]{clrs}. Using this implementation we get the following time bounds for the heap operations:
 
@@ -93,24 +95,8 @@ Operation & Bound \\\hline
 
 In order to implement the decrease key operation we include a table which maps node id from our graphs to a pointer to the node within the heap. The mapping was implemented as a $\mathcal{O}(1)$ lookup such that it does not affect our asymptotic time bound. Following the same reasoning as for our binary heap we add an extra $n$ in space usage by using this strategy.
 
-\chapter{Experimental setup}
-\label{chtp:experiment_setup}
-%TODO write something about the machine which ran the experiments and something about how we measure the different things. Maybe copy all this from the AE report?
-
-The experiments were performed on a machine with a Intel i5-3210M @ 2.5GHz (Ivy Bridge) with 128K bytes of L1 cache, 512K bytes of L2 and 3072K bytes of L3 cache. The machine had 4.2GB ram and ran Ubuntu 14.04 with kernel version 3.16.0-50.
-
-The running time was measured using the built in \texttt{high\_resolution\_clock} in the \texttt{chrono} library. This measures the wall clock. It is the clock in \texttt{c++} with the highest precision, i.e. the shortest tick period.
-
-The code is compiled with \texttt{g++ 4.8.4} with the \texttt{c++11} standard enabled and no optimization level.
-
-The elements in our data structures were 32 bit integers. Random elements were generated uniformly in the 32 bit integer range using the Mersenne Twister 19937 from the \texttt{random} library.
-
-CPU measurements were collected using \texttt{PAPI 5.3.0.0}
-
-We used \texttt{perf} to measure page faults.
-
-
 \chapter{Worst case time bounds of the heaps}
+\label{cpt:worst_case_bounds}
 In this section we will argue about how the algorithms perform in the worst case as opposed to the amortized time bounds. We will for each operations on the heaps argue how the worst cases are obtained.
 
 \subsection{\texttt{FindMin}}
@@ -132,7 +118,24 @@ Decreasing a key in the binary heap is done by giving the element a new priority
 
 The worst case for the Fibonacci heap would be if we have a tree of height $\mathcal{O}(\log n)$ where every internal node on the path to the lowest leaf, which is decreased, is marked. This will cause a chain of cuts and cascading cuts all the way up to the root, which will take $\mathcal{O}(\log n)$ time.
 
+\chapter{Experimental setup}
+\label{chtp:experiment_setup}
+%TODO write something about the machine which ran the experiments and something about how we measure the different things. Maybe copy all this from the AE report?
+
+The experiments were performed on a machine with a Intel i5-3210M @ 2.5GHz (Ivy Bridge) with 128K bytes of L1 cache, 512K bytes of L2 and 3072K bytes of L3 cache. The machine had 4.2GB ram and ran Ubuntu 14.04 with kernel version 3.16.0-50.
+
+The running time was measured using the built in \texttt{high\_resolution\_clock} in the \texttt{chrono} library. This measures the wall clock. It is the clock in \texttt{c++} with the highest precision, i.e. the shortest tick period.
+
+The code is compiled with \texttt{g++ 4.8.4} with the \texttt{c++11} standard enabled and no optimization level.
+
+The elements in our data structures were 32 bit integers. Random elements were generated uniformly in the 32 bit integer range using the Mersenne Twister 19937 from the \texttt{random} library.
+
+CPU measurements were collected using \texttt{PAPI 5.3.0.0}
+
+We used \texttt{perf} to measure page faults.
+
 \chapter{Heap experiments}
+\label{heap_experiments}
 In this section we will design and perform experiments where we try to measure the running time and number of comparisons of the operations for both our priority queue implementations. We will give a summary of the design of each experiment, results, and discussion of the found results for each operation.
 
 \subsection{\texttt{FindMin}}
@@ -413,6 +416,7 @@ Figure~\ref{fig:dk_del_many_random_comp} and~\ref{fig:dk_del_many_worst_comp} gi
 %TODO discuss that Fibonacci is worse on the average random cases but better in the worst case!
 
 \chapter{Dijkstra's algorithm}
+\label{cpt:dijkstra}
 In this section we introduce families of graphs that we believe makes Dijkstra's algorithm perform many respectively few \texttt{DecreaseKey} operations. It is obvious that the number of \texttt{DecreaseKey} operations is an exact measure of the number of edges we have to \textit{relax}.
 
 \section{Few \texttt{DecreaseKey} operations}
@@ -458,6 +462,7 @@ In the second candidate we split $n$ vertices into three set $S_2, S_2$ and $S_3
 \end{figure}
 
 \chapter{Experiments on Dijkstra's}
+\label{cpt:dijksta_experiments}
 In this section we document the experiments done on Dijkstra's algorithm using both heap implementations. In particular we focus our studies on observing if the version using Fibonacci heaps achieves an improved performance because of the amortized $\mathcal{O}(1)$ time \texttt{DecreaseKey} operation. In the following we set $n = \lvert V \lvert$.
 
 \section{Methodology}
@@ -590,7 +595,7 @@ Comparing the running times on \texttt{ChainGraph} respectively \texttt{RandomGr
 
 It could be that the the constant work we have to do when cutting out a node on a \texttt{DecreaseKey} operation on the Fibonacci Heap is so hight that we see no difference in terms of actual running time on the test data we have chosen. In figure~\ref{fig:dijkstra_heavy_rt} we are pleased to see that the overall running time has increased. This is what we would expect because of the topology of the graphs in \texttt{HeavyGraph}. What surprises us is that the Binary Heap seem to outperform the Fibonacci Heap as graphs grows bigger. We would have expected to see the opposite behaviour. In figures~\ref{fig:dijkstra_chain_br}, \ref{fig:dijkstra_random_br} and \ref{fig:dijkstra_heavy_br} we measure conditional branches. We believe the figures supports our hypothesis of seeing the heavier constant work done by the Fibonacci Heap in terms of more branches and ultimately in slower actual running time than the asymptotic bound would have suggested.
 
-\section{Conclusion}
+\chapter{Conclusion}
 
 Conclude on shit.
 
