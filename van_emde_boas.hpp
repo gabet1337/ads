@@ -33,7 +33,7 @@ namespace pq {
     van_emde_boas **cluster;
   };
   //16777216
-  van_emde_boas::van_emde_boas() : van_emde_boas(16) {}
+  van_emde_boas::van_emde_boas() : van_emde_boas(16777216) {}
 
   van_emde_boas::van_emde_boas(int u) {
     this->u = u;
