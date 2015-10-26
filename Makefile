@@ -13,6 +13,9 @@ rb : rb_tree.hpp rb_tree_test.cpp
 veb : van_emde_boas.hpp veb_test.cpp
 	$(CC) $(LFLAGS) van_emde_boas.hpp veb_test.cpp -o veb
 
+vebp : van_emde_boas.hpp veb_priority_test.cpp
+	$(CC) $(LFLAGS) van_emde_boas.hpp veb_priority_test.cpp -o vebp
+
 test : $(HOBJS)
 	$(CC) $(LFLAGS) $(HOBJS) -o binary_heap_test
 

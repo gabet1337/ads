@@ -1,12 +1,17 @@
 #ifndef VAN_EMDE_BOAS
 #define VAN_EMDE_BOAS
+#include "priority_queue.hpp"
+#include "predecessor_queue.hpp"
 #include <cmath>
 #include <iostream>
 //2^31 - 1
 #define UNDEF 2147483647
+
+typedef std::pair<int,int> ii;
+
 namespace pq {
   // universe size is 2^24
-  class van_emde_boas {
+  class van_emde_boas : public priority_queue, public predecessor_queue {
 
   public:
     van_emde_boas();
@@ -19,9 +24,25 @@ namespace pq {
     void insert(int x);
     void erase(int x);
     void delete_min();
+
+    // generic_queue
+    bool empty();
+    std::size_t size();
+    void print();
+    
+    // priority_queue
+    void push(ii k);
+    void pop();
+    void decrease_key(int v, int k);
+    ii top();
+
+    // predecessor_queue
+    int find_min();
+    void delete_key(int k);
     
   private:
     int u;
+    size_t n;
     int high(int x);
     int low(int x);
     int index(int x, int y);
@@ -33,7 +54,7 @@ namespace pq {
     van_emde_boas **cluster;
   };
   //16777216
-  van_emde_boas::van_emde_boas() : van_emde_boas(16777216) {}
+  van_emde_boas::van_emde_boas() : van_emde_boas(16777216) { n = 0; }
 
   van_emde_boas::van_emde_boas(int u) {
     this->u = u;
@@ -100,6 +121,7 @@ namespace pq {
       }
       if (x > maximum) maximum = x;
     }
+    n++;
   }
 
   void van_emde_boas::delete_min() {
@@ -130,6 +152,7 @@ namespace pq {
         }
       } else if (x == maximum) maximum = index(high(x), cluster[high(x)]->maximum);
     }
+    n--;
   }
 
   //upper square root
@@ -154,6 +177,45 @@ namespace pq {
     return x * lsr(u) + y;
   }
 
+  // queue
+  bool van_emde_boas::empty() {
+    return n == 0;
+  }
 
+  std::size_t van_emde_boas::size() {
+    return n;
+  }
+
+  // priority_queue
+  ii van_emde_boas::top() {
+    return std::make_pair(minimum,-1);
+  }
+
+  void van_emde_boas::push(ii k) {
+    insert(k.first);
+   }
+
+  void van_emde_boas::pop() {
+    delete_min();
+   }
+
+  void van_emde_boas::print() {
+    
+  }
+
+  void van_emde_boas::decrease_key(int v, int k) {
+    erase(v);
+    insert(k);
+  }
+
+  // predecessor_queue
+  int van_emde_boas::find_min() {
+    return minimum;
+  }
+
+  void van_emde_boas::delete_key(int k) {
+    erase(k);
+  }
+  
 }
 #endif

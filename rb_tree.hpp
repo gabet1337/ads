@@ -1,11 +1,12 @@
 #ifndef RB_TREE
 #define RB_TREE
 #include <cstddef>
+#include "predecessor_queue.hpp"
 #define RED 1
 #define BLACK 0
 namespace pq {
 
-  class rb_tree {
+  class rb_tree : public predecessor_queue{
 
     struct node {
       bool color;
@@ -26,6 +27,13 @@ namespace pq {
     int predecessor(int x);
     void erase_min();
 
+    // predecessor_queue
+    bool empty();
+    int find_min();
+    void delete_min();
+    void delete_key(int k);
+    void print();
+    
   private:
     size_t _size;
     node *root, *sentinel;
@@ -65,7 +73,8 @@ namespace pq {
   }
 
   rb_tree::~rb_tree() {
-    destruct(root);
+    if (root != sentinel)
+      destruct(root);
     delete sentinel;
   }
 
@@ -314,6 +323,27 @@ namespace pq {
       erase(minimum());
     }
   }
+
+  // predecessor_queue
+  bool rb_tree::empty() {
+    return (_size == 0);
+  }
+  
+  int rb_tree::find_min() {
+    return minimum();
+  }
+  
+  void rb_tree::delete_min() {
+    erase(minimum());
+  }
+  
+  void rb_tree::delete_key(int k) {
+    erase(k);
+  }
+  
+  void rb_tree::print() {
+  }
+  
 
 };
 
