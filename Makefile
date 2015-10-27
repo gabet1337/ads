@@ -7,6 +7,9 @@ DEBUG = -g
 CFLAGS = -Wall -c -std=c++11 $(DEBUG)
 LFLAGS = -Wall -std=c++11 $(DEBUG)
 
+rbveb : van_emde_boas.hpp rb_tree.hpp  rb_veb_experiments.cpp
+	$(CC) $(LFLAGS) van_emde_boas.hpp rb_tree.hpp rb_veb_experiments.cpp -o rbveb
+
 rb : rb_tree.hpp rb_tree_test.cpp
 	$(CC) $(LFLAGS) rb_tree.hpp rb_tree_test.cpp -o rb
 
