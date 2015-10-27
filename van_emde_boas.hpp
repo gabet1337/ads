@@ -54,13 +54,13 @@ namespace pq {
     van_emde_boas **cluster;
   };
   //16777216
-  van_emde_boas::van_emde_boas() : van_emde_boas(16) { }
+  van_emde_boas::van_emde_boas() : van_emde_boas(16777216) { }
 
   van_emde_boas::van_emde_boas(int u) {
     this->u = u;
     this->minimum = UNDEF;
     this->maximum = -UNDEF;
-    if (u == 2) { /*summary = 0; cluster = 0;*/ }
+    if (u == 2) { summary = 0; cluster = 0; }
     else {
       cluster = new van_emde_boas*[usr(u)];
       for (int i = 0; i < usr(u); i++)
@@ -72,7 +72,9 @@ namespace pq {
 
   van_emde_boas::~van_emde_boas() {
     if (u > 2) {
-      delete summary;
+      delete summary; summary = 0;
+      for (int i = 0; i < usr(u); i++)
+        delete cluster[i];
       delete [] cluster;
     }
   }
@@ -180,7 +182,7 @@ namespace pq {
 
   // queue
   bool van_emde_boas::empty() {
-    return n == 0;
+    return size() == 0;
   }
 
   std::size_t van_emde_boas::size() {
