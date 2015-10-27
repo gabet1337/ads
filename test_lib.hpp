@@ -162,6 +162,10 @@ namespace test {
     return next()%below;
   }
 
+  static void drop_cache() {
+    system("echo 3 | tee /proc/sys/vm/drop_caches");
+  }
+
 
 };
 
