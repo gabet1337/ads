@@ -37,7 +37,14 @@ Christoffer Hansen 20114637}
 \thispagestyle{empty}
 
 \begin{abstract}
-In this project, we compare the practical performance for \textit{Fibonacci Heaps} and \textit{Binary Heaps} by throughout experimentations and evaluation of the actual implementations. This report documents our theoretical, implementation and experimental design considerations and present our experimental results.\\
+This project aims to verify the theoretical bounds of the \textit{Fibonacci} and \textit{Binary} heaps through experimentation. We will conduct experiments that tests the experimental performance of each of the basic priority queue operations: \texttt{Insert}, \texttt{DeleteMin}, \texttt{FindMin}, and \texttt{DecreaseKey}.
+The experiments will test the data structures in the average and in the worst case situation.
+The two heaps will then be tested in use with Dijkstra's single source shortest path algorithm where we will measure the performance in regard to difference families of graphs.
+
+The results of the heap operations align very good with the theoretical bounds in the worst case. In the average case the binary heap seems to be able to do inserts and decrease key operations in constant time. We explain this in the number of bubble up operations in the average case which seem to be constant.
+
+The experiments with using the heaps with Dijkstra's algorithm showed that the binary heap consistently outperforms the Fibonacci heap except for a single case which were a random connected graph with vertex degree of 100.
+\\
 \\
 \\
 The code can be found at: \\\url{https://dl.dropboxusercontent.com/u/8990890/2015Q1Q2_ADS_20114179_20114637_Project1.zip}.
@@ -51,8 +58,9 @@ The code can be found at: \\\url{https://dl.dropboxusercontent.com/u/8990890/201
 \pagebreak
 
 \chapter{Introduction}
-%TODO insert references to sections.
-In section~\ref{cpt:implementation} we present an overview of our implementations and continue to argue about the worst-case time bounds for each of the operations in section~\ref{cpt:worst_case_bounds}. We describe our overall experimental setup in section~\ref{chtp:experiment_setup} and design and perform experiments where we measure the running times and number of comparisons of the operations for both priority queue implementations in section~\ref{heap_experiments}. Continuing our studies, we implement Dijkstra's algorithms for the single-source shortest path problem for weighted graphs with non-negative edge-weights, such that it can switch between the two priority queue implementations. Finally we describe families of graphs where Dijkstra's algorithm performs many respectively few \texttt{DecreaseKey} operations in section~\ref{cpt:dijkstra} and perform experiments focussing on how the amortized $\mathcal{O}(1)$ \texttt{DecreaseKey} operation performs in our experimental setup in section~\ref{cpt:dijksta_experiments}.
+In this project, we compare the practical performance for \textit{Fibonacci Heaps} and \textit{Binary Heaps} throughout experimentation and evaluation of the actual implementations. This report documents our theoretical, implementational and experimental design considerations and present our experimental results.
+
+In section~\ref{cpt:implementation} we present an overview of our implementations and continue to argue about the worst-case time bounds for each of the operations in section~\ref{cpt:worst_case_bounds}. We describe our overall experimental setup in section~\ref{chtp:experiment_setup} and design and perform experiments where we measure the running times and number of comparisons of the operations for both priority queue implementations in section~\ref{heap_experiments}. Continuing our studies, we implement Dijkstra's algorithms for the single-source shortest path problem for weighted graphs with non-negative edge-weights, such that it can switch between the two priority queue implementations. Finally we describe families of graphs where Dijkstra's algorithm performs many, respectively few, \texttt{DecreaseKey} operations in section~\ref{cpt:dijkstra} and perform experiments focusing on how the amortized $\mathcal{O}(1)$ \texttt{DecreaseKey} operation performs in our experimental setup in section~\ref{cpt:dijksta_experiments}.
 
 \chapter{Implementation}
 \label{cpt:implementation}
@@ -69,7 +77,7 @@ Operation & Bound \\\hline
 \texttt{Insert} & $\Theta(\log n)$ \\\hline
 \texttt{FindMin} & $\Theta(1)$ \\\hline
 \texttt{DeleteMin} & $\Theta(\log n)$ \\\hline
-\texttt{DecreaseKey} & $\mathcal{O}(\log n)$
+\texttt{DecreaseKey} & $\Theta(\log n)$
 \end{tabular}
 \caption{Time bounds of the binary heap.}
 \end{figure}
@@ -78,7 +86,7 @@ In order to implement the decrease key operation we need some way to find the no
 
 \subsection{Fibonacci heap}
 
-The Fibonacci heaps of Fredman and Tarjan~\cite{fred87} was implemented using the pseudo code in CLRS~\cite[p.~505-522]{clrs}. Using this implementation we get following time bounds for the heap operations:
+The Fibonacci heaps of Fredman and Tarjan~\cite{fred87} was implemented using the pseudo code in CLRS~\cite[p.~505-522]{clrs}. Using this implementation we get the following amortized time bounds for the heap operations:
 
 \begin{figure}[H]
 \centering
@@ -87,17 +95,17 @@ Operation & Bound \\\hline
 \texttt{MakeHeap} & $\Theta(1)$ \\\hline
 \texttt{Insert} & $\Theta(1)$ \\\hline
 \texttt{FindMin} & $\Theta(1)$ \\\hline
-\texttt{DeleteMin} & $\mathcal{O}(\log n)$ \\\hline
-\texttt{DecreaseKey} & $\Theta(1)$ (am.)
+\texttt{DeleteMin} & $\mathcal{O}(\log n)$\\\hline
+\texttt{DecreaseKey} & $\Theta(1)$
 \end{tabular}
 \caption{Time bounds of the Fibonacci heap.}
 \end{figure}
 
-In order to implement the decrease key operation we include a table which maps node id from our graphs to a pointer to the node within the heap. The mapping was implemented as a $\mathcal{O}(1)$ lookup such that it does not affect our asymptotic time bound. Following the same reasoning as for our binary heap we add an extra $n$ in space usage by using this strategy.
+In order to implement the decrease key operation we include a table which maps node id from our graph to a pointer to the node within the heap. The mapping was implemented as a $\mathcal{O}(1)$ lookup such that it does not affect our asymptotic time bound. Following the same reasoning as for our binary heap we add an extra $n$ in space usage by using this strategy.
 
 \chapter{Worst case time bounds of the heaps}
 \label{cpt:worst_case_bounds}
-In this section we will argue about how the algorithms perform in the worst case as opposed to the amortized time bounds. We will for each operations on the heaps argue how the worst cases are obtained.
+In this section we will argue about how the algorithms perform in the worst case as opposed to the amortized time bounds. We will for each operation on the heaps argue how the worst cases are obtained.
 
 \subsection{\texttt{FindMin}}
 Finding the minimum element is in both the Fibonacci heap and the binary heap a constant time operation. We keep a pointer to the minimum element in the Fibonacci heap and in the binary heap we just return the first element in the array which holds the heap.
@@ -105,13 +113,13 @@ Finding the minimum element is in both the Fibonacci heap and the binary heap a 
 \subsection{\texttt{Insert}}
 Inserting into the binary heap is simple. We insert the element at the last position in the binary tree, i.e. the heap, and bubble the element up to its correct position. In the worst case we need to bubble the element to the top, which means bubbling through $\mathcal{O}(\log n)$ layers which gives a logarithmic complexity in the worst case for this operation.
 
-Inserting in the Fibonacci heap is even simpler. We simply just add the element to the root list which just involves manipulating a doubly linked list, i.e. some pointer calculations. 
+Inserting in the Fibonacci heap is even simpler. We simply just add the element to the root list which just involves manipulating a doubly linked list, i.e. some pointer calculations in $\mathcal{O}(1)$ work.
 %This constant time operation is what allows us to give the amortized analysis of decrease key?
 
 \subsection{\texttt{DeleteMin}}
-Delete the minimum element is $\mathcal{O}(\log{n})$ for the binary heap and $\mathcal{O}(\log{n})$ amortized for the Fibonacci heap. This upper bound is trivially obtained in the binary heap by having the heap ordered as a sorted array. This way, whenever we delete the minimum we would move the largest element to the top and bubble it $\log n$ levels down again to the bottom.
+Deleting the minimum element is $\mathcal{O}(\log{n})$ for the binary heap and $\mathcal{O}(\log{n})$ amortized for the Fibonacci heap. This upper bound is trivially obtained in the binary heap by having the heap ordered as a sorted array. This way, whenever we delete the minimum we would move the largest element to the top and bubble it $\log n$ levels down again to the bottom.
 
-It can however be extremely expensive to delete the minimum in the Fibonacci heap. When we delete the minimum from a Fibonacci heap we need to consolidate the heap. This operations is linear in the size of the root list. The root list can grow linearly in the worst case if we do $n$ inserts in a row, then the root list will contain at least $n$ nodes, which needs to be consolidated in time $\mathcal{O}(\vert root\_list \vert)$.
+It can however be extremely expensive to delete the minimum in the Fibonacci heap. When we delete the minimum from a Fibonacci heap we need to consolidate the heap. This operation is linear in the size of the root list. The root list can grow linearly in the worst case if we do $n$ inserts in a row, then the root list will contain at least $n$ nodes, which needs to be consolidated in time $\mathcal{O}(\vert root\,list \vert)$.
 
 \subsection{\texttt{DecreaseKey}}
 Decreasing a key in the binary heap is done by giving the element a new priority and then bubble it up to its new position. The worst case is that the element decreased is the last element and its new priority is the lowest in the tree, which means that it needs to bubble to the top of the heap. This costs $\mathcal{O}(\log n)$.
@@ -138,7 +146,7 @@ We used \texttt{perf} to measure page faults.
 \label{heap_experiments}
 In this section we will design and perform experiments where we try to measure the running time and number of comparisons of the operations for both our priority queue implementations. We will give a summary of the design of each experiment, results, and discussion of the found results for each operation.
 
-\subsection{\texttt{FindMin}}
+\section{\texttt{FindMin}}
 Since finding the minimum element of both queues are constant time operations and basically just dereferencing a pointer we did not think it made sense to compare the running times in terms of wall clock. What we did instead is we measured the number of cycles for performing a single FindMin operation and the number of conditional branching operations needed. We would highly expect that the results do not depend on the size of the heap, why we made an experiment where the size of the heap were powers of two in the range from $\left[2^0, 2^{22}\right]$. The experiment were repeated 10000 times and averaged. The results can be found in figure~\ref{fig:findmin_cycles} and~\ref{fig:findmin_br}.
 Our hypothesis were fortunately true and we do not think that there is much to discuss about the results.
 
@@ -154,12 +162,12 @@ Our hypothesis were fortunately true and we do not think that there is much to d
 \begin{minipage}{0.48\columnwidth}
   \centering
   \includegraphics[width=\linewidth]{../res/findmin/extract_min_branch.png}%
-  \caption{It took exactly 37 branch operations to measure extract the minimum element.}
+  \caption{It took exactly 37 branch operations to extract the minimum element.}
   \label{fig:findmin_br}
 \end{minipage}
 \end{figure}
 
-\subsection{\texttt{Insert}}
+\section{\texttt{Insert}}
 Inserting in the Fibonacci heap is a constant time operation while inserting into the binary heap is logarithmic. We would like to see that the binary heap performs worse. We will test both priority queues in both the average case and the worst case. In the average case we select a random priority in the integer range and insert it into the heap.
 %TODO how high can we expect the elemen to bubble on average?
 In the worst case we insert elements into the heap in reverse order. This will cause the elements to bubble all the way to the top on every insert.
@@ -205,7 +213,6 @@ The results can be found in figure~\ref{fig:insert_t_random},~\ref{fig:insert_t_
 \end{figure}
 
 
-%TODO Add discussion of the results here!
 Figure~\ref{fig:insert_t_random} shows that inserting randomly into a Fibonacci heap does not depend on the input size beyond a little spike at $2^{12}$ which is the size at which we exceed the page size. It is interesting to see that inserting random elements into a binary heap is also constant time. This might be explained by the fact that we insert elements in the full integer range, which then results in very few bubble ups. To test this hypothesis we conducted an experiment where we did not use the entire integer range but limited the priority to take random values from $\left[ 0, \text{input size} \right]$. The results of this experiment can be found in figure~\ref{fig:insert_t_random_small} and~\ref{fig:insert_b_random_small}. The results are very similar to before and we conclude that number of bubble ups must be constant in the random case. To be fully sure about this we measure the number of bubble ups that each insert makes in the random case in the full integer range. The results of this experiment can be found in figure~\ref{fig:bubble_ups}. This results shows that indeed the number of bubble up operations is constant in the random case and in the worst case it is logarithmic.
 
 Figure~\ref{fig:insert_t_worst} supports that inserting in the binary heap in the worst case is logarithmic and that it does not matter for the Fibonacci heap.
@@ -217,14 +224,14 @@ Finally figure~\ref{fig:insert_b_random} and~\ref{fig:insert_b_worst} also shows
 \begin{minipage}{0.48\columnwidth}
   \centering
   \includegraphics[width=\linewidth]{../res/inserts/insert_random_time_small.png}%
-  \caption{INSERT TEXT}
+  \caption{Runtime for the heaps when inserting elements only below the heap size}
   \label{fig:insert_t_random_small}
 \end{minipage}%
 \hfill
 \begin{minipage}{0.48\columnwidth}
   \centering
   \includegraphics[width=\linewidth]{../res/inserts/insert_random_branch_small.png}%
-  \caption{INSERT TEXT}
+  \caption{Branch operations for the heaps when inserting elements only below the heap size}
   \label{fig:insert_b_random_small}
 \end{minipage}
 \end{figure}
@@ -232,12 +239,12 @@ Finally figure~\ref{fig:insert_b_random} and~\ref{fig:insert_b_worst} also shows
 \begin{figure}[H]
 \centering
   \includegraphics[scale=0.5]{../res/inserts/insert_bubble_up.png}%
-  \caption{INSERT TEXT}
+  \caption{Number of bubble ups in the binary heap in the average and worst case.}
   \label{fig:bubble_ups}
 \end{figure}
 
-\subsection{\texttt{DeleteMin}}
-Deleting the minimum element takes logarithmic time in both priority queues. It can however take linear time in the worst case for the Fibonacci queue if a delete minimum operation is performed right after $n$ insert operations. We measure deleting the minimum in the average case where we randomly insert $n$ elements and then first pop one element from both queues such that the Fibonacci queue has consolidated. We then measure deleting one element for different heap sizes. We expect to see both have a logarithmic running time and logarithmic number of comparisons.
+\section{\texttt{DeleteMin}}
+Deleting the minimum element takes logarithmic time in both priority queues. It can however take linear time in the worst case for the Fibonacci heap if a delete minimum operation is performed right after $n$ insert operations. We measure deleting the minimum in the average case where we randomly insert $n$ elements and then first pop one element from both queues such that the Fibonacci queue has consolidated. We then measure deleting one element for different heap sizes. We expect to see both have a logarithmic running time and logarithmic number of comparisons.
 Testing in the worst case we will do the same but not consolidate the Fibonacci heap first and the binary heap should be inserted in sorted order.
 
 We will also make an experiment where we fill the heap with $n$ elements and then pop them all again. This experiment is repeated 100 times and averaged where as the other with a single and two pops will be repeated 1000 times and averaged.
@@ -247,14 +254,14 @@ We will also make an experiment where we fill the heap with $n$ elements and the
 \begin{minipage}{0.48\columnwidth}
   \centering
   \includegraphics[width=\linewidth]{../res/delmin/delmin_del_all_time_random.png}%
-  \caption{INSERT TEXT}
+  \caption{}
   \label{fig:delmin_all_random_time}
 \end{minipage}%
 \hfill
 \begin{minipage}{0.48\columnwidth}
   \centering
   \includegraphics[width=\linewidth]{../res/delmin/delmin_del_all_time_worst.png}%
-  \caption{INSERT TEXT}
+  \caption{}
   \label{fig:delmin_all_worst_time}
 \end{minipage}
 \end{figure}
@@ -264,14 +271,14 @@ We will also make an experiment where we fill the heap with $n$ elements and the
 \begin{minipage}{0.48\columnwidth}
   \centering
   \includegraphics[width=\linewidth]{../res/delmin/delmin_del_all_branch_random.png}%
-  \caption{INSERT TEXT}
+  \caption{}
   \label{fig:delmin_all_random_branch}
 \end{minipage}%
 \hfill
 \begin{minipage}{0.48\columnwidth}
   \centering
   \includegraphics[width=\linewidth]{../res/delmin/delmin_del_all_branch_worst.png}%
-  \caption{INSERT TEXT}
+  \caption{}
   \label{fig:delmin_all_worst_branch}
 \end{minipage}
 \end{figure}
@@ -281,14 +288,14 @@ We will also make an experiment where we fill the heap with $n$ elements and the
 \begin{minipage}{0.48\columnwidth}
   \centering
   \includegraphics[width=\linewidth]{../res/delmin/delmin_del_1_time_random.png}%
-  \caption{INSERT TEXT}
+  \caption{}
   \label{fig:delmin_1_random_time}
 \end{minipage}%
 \hfill
 \begin{minipage}{0.48\columnwidth}
   \centering
   \includegraphics[width=\linewidth]{../res/delmin/delmin_del_1_time_worst.png}%
-  \caption{INSERT TEXT}
+  \caption{}
   \label{fig:delmin_1_worst_time}
 \end{minipage}
 \end{figure}
@@ -298,14 +305,14 @@ We will also make an experiment where we fill the heap with $n$ elements and the
 \begin{minipage}{0.48\columnwidth}
   \centering
   \includegraphics[width=\linewidth]{../res/delmin/delmin_del_1_branch_random.png}%
-  \caption{INSERT TEXT}
+  \caption{}
   \label{fig:delmin_1_random_branch}
 \end{minipage}%
 \hfill
 \begin{minipage}{0.48\columnwidth}
   \centering
   \includegraphics[width=\linewidth]{../res/delmin/delmin_del_1_branch_worst.png}%
-  \caption{INSERT TEXT}
+  \caption{}
   \label{fig:delmin_1_worst_branch}
 \end{minipage}
 \end{figure}
@@ -315,14 +322,14 @@ We will also make an experiment where we fill the heap with $n$ elements and the
 \begin{minipage}{0.48\columnwidth}
   \centering
   \includegraphics[width=\linewidth]{../res/delmin/delmin_del_2_time_random.png}%
-  \caption{INSERT TEXT}
+  \caption{}
   \label{fig:delmin_2_random_time}
 \end{minipage}%
 \hfill
 \begin{minipage}{0.48\columnwidth}
   \centering
   \includegraphics[width=\linewidth]{../res/delmin/delmin_del_2_time_worst.png}%
-  \caption{INSERT TEXT}
+  \caption{}
   \label{fig:delmin_2_worst_time}
 \end{minipage}
 \end{figure}
@@ -332,26 +339,26 @@ We will also make an experiment where we fill the heap with $n$ elements and the
 \begin{minipage}{0.48\columnwidth}
   \centering
   \includegraphics[width=\linewidth]{../res/delmin/delmin_del_2_branch_random.png}%
-  \caption{INSERT TEXT}
+  \caption{}
   \label{fig:delmin_2_random_branch}
 \end{minipage}%
 \hfill
 \begin{minipage}{0.48\columnwidth}
   \centering
   \includegraphics[width=\linewidth]{../res/delmin/delmin_del_2_branch_worst.png}%
-  \caption{INSERT TEXT}
+  \caption{}
   \label{fig:delmin_2_worst_branch}
 \end{minipage}
 \end{figure}
 
-Figure~\ref{fig:delmin_all_random_time} and ~\ref{fig:delmin_all_worst_time} shows that delete min takes logarithmic time in the size of the  input. The Fibonacci heap does however use a good deal more comparisons in both the random and the worst case as figure~\ref{fig:delmin_all_random_branch} and ~\ref{fig:delmin_all_worst_branch} shows.
+Figure~\ref{fig:delmin_all_random_time} and ~\ref{fig:delmin_all_worst_time} shows that deleting the minimum takes logarithmic time in the size of the input. The Fibonacci heap does however use a good deal more comparisons in both the random and the worst case as figure~\ref{fig:delmin_all_random_branch} and ~\ref{fig:delmin_all_worst_branch} shows.
 
 Deleting one element from the Fibonacci heap after $n$ inserts is really expensive as figure~\ref{fig:delmin_1_random_time} and ~\ref{fig:delmin_1_random_branch} shows. This is also what we expected due to the expensive linear time consolidate that has to be run. We have the same picture in the worst case in figures~\ref{fig:delmin_1_worst_time} and~\ref{fig:delmin_1_worst_branch}.
 
-However if we consolidate the Fibonacci heap by first performing a delete minimum which we do not measure and then run a \textsc{DeleteMin}, we get the same running time as for the binary heap. The results of this are shown in figures~\ref{fig:delmin_2_random_time},~\ref{fig:delmin_2_worst_time},~\ref{fig:delmin_2_random_branch}, and~\ref{fig:delmin_2_worst_branch}. It can be seen from the number of comparisons that the operations runs in logarithmic number of operations which is what we expected.
+However if we consolidate the Fibonacci heap by first performing a delete minimum which we do not measure and then run a delete minimum operation, we get the same running time as for the binary heap. The results of this are shown in figures~\ref{fig:delmin_2_random_time},~\ref{fig:delmin_2_worst_time},~\ref{fig:delmin_2_random_branch}, and~\ref{fig:delmin_2_worst_branch}. It can be seen from the number of comparisons that the operations runs in logarithmic number of operations which is what we expected.
 
-\subsection{\texttt{DecreaseKey}}
-Decreasing the key in the Fibonacci heap should be amortized constant time as opposed to the logarithmic time in the binary heap. We would like to see this so we conduct an experiment where first randomly insert elements into the heap, and then perform some decrease key operations decreasing the key with some random number for a random element.
+\section{\texttt{DecreaseKey}}
+Decreasing the key in the Fibonacci heap should be amortized constant time as opposed to the logarithmic time in the binary heap. We would like to see this so we conduct an experiment where we first randomly insert elements into the heap, and then perform some decrease key operations decreasing the key with some random number for a random element.
 
 After that we will perform a worst case experiment. Here we will always decrease the key such that it will bubble to the top in the case of the binary heap. The worst case for the Fibonacci heap is really tricky to make a test case for, why the test will be the same as for the binary heap in the worst case.
 
@@ -360,14 +367,14 @@ After that we will perform a worst case experiment. Here we will always decrease
 \begin{minipage}{0.48\columnwidth}
   \centering
   \includegraphics[width=\linewidth]{../res/dk/dk_random_fixed_size_1.png}%
-  \caption{INSERT TEXT}
+  \caption{}
   \label{fig:dk_del_1_random}
 \end{minipage}%
 \hfill
 \begin{minipage}{0.48\columnwidth}
   \centering
   \includegraphics[width=\linewidth]{../res/dk/dk_worst_fixed_size_1.png}%
-  \caption{INSERT TEXT}
+  \caption{}
   \label{fig:dk_del_1_worst}
 \end{minipage}
 \end{figure}
@@ -379,14 +386,14 @@ Figures~\ref{fig:dk_del_1_random} and figure~\ref{fig:dk_del_1_worst} shows the 
 \begin{minipage}{0.48\columnwidth}
   \centering
   \includegraphics[width=\linewidth]{../res/dk/dk_random_fixed_size.png}%
-  \caption{INSERT TEXT}
+  \caption{}
   \label{fig:dk_del_many_random}
 \end{minipage}%
 \hfill
 \begin{minipage}{0.48\columnwidth}
   \centering
   \includegraphics[width=\linewidth]{../res/dk/dk_worst_fixed_size.png}%
-  \caption{INSERT TEXT}
+  \caption{}
   \label{fig:dk_del_many_worst}
 \end{minipage}
 \end{figure}
@@ -400,24 +407,30 @@ Figure~\ref{fig:dk_del_many_random_comp} and~\ref{fig:dk_del_many_worst_comp} gi
 \begin{minipage}{0.48\columnwidth}
   \centering
   \includegraphics[width=\linewidth]{../res/dk/dk_random_fixed_size_comp.png}%
-  \caption{INSERT TEXT}
+  \caption{}
   \label{fig:dk_del_many_random_comp}
 \end{minipage}%
 \hfill
 \begin{minipage}{0.48\columnwidth}
   \centering
   \includegraphics[width=\linewidth]{../res/dk/dk_worst_fixed_size_comp.png}%
-  \caption{INSERT TEXT}
+  \caption{}
   \label{fig:dk_del_many_worst_comp}
 \end{minipage}
 \end{figure}
 
 \section{Conclusion}
-%TODO discuss that Fibonacci is worse on the average random cases but better in the worst case!
+Finding the minimum element was found to be a constant time operation as expected.
+
+Inserting into the binary heap and Fibonacci heap were very similar in the random case due to the constant number of bubble ups that the binary heap needed to perform in the average case. In the worst case the Fibonacci heap remained constant while the binary heap took logarithmic time per insert as expected.
+
+Deleting the minimum element in a Fibonacci heap can in the worst case become a linear time operation which was shown by inserting $n$ elements and then performing one delete minimum operation causing the consolidation to take linear time. Other than that the Fibonacci heap and binary heap performed very similar as expected.
+
+Decreasing the key in the binary heap is similar to inserting since we need to perform bubble ups and as such the results of this experiment is very similar to those of inserting. In the worst case we get logarithmic running time of decreasing the key in the binary heap, while in the average we perform similar to the Fibonacci heap due to the low number of bubble ups performed.
 
 \chapter{Dijkstra's algorithm}
 \label{cpt:dijkstra}
-In this section we introduce families of graphs that we believe makes Dijkstra's algorithm perform many respectively few \texttt{DecreaseKey} operations. It is obvious that the number of \texttt{DecreaseKey} operations is an exact measure of the number of edges we have to \textit{relax}.
+In this section we introduce families of graphs that we believe make Dijkstra's algorithm perform many, respectively few, \texttt{DecreaseKey} operations. It is obvious that the number of \texttt{DecreaseKey} operations is an exact measure of the number of edges we have to \textit{relax}.
 
 \section{Few \texttt{DecreaseKey} operations}
 \label{sec:few_decreasekey}
@@ -437,10 +450,10 @@ Since Dijkstra's algorithm finds shortest paths from the source $s$ to all verti
 We consider an analysis of Dijkstra's algorithm using the fact that our implementation makes use of a priority queue $Q$. Since each vertex is removed from $Q$ exactly once, and the adjacency list of each vertex is scanned exactly once, it is clear that we can at most relax all edges exactly once.
 In other words we need to consider graphs that makes Dijkstra's algorithm perform $\vert E \vert$ \texttt{DecreaseKey} operations in order to reach the upper bound.
 
-We present two candidates of classes of graphs with the above mentioned property. The first proposal makes use of negative weights. Dijkstra's algorithm would still be able to run since we are not introducing negative cycles, but as we allow for previously marked nodes to be reinserted into the priority queue, we cannot rely on the asymptotic time bound. The second proposal uses only positive edge weights, and can therefore be compared against the asymptotic analysis.
+We present two candidates of classes of graphs with the above mentioned property. The first proposal makes use of negative weights. Dijkstra's algorithm would still be able to run since we are not introducing negative weight cycles, but as we allow for previously marked nodes to be reinserted into the priority queue, we cannot rely on the asymptotic time bound. The second proposal uses only positive edge weights, and can therefore be compared against the asymptotic analysis.
 
 \subsection{Candidate 1}
-In the first candidate we split $n$ vertices into two sets $S_1, S_2$ of sizes $\lceil \nicefrac{(n-1)}{2} \rceil$ and $\lfloor \nicefrac{(n-1)}{2} \rfloor$ respectively. We now construct a chain of vertices from $S_1$. For chained vertex $v_i$ we have outgoing edge weight equal to $i$ for all $i \in [1, .. ,\lvert S_1 \lvert - 1]$. The last vertex on the chain has no outgoing edges for now. We now connect each vertex $v_i$ on the chain to all vertices ${v'}_i$ in $S_2$ with edge weight equal to $-2 \cdot i$. Finally we connect the source $s$ to $v_1$ in the chain with edge weight $n$ and to all ${v'}_i \in S_2$ with edge weight $n-1$. Please refer to figure~\ref{figure:graph_neg_weights} for an example with $n=6$. It is clear the example will make Dijkstra's algorithm relax all edges, and that this fact generalizes to graphs of arbitrary sizes.
+In the first candidate we split $n$ vertices into two sets $S_1, S_2$ of sizes $\lceil \nicefrac{(n-1)}{2} \rceil$ and $\lfloor \nicefrac{(n-1)}{2} \rfloor$ respectively. We now construct a chain of the vertices of $S_1$. For vertex $v_i$ in the chain we have outgoing edge weight equal to $i$ for all $i \in [1, \dots ,\lvert S_1 \lvert - 1]$. The last vertex on the chain has no outgoing edges for now. We now connect each vertex $v_i$ on the chain to all vertices ${v'}_i$ in $S_2$ with edge weight equal to $-2 \cdot i$. Finally we connect the source $s$ to $v_1$ in the chain with edge weight $n$ and to all ${v'}_i \in S_2$ with edge weight $n-1$. Please refer to figure~\ref{figure:graph_neg_weights} for an example with $n=6$. It is clear the example will make Dijkstra's algorithm relax all edges, and that this fact generalizes to graphs of arbitrary sizes.
 
 \begin{figure}[H]
 \centering
@@ -450,7 +463,7 @@ In the first candidate we split $n$ vertices into two sets $S_1, S_2$ of sizes $
 \end{figure}
 
 \subsection{Candidate 2}
-In the second candidate we split $n$ vertices into three set $S_2, S_2$ and $S_3$ of sizes $\lceil \nicefrac{(n-1)}{3} \rceil$, $\lfloor \nicefrac{(n-1)}{3} \rfloor$ and $(n-1) - \lvert S_1 \rvert - \lvert S_2 \rvert$ respectively. We now construct a chain of vertices from $S_1$ with edge weight $0$. Connect each vertex $v_i$ on the chain to all vertices ${v''}_i \in S_3$ with edge weight equal to $n-2i$. Now connect each vertex ${v'}_i \in S_2$ to all vertices ${v''}_i \in S_3$ with edge weight $n^2 + 2n - 2i$ (we could have used $n^3$ for smaller $n$, but in order to avoid overflow we use this edge weight). Finally connect the source $s$ to the first vertex on the chain in $S_1$ with edge weight $n^2$ and to all vertices ${v'}_i \in S_2$ with edge weight $n+i$. Please refer to figure~\ref{figure:graph_pos_weights} for an example with $n=9$.  It is clear the example will make Dijkstra's algorithm relax all edges, and that this fact generalizes to graphs of arbitrary sizes. For future reference we denote this family of graphs \texttt{HeavyGraphs}
+In the second candidate we split $n$ vertices into three sets $S_1$, $S_2$, and $S_3$ of sizes $\lceil \nicefrac{(n-1)}{3} \rceil$, $\lfloor \nicefrac{(n-1)}{3} \rfloor$ and $(n-1) - \lvert S_1 \rvert - \lvert S_2 \rvert$ respectively. We now construct a chain of vertices from $S_1$ with edge weight $0$. Connect each vertex $v_i$ on the chain to all vertices ${v''}_i \in S_3$ with edge weight equal to $n-2i$. Now connect each vertex ${v'}_i \in S_2$ to all vertices ${v''}_i \in S_3$ with edge weight $n^2 + 2n - 2i$ (we could have used $n^3$ for smaller $n$, but in order to avoid overflow we use this edge weight). Finally connect the source $s$ to the first vertex on the chain in $S_1$ with edge weight $n^2$ and to all vertices ${v'}_i \in S_2$ with edge weight $n+i$. Please refer to figure~\ref{figure:graph_pos_weights} for an example with $n=9$.  It is clear the example will make Dijkstra's algorithm relax all edges, and that this fact generalizes to graphs of arbitrary sizes. For future reference we denote this family of graphs \texttt{HeavyGraphs}
 
 \begin{figure}[H]
 \centering
@@ -473,7 +486,7 @@ We perform experiments using three families of graphs, namely \texttt{ChainGraph
 We construct each graph as described in section~\ref{sec:few_decreasekey}. Furthermore we add $2(\nicefrac{n}{3})^2 + (\nicefrac{n}{3})- n - 2$ edges uniformly distributed over all vertices with edge weight $0$. This will make the graph have the desired total number of edges equal to graphs in \texttt{HeavyGraphs}. The extension will not make the graphs loose the property of making Dijkstra's algorithm perform few \texttt{DecreaseKey} operations.
 
 \subsection{\texttt{HeavyGraphs}}
-We construct each graph following the algorithm presented as \textit{Candidate 2} in section~\ref{sec:many_decreasekey}. Now further extensions is needed.
+We construct each graph following the algorithm presented as \textit{Candidate 2} in section~\ref{sec:many_decreasekey}. No further extensions are needed.
 
 \subsection{\texttt{RandomGraphs}}
 We construct each graph with $n$ vertices having $\dfrac{2(\nicefrac{n}{3})^2 + (\nicefrac{n}{3})-1}{n}$ outgoing edges. Each edge is connected uniformly random to another vertex. We avoid having edges connecting a vertex to itself and we avoid to have multiple outgoing edges to the same vertex. Edge weights are taken uniformly random in the interval $[0, .., 100]$. After construction we make sure that all components are connected. We do this by colouring all components and afterwards connecting different coloured components with a random edge. This scheme have a very limited overhead in number of extra edges.
@@ -482,7 +495,7 @@ We construct each graph with $n$ vertices having $\dfrac{2(\nicefrac{n}{3})^2 + 
 Please refer to chapter~\ref{chtp:experiment_setup} for a general overview of the experimental setup. We performed experiments on Dijkstra's algorithm using both heap implementations and using graphs from \texttt{ChainGraph}, \texttt{RandomGraph} and \texttt{HeavyGraph}. Each experiment was performed 5 times and the average was used.
 
 \section{Expectations}
-In general we expect Dijkstra's algorithm to achieve better running times, when using the Fibonacci heap, because of the amortised $\mathcal{O}(1)$ \texttt{DecreaseKey} operation. We expect to see the best running times on graphs from \texttt{ChainGraph} and the worst running times on graphs from \texttt{HeavyGraph} as argued in section~\ref{sec:few_decreasekey} and section~\ref{sec:many_decreasekey}. When running on graphs in \texttt{RandomGraph} we expect to see a slightly worse running time compared with runs on graphs from \texttt{ChainGraph}, but we expect to be far better than the runs on the worst case graphs from \texttt{HeavyGraph}.
+In general we expect Dijkstra's algorithm to achieve better running times, when using the Fibonacci heap, because of the amortized $\mathcal{O}(1)$ \texttt{DecreaseKey} operation. We expect to see the best running times on graphs from \texttt{ChainGraph} and the worst running times on graphs from \texttt{HeavyGraph} as argued in section~\ref{sec:few_decreasekey} and section~\ref{sec:many_decreasekey}. When running on graphs in \texttt{RandomGraph} we expect to see a slightly worse running time compared with runs on graphs from \texttt{ChainGraph}, but we expect to be far better than the runs on the worst case graphs from \texttt{HeavyGraph}.
 
 \section{Results}
 
@@ -598,15 +611,17 @@ In figure~\ref{fig:dijkstra_chain_rt}, \ref{fig:dijkstra_random_rt} and \ref{fig
 \end{figure}
 
 \section{Discussion}
-Comparing the running times on \texttt{ChainGraph} respectively \texttt{RandomGraph} in figure~\ref{fig:dijkstra_chain_rt} and \ref{fig:dijkstra_random_rt} we see that our hypothesis of seeing close to the same running times on graphs from \texttt{ChainGraph} and \texttt{RandomGraph} holds. We are surprised to see that the running times is almost the exact same for both heap implementations. We believe we see this behaviour because we have chosen graphs with relatively few vertices. Even including the $log_2(n)$ cost of performing an \texttt{DecreaseKey} operation on the Binary Heap, we are only penalised with a relatively small overhead of at most $log_2(2^{16}) = 16$.
+Comparing the running times on \texttt{ChainGraph} respectively \texttt{RandomGraph} in figure~\ref{fig:dijkstra_chain_rt} and \ref{fig:dijkstra_random_rt} we see that our hypothesis of seeing close to the same running times on graphs from \texttt{ChainGraph} and \texttt{RandomGraph} holds. We are surprised to see that the running times is almost the exact same for both heap implementations. We believe we see this behaviour because we have chosen graphs with relatively few vertices. Even including the $\log_2(n)$ cost of performing an \texttt{DecreaseKey} operation on the Binary Heap, we are only penalised with a relatively small overhead of at most $\log_2(2^{16}) = 16$.
 
 
-It could be that the the constant work we have to do when cutting out a node on a \texttt{DecreaseKey} operation on the Fibonacci Heap is so hight that we see no difference in terms of actual running time on the test data we have chosen. In figure~\ref{fig:dijkstra_heavy_rt} we are pleased to see that the overall running time has increased. This is what we would expect because of the topology of the graphs in \texttt{HeavyGraph}. What surprises us is that the Binary Heap seem to outperform the Fibonacci Heap as graphs grows bigger. We would have expected to see the opposite behaviour. In figures~\ref{fig:dijkstra_chain_br}, \ref{fig:dijkstra_random_br} and \ref{fig:dijkstra_heavy_br} we measure conditional branches. We believe the figures supports our hypothesis of seeing the heavier constant work done by the Fibonacci Heap in terms of more branches and ultimately in slower actual running time than the asymptotic bound would have suggested.
+It could be that the the constant work we have to do when cutting out a node on a \texttt{DecreaseKey} operation on the Fibonacci Heap is so high that we see no difference in terms of actual running time on the test data we have chosen. In figure~\ref{fig:dijkstra_heavy_rt} we are pleased to see that the overall running time has increased. This is what we would expect because of the topology of the graphs in \texttt{HeavyGraph}. What surprises us is that the Binary Heap seem to outperform the Fibonacci Heap as graphs grows bigger. We would have expected to see the opposite behaviour. In figures~\ref{fig:dijkstra_chain_br}, \ref{fig:dijkstra_random_br} and \ref{fig:dijkstra_heavy_br} we measure conditional branches. We believe the figures supports our hypothesis of seeing the heavier constant work done by the Fibonacci Heap in terms of more branches and ultimately in slower actual running time than the asymptotic bound would have suggested.
 
 In order to gain further insight into the validity of our claim, we decided to add another class of graphs to our test set, namely \textsc{RandomGraphs\_100} where we lower the number of edges such that each node has exactly 100 outgoing edges. It is clear that we are able to run test on higher numbers of $n = \lvert V \lvert$ on graphs in \textsc{RandomGraphs\_100} than those introduced in section~\ref{sec:dijkstra_methology}. The result of this experiment is repeated in~\ref{fig:dijkstra_rt_randomgraph100}. We are pleased to see that Dijkstra's algorithm using the Fibonacci heap achieves slightly better running times that using the binary heap for high values of $n$.
 
+The fact that the binary heap is so much faster in many cases may also be explained by the fact that in the random case it seems that the binary heap does decrease key in constant time due to the constant number of bubble ups.
+
 \section{Conclusion}
-We conducted experiments resulting in data that showed a small tendency of Dijkstra's algorithm achieving better running times, when using the Fibonacci heap, most likely because of the amortised $\mathcal{O}(1)$ \texttt{DecreaseKey} operation. Furthermore we got data showing that the best running times was found on graphs from \texttt{ChainGraph} and the worst running times was found on graphs from \texttt{HeavyGraph} which is what we expected. Furthermore we recorded data that backed the claim of slightly worse running time from graphs in \texttt{RandomGraph} compared with runs on graphs from \texttt{ChainGraph}. The results indicates that the binary heap performs better than the Fibonacci heap on smaller values of $n$, which is surprising taking the amortized analysis in consideration.
+We conducted experiments resulting in data that showed a small tendency of Dijkstra's algorithm achieving better running times, when using the Fibonacci heap, most likely because of the amortized $\mathcal{O}(1)$ \texttt{DecreaseKey} operation. Furthermore we got data showing that the best running times was found on graphs from \texttt{ChainGraph} and the worst running times was found on graphs from \texttt{HeavyGraph} which is what we expected. Furthermore we recorded data that backed the claim of slightly worse running time from graphs in \texttt{RandomGraph} compared with runs on graphs from \texttt{ChainGraph}. The results indicates that the binary heap performs better than the Fibonacci heap on smaller values of $n$, which is surprising taking the amortized analysis in consideration.
 
 \bibliography{references}
 
