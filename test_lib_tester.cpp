@@ -35,6 +35,12 @@ void test_pf() {
 void test_random() {
   test::random r;
   cout << r.next() << " " << r.next() << endl;
+  for (int i = 0; i < 100; i++)
+    cout << r.next() << endl;
+}
+
+void test_drop_cache() {
+  test::drop_cache();
 }
 
 int main() {
@@ -43,6 +49,7 @@ int main() {
   test_papi();
   test_pf();
   test_random();
-  
+  test_drop_cache();
+
   return 0;
 }
