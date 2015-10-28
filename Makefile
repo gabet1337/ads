@@ -49,6 +49,9 @@ bh_print : binary_heap.hpp priority_queue.hpp bh_test.cpp
 run_comp : binary_heap.hpp priority_queue.hpp fibonacci_queue.hpp test_lib.hpp test_run_comp_prio.cpp
 	$(CC) $(LFLAGS) binary_heap.hpp priority_queue.hpp fibonacci_queue.hpp test_lib.hpp test_run_comp_prio.cpp $(PAPI) -o test_run_comp
 
+run_veb : binary_heap.hpp priority_queue.hpp fibonacci_queue.hpp van_emde_boas.hpp test_lib.hpp test_run_comp_prio_veb.cpp
+	$(CC) $(LFLAGS) binary_heap.hpp van_emde_boas.hpp priority_queue.hpp fibonacci_queue.hpp test_lib.hpp test_run_comp_prio_veb.cpp $(PAPI) -o run_comp_veb
+
 dijkstra_tester : binary_heap.hpp priority_queue.hpp fibonacci_queue.hpp dijkstra.hpp dijkstra_tester.cpp
 	$(CC) $(LFLAGS) binary_heap.hpp priority_queue.hpp fibonacci_queue.hpp dijkstra.hpp dijkstra_tester.cpp $(PAPI) -o dijkstra_tester
 
