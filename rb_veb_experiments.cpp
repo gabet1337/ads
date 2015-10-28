@@ -34,17 +34,11 @@ void print_results(results r, string file) {
   
 }
 
-void make_queue(size_t TEST_RUNS) {
-  
-}
+pair<results,results> make_queue(size_t TEST_RUNS, size_t TEST_SIZE) {
 
-pair<results,results> make_queue(size_t TEST_RUNS) {
-
-  size_t TEST_SIZE = -1;
-  
   test::pagefaults pf;
   test::clock c;
-  int events[1] = {PAPI_BR_CN};
+  int events[1] = {PAPI_TOT_CYC};
   long long values[1];
   test::PAPI p(events, values, 1);
   
@@ -54,6 +48,7 @@ pair<results,results> make_queue(size_t TEST_RUNS) {
 
   for (size_t i = 0; i < TEST_RUNS; i++) {
 
+    test::drop_cache();
     p.start();
     c.start();
     pf.start();
@@ -65,11 +60,12 @@ pair<results,results> make_queue(size_t TEST_RUNS) {
     rb_br += values[0];
     rb_pf += pf.count();
     delete rb;
-    
+
+    test::drop_cache();
     p.start();
     c.start();
     pf.start();
-    pq::van_emde_boas *veb = new pq::van_emde_boas();
+    pq::van_emde_boas *veb = new pq::van_emde_boas(TEST_SIZE);
     pf.stop();
     c.stop();
     p.stop();
@@ -91,6 +87,25 @@ pair<results,results> make_queue(size_t TEST_RUNS) {
   
 }
 
+void test_make_queue_pow_two() {
+  for (size_t i = 3; i < 24; i++) {
+    size_t test_size = (1<<i);
+    pair<results,results> res = make_queue(1,test_size);
+    print_results(res.first, "res/rbveb/make_queue_pow_two_rb.dat");
+    print_results(res.second, "res/rbveb/make_queue_pow_two_veb.dat");    
+  }
+}
+
+void test_make_queue_pow_two_minus_one() {
+  for (size_t i = 3; i < 24; i++) {
+      size_t test_size = (1<<i)-1;
+      pair<results,results> res = make_queue(1,test_size);
+      print_results(res.first, "res/rbveb/make_queue_pow_two_minus_one_rb.dat");
+      print_results(res.second, "res/rbveb/make_queue_pow_two_minus_one_veb.dat");      
+  } 
+}
+
 int main() {
-  test_make_queue(10);
+  //test_make_queue_pow_two();
+  //test_make_queue_pow_two_minus_one();
 }
