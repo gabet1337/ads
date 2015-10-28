@@ -1,5 +1,6 @@
 #include "van_emde_boas.hpp"
 #include "rb_tree.hpp"
+#include "predecessor_queue.hpp"
 #include "test_lib.hpp"
 #include <iostream>
 
@@ -88,7 +89,7 @@ pair<results,results> make_queue(size_t TEST_RUNS, size_t TEST_SIZE) {
 }
 
 void test_make_queue_pow_two() {
-  for (size_t i = 3; i < 24; i++) {
+  for (size_t i = 3; i <= 24; i++) {
     size_t test_size = (1<<i);
     pair<results,results> res = make_queue(1,test_size);
     print_results(res.first, "res/rbveb/make_queue_pow_two_rb.dat");
@@ -97,7 +98,7 @@ void test_make_queue_pow_two() {
 }
 
 void test_make_queue_pow_two_minus_one() {
-  for (size_t i = 3; i < 24; i++) {
+  for (size_t i = 3; i <= 24; i++) {
       size_t test_size = (1<<i)-1;
       pair<results,results> res = make_queue(1,test_size);
       print_results(res.first, "res/rbveb/make_queue_pow_two_minus_one_rb.dat");
@@ -105,7 +106,88 @@ void test_make_queue_pow_two_minus_one() {
   } 
 }
 
+pair<results,results> find_min(size_t TEST_RUNS, size_t TEST_SIZE) {
+
+  test::pagefaults pf;
+  test::clock c;
+  int events[1] = {PAPI_TOT_CYC};
+  long long values[1];
+  test::PAPI p(events, values, 1);
+  
+  long long rb_clock = 0, veb_clock = 0;
+  long long rb_br = 0, veb_br = 0;
+  uint64_t rb_pf = 0, veb_pf = 0;
+
+  test::random rand;
+  
+  for (size_t i = 0; i < TEST_RUNS; i++) {
+    
+    test::drop_cache();
+    predecessor_queue *rb = new pq::rb_tree();
+    predecessor_queue *veb = new pq::van_emde_boas(16777216);
+
+    for (size_t i = 0; i < TEST_SIZE; i++) {
+      int r = rand.next(16777216);
+      rb->insert(r);
+      veb->insert(r);
+    }
+
+    p.start();
+    c.start();
+    pf.start();
+
+    for (int i = 0; i < 1000; i++) {
+      rb->find_min();
+    }
+    
+    pf.stop();
+    c.stop();
+    p.stop();
+    rb_clock+=c.count();
+    rb_br += values[0];
+    rb_pf += pf.count();
+    delete rb;
+
+    p.start();
+    c.start();
+    pf.start();
+
+    for (int i = 0; i < 1000; i++) {
+      veb-> find_min();
+    }
+    
+    pf.stop();
+    c.stop();
+    p.stop();
+    veb_clock+=c.count();
+    veb_br += values[0];
+    veb_pf += pf.count();
+    delete veb;
+    
+  }
+
+  cout << "\tRB\tvEB" << endl;
+  cout << "hc\t" << rb_br / TEST_RUNS << "\t" << veb_br / TEST_RUNS << endl;
+  cout << "ti\t" << rb_clock / TEST_RUNS << "\t" << veb_clock /TEST_RUNS << endl;
+  cout << "pf\t" << rb_pf / TEST_RUNS << "\t" << veb_pf /TEST_RUNS << endl;
+  //cout << "dk\t" << bh_dk / TEST_RUNS << "\t" << fq_dk / TEST_RUNS << endl;
+  
+  return { results(rb_clock, rb_br, rb_pf, TEST_SIZE, TEST_RUNS, false, 0),
+      results(veb_clock, veb_br, veb_pf, TEST_SIZE, TEST_RUNS, false, 0)};
+  
+}
+
+void test_find_min() {
+  for (size_t i = 3; i <= 24; i++) {
+    size_t test_size = (1<<i);
+    pair<results,results> res = find_min(10,test_size);
+    print_results(res.first, "res/rbveb/find_min_rb.dat");
+    print_results(res.second, "res/rbveb/find_min_veb.dat");    
+  }
+}
+
 int main() {
   //test_make_queue_pow_two();
   //test_make_queue_pow_two_minus_one();
+  test_find_min();
 }
