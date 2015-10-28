@@ -88,24 +88,24 @@ pair<results,results> make_queue(size_t TEST_RUNS, size_t TEST_SIZE) {
 }
 
 void test_make_queue_pow_two() {
-  for (size_t i = 3; i < 24; i++) {
+  for (size_t i = 3; i <= 24; i++) {
     size_t test_size = (1<<i);
-    pair<results,results> res = make_queue(1,test_size);
+    pair<results,results> res = make_queue(50,test_size);
     print_results(res.first, "res/rbveb/make_queue_pow_two_rb.dat");
     print_results(res.second, "res/rbveb/make_queue_pow_two_veb.dat");    
   }
 }
 
 void test_make_queue_pow_two_minus_one() {
-  for (size_t i = 3; i < 24; i++) {
+  for (size_t i = 3; i <= 24; i++) {
       size_t test_size = (1<<i)-1;
-      pair<results,results> res = make_queue(1,test_size);
+      pair<results,results> res = make_queue(50,test_size);
       print_results(res.first, "res/rbveb/make_queue_pow_two_minus_one_rb.dat");
       print_results(res.second, "res/rbveb/make_queue_pow_two_minus_one_veb.dat");      
   } 
 }
 
 int main() {
-  //test_make_queue_pow_two();
-  //test_make_queue_pow_two_minus_one();
+  test_make_queue_pow_two();
+  test_make_queue_pow_two_minus_one();
 }
