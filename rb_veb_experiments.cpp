@@ -5,83 +5,92 @@
 
 using namespace std;
 
-void test_veb(pq::van_emde_boas &veb) {
+struct results {
+  long long time, papi;
+  uint64_t page_faults;
+  size_t TEST_SIZE, TEST_RUNS, NUM_DECREASE_KEYS;
+  bool is_random;
+  results(long long _time, long long _papi, uint64_t _page_faults,
+          size_t _TEST_SIZE, size_t _TEST_RUNS, bool _is_random, size_t _NUM_DECREASE_KEYS)
+    : time(_time), papi(_papi), page_faults(_page_faults),
+      TEST_SIZE(_TEST_SIZE), TEST_RUNS(_TEST_RUNS), NUM_DECREASE_KEYS(_NUM_DECREASE_KEYS),
+      is_random(_is_random)
+       {}
+};
 
-  cout << veb.size() << endl;
-  veb.insert(10);
-  veb.insert(5);
-  veb.insert(15);
-
-  cout << "10 is a member? " << veb.member(10) << endl;
-  cout << "7 is a member? " << veb.member(7) << endl;
-  cout << "predecessor of 11? " << veb.predecessor(11) << endl;
-  cout << "predecessor of 4? " << veb.predecessor(4) << endl;
-
-  cout << veb.minimum << " " << veb.maximum << endl;
-  veb.delete_min();
-  cout << veb.minimum << " " << veb.maximum << endl;
-  veb.delete_min();
-  cout << veb.minimum << " " << veb.maximum << endl;
-  veb.delete_min();
-  cout << veb.minimum << " " << veb.maximum << endl;
-}
+void print_results(results r, string file) {
+  // long long time, papi;
+  // uint64_t page_faults;
+  // size_t TEST_SIZE, TEST_RUNS;
+  // bool is_random;
+  ofstream f(file, ios::app|ios::out);
+  f << "#size\ttime\tpapi\tpfs\tndk" << endl;
+  f << r.TEST_SIZE << "\t"
+    << r.time/r.TEST_RUNS << "\t"
+    << r.papi/r.TEST_RUNS << "\t"
+    << r.page_faults/r.TEST_RUNS << "\t"
+    << r.NUM_DECREASE_KEYS
+    << endl;
   
-
-void test_priority_queue(priority_queue &veb) {
-
-  cout << veb.size() << endl;
-  veb.push(make_pair(10,-1));
-  veb.push(make_pair(5,-1));
-  veb.push(make_pair(15,-1));
-
-  cout << veb.size() << endl;
-  
-  cout << "minimum? " << veb.top().first << endl;
-
-  veb.decrease_key(10,2);
-
-  cout << "minimum ? " << veb.top().first << endl;
-  
-  veb.pop();
-
-  cout << "size ? " << veb.size() << endl;
-  cout << "minimum ? " << veb.top().first << endl;
-  
-  cout << "empty ? " << veb.empty() << endl;
-
-  veb.pop();
-  veb.pop();
-  
-  cout << "empty ? " << veb.empty() << endl;
 }
 
-void test_predecessor_queue(predecessor_queue &veb) {
-
-  cout << veb.size() << endl;
-  veb.insert(10);
-  veb.insert(5);
-  veb.insert(15);
-
-  cout << veb.size() << endl;
+void make_queue(size_t TEST_RUNS) {
   
-  cout << "minimum? " << veb.find_min() << endl;
+}
 
-  veb.delete_min();
+pair<results,results> make_queue(size_t TEST_RUNS) {
 
-  cout << "size ? " << veb.size() << endl;
-  cout << "minimum ? " << veb.find_min() << endl;
+  size_t TEST_SIZE = -1;
   
-  cout << "empty ? " << veb.empty() << endl;
+  test::pagefaults pf;
+  test::clock c;
+  int events[1] = {PAPI_BR_CN};
+  long long values[1];
+  test::PAPI p(events, values, 1);
+  
+  long long rb_clock = 0, veb_clock = 0;
+  long long rb_br = 0, veb_br = 0;
+  uint64_t rb_pf = 0, veb_pf = 0;
 
-  veb.delete_key(10);
+  for (size_t i = 0; i < TEST_RUNS; i++) {
 
-  cout << "minimum ? " << veb.find_min() << endl;
+    p.start();
+    c.start();
+    pf.start();
+    pq::rb_tree *rb = new pq::rb_tree();
+    pf.stop();
+    c.stop();
+    p.stop();
+    rb_clock+=c.count();
+    rb_br += values[0];
+    rb_pf += pf.count();
+    delete rb;
+    
+    p.start();
+    c.start();
+    pf.start();
+    pq::van_emde_boas *veb = new pq::van_emde_boas();
+    pf.stop();
+    c.stop();
+    p.stop();
+    veb_clock+=c.count();
+    veb_br += values[0];
+    veb_pf += pf.count();
+    delete veb;
+    
+  }
+
+  cout << "\tRB\tvEB" << endl;
+  cout << "hc\t" << rb_br / TEST_RUNS << "\t" << veb_br / TEST_RUNS << endl;
+  cout << "ti\t" << rb_clock / TEST_RUNS << "\t" << veb_clock /TEST_RUNS << endl;
+  cout << "pf\t" << rb_pf / TEST_RUNS << "\t" << veb_pf /TEST_RUNS << endl;
+  //cout << "dk\t" << bh_dk / TEST_RUNS << "\t" << fq_dk / TEST_RUNS << endl;
+  
+  return { results(rb_clock, rb_br, rb_pf, TEST_SIZE, TEST_RUNS, false, 0),
+      results(veb_clock, veb_br, veb_pf, TEST_SIZE, TEST_RUNS, false, 0)};
   
 }
 
 int main() {
-  pq::van_emde_boas veb;
-  //test_veb(veb);
-  //test_priority_queue(veb);
-  //test_predecessor_queue(veb);
+  test_make_queue(10);
 }
