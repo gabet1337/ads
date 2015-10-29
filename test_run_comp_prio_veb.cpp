@@ -156,45 +156,49 @@ rrr test_findmin(size_t TEST_SIZE, size_t TEST_RUNS) {
     fq.push(ii(i,i));
     veb.push(ii(i,i));
   }
-  int events[1] = {PAPI_TOT_CYC};
-  long long values[1];
-  test::PAPI p(events, values, 1);
+  int events[2] = {PAPI_TOT_CYC, PAPI_BR_CN};
+  long long values[2];
+  test::PAPI p(events, values, 2);
   long long bh_tc = 0, fq_tc = 0, veb_tc = 0;
+  long long bh_br = 0, fq_br = 0, veb_br = 0;
   for (size_t i = 0; i < TEST_RUNS; i++) {
     test::drop_cache();
     p.start();
     bh.top();
     p.stop();
     bh_tc += values[0];
+    bh_br += values[1];
     test::drop_cache();
     p.start();
     fq.top();
     p.stop();
     fq_tc += values[0];
+    fq_br += values[1];
     test::drop_cache();
     p.start();
     veb.top();
     p.stop();
     veb_tc += values[0];
+    veb_br +=values[1];
   }
 
   // results(long long _time,
   //         uint64_t _page_faults,
   //         size_t _TEST_SIZE, size_t _TEST_RUNS,
   //         size_t _PAPI1, size_t _PAPI2, size_t _PAPI3)
-  return rrr( results(0, 0, TEST_SIZE, TEST_RUNS, bh_tc, 0, 0),
-              rr(results(0, 0, TEST_SIZE, TEST_RUNS, fq_tc, 0, 0),
-                 results(0, 0, TEST_SIZE, TEST_RUNS, veb_tc, 0, 0)));
+  return rrr( results(0, 0, TEST_SIZE, TEST_RUNS, bh_tc, bh_br, 0),
+              rr(results(0, 0, TEST_SIZE, TEST_RUNS, fq_tc, fq_br, 0),
+                 results(0, 0, TEST_SIZE, TEST_RUNS, veb_tc, veb_br, 0)));
 
 }
 
 void test_fm() {
   for (size_t i = 0; i < 24; i++) {
     size_t s = (1<<i);
-    rrr temp = test_findmin(s, 10000);
-    print_results(temp.first, "res2/findmin/bh_cyc.dat");
-    print_results(temp.second.first, "res2/findmin/fq_cyc.dat");
-    print_results(temp.second.second, "res2/findmin/veb_cyc.dat");
+    rrr temp = test_findmin(s, 100);
+    print_results(temp.first, "res2/findmin/bh.dat");
+    print_results(temp.second.first, "res2/findmin/fq.dat");
+    print_results(temp.second.second, "res2/findmin/veb.dat");
   }
 
 }
@@ -344,7 +348,7 @@ rrr test_deletemin(size_t TEST_SIZE, size_t TEST_RUNS, size_t NUM_DELETES, bool 
   test::random r;
   if (is_random) {
     for (size_t i = 0; i < TEST_SIZE; i++)
-      bh_data[i] = fq_data[i] = r.next();
+      bh_data[i] = fq_data[i] = r.next(TEST_MAX);
   } else {
     for (size_t i = 0; i < TEST_SIZE; i++) {
       bh_data[i] = i;
@@ -432,28 +436,28 @@ void test_delmin() {
   //   print_results(temp.second, "res/delmin/worst_del_all_fq.dat");
   // }
 
-  for (size_t i = 1; i < 22; i++) {
-    size_t s = (1<<i);
-    cout << "TESTING : " << s << " with " << 1 << " DELETE worst data" << endl;
-    rrr temp = test_deletemin(s, 50, 1, false);
-    print_results(temp.first, "res2/delmin/worst_del_1_bh.dat");
-    print_results(temp.second.first, "res2/delmin/worst_del_1_fq.dat");
-    print_results(temp.second.second, "res2/delmin/worst_del_1_veb.dat");
-  }
+  // for (size_t i = 1; i < 22; i++) {
+  //   size_t s = (1<<i);
+  //   cout << "TESTING : " << s << " with " << 1 << " DELETE worst data" << endl;
+  //   rrr temp = test_deletemin(s, 5, 1, false);
+  //   print_results(temp.first, "res2/delmin/worst_del_1_bh.dat");
+  //   print_results(temp.second.first, "res2/delmin/worst_del_1_fq.dat");
+  //   print_results(temp.second.second, "res2/delmin/worst_del_1_veb.dat");
+  // }
 
   for (size_t i = 1; i < 22; i++) {
     size_t s = (1<<i);
     cout << "TESTING : " << s << " with " << 1 << " DELETE random data" << endl;
-    rrr temp = test_deletemin(s, 50, 1, true);
+    rrr temp = test_deletemin(s, 5, 1, true);
     print_results(temp.first, "res2/delmin/random_del_1_bh.dat");
     print_results(temp.second.first, "res2/delmin/random_del_1_fq.dat");
     print_results(temp.second.second, "res2/delmin/random_del_1_veb.dat");
   }
 
-    for (size_t i = 1; i < 22; i++) {
+  for (size_t i = 1; i < 22; i++) {
     size_t s = (1<<i);
     cout << "TESTING : " << s << " with " << 2 << " DELETE worst data" << endl;
-    rrr temp = test_deletemin(s, 50, 2, false);
+    rrr temp = test_deletemin(s, 5, 2, false);
     print_results(temp.first, "res2/delmin/worst_del_2_bh.dat");
     print_results(temp.second.first, "res2/delmin/worst_del_2_fq.dat");
     print_results(temp.second.second, "res2/delmin/worst_del_2_veb.dat");
@@ -462,7 +466,7 @@ void test_delmin() {
   for (size_t i = 1; i < 22; i++) {
     size_t s = (1<<i);
     cout << "TESTING : " << s << " with " << 2 << " DELETE random data" << endl;
-    rrr temp = test_deletemin(s, 50, 2, true);
+    rrr temp = test_deletemin(s, 5, 2, true);
     print_results(temp.first, "res2/delmin/random_del_2_bh.dat");
     print_results(temp.second.first, "res2/delmin/random_del_2_fq.dat");
     print_results(temp.second.second, "res2/delmin/random_del_2_veb.dat");
@@ -471,8 +475,8 @@ void test_delmin() {
 
 int main() {
 
-  test_ins();
-  //test_fm();
+  //test_ins();
+  test_fm();
   //test_dk(); //TODO THIS!
   //test_delmin();
 
