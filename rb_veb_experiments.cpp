@@ -113,14 +113,15 @@ pair<results,results> find_min(size_t TEST_RUNS, size_t TEST_SIZE) {
 
   test::pagefaults pf;
   test::clock c;
-  int events[1] = {PAPI_TOT_CYC};
-  long long values[1];
-  test::PAPI p(events, values, 1);
+  int events[2] = {PAPI_BR_CN, PAPI_TOT_CYC};
+  long long values[2];
+  test::PAPI p(events, values, 2);
   
   long long rb_clock = 0, veb_clock = 0;
   long long rb_br = 0, veb_br = 0;
   uint64_t rb_pf = 0, veb_pf = 0;
-
+  long long rb_cyc = 0, veb_cyc = 0;
+  
   test::random rand;
   
   for (size_t i = 0; i < TEST_RUNS; i++) {
@@ -148,6 +149,7 @@ pair<results,results> find_min(size_t TEST_RUNS, size_t TEST_SIZE) {
     p.stop();
     rb_clock+=c.count();
     rb_br += values[0];
+    rb_cyc += values[1];
     rb_pf += pf.count();
     delete rb;
 
@@ -164,19 +166,21 @@ pair<results,results> find_min(size_t TEST_RUNS, size_t TEST_SIZE) {
     p.stop();
     veb_clock+=c.count();
     veb_br += values[0];
+    veb_cyc += values[1];
     veb_pf += pf.count();
     delete veb;
     
   }
 
   cout << "\tRB\tvEB" << endl;
-  cout << "hc\t" << rb_br / TEST_RUNS << "\t" << veb_br / TEST_RUNS << endl;
+  cout << "br\t" << rb_br / TEST_RUNS << "\t" << veb_br / TEST_RUNS << endl;
+  cout << "cyc\t" << rb_cyc / TEST_RUNS << "\t" << veb_cyc / TEST_RUNS << endl;
   cout << "ti\t" << rb_clock / TEST_RUNS << "\t" << veb_clock /TEST_RUNS << endl;
   cout << "pf\t" << rb_pf / TEST_RUNS << "\t" << veb_pf /TEST_RUNS << endl;
   //cout << "dk\t" << bh_dk / TEST_RUNS << "\t" << fq_dk / TEST_RUNS << endl;
   
-  return { results(rb_clock, rb_br, rb_pf, TEST_SIZE, TEST_RUNS, false, 0, 0, 0),
-      results(veb_clock, veb_br, veb_pf, TEST_SIZE, TEST_RUNS, false, 0, 0, 0)};
+  return { results(rb_clock, rb_br, rb_pf, TEST_SIZE, TEST_RUNS, false, 0, rb_cyc, 0),
+      results(veb_clock, veb_br, veb_pf, TEST_SIZE, TEST_RUNS, false, 0, veb_cyc, 0)};
   
 }
 
@@ -279,6 +283,6 @@ void test_insert() {
 int main() {
   //test_make_queue_pow_two();
   //test_make_queue_pow_two_minus_one();
-  //test_find_min();
-  test_insert();
+  test_find_min();
+  //test_insert();
 }
