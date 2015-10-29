@@ -281,7 +281,7 @@ rrr test_decrease_key(size_t TEST_SIZE, size_t TEST_RUNS, size_t NUM_DECREASE_KE
     pf.start();
     c.start(); p.start();
     for (size_t j = 0; j < NUM_DECREASE_KEY; j++) {
-      veb.decrease_key(dk[j].first, dk[j].second);
+      veb.decrease_key(veb.maximum, veb.minimum+j+1);
     }
     veb_clock += c.count();
     veb_papi[0] += values[0];
@@ -300,41 +300,45 @@ rrr test_decrease_key(size_t TEST_SIZE, size_t TEST_RUNS, size_t NUM_DECREASE_KE
 //test_decrease_key(size_t TEST_SIZE, size_t TEST_RUNS, size_t NUM_DECREASE_KEY, bool is_random) {
 void test_dk() {
 
-  // for (size_t i = 0; i < 23; i++) {
-  //   size_t s = (1<<i);
-  //   cout << "TESTING on input size: " << s << " where we decrease 1 element at worst" << endl;
-  //   rr temp = test_decrease_key(s, 40, 1, true);
-  //   print_results(temp.first, "res/dk/ndk_random_bh_1.dat");
-  //   print_results(temp.second, "res/dk/ndk_random_fq_1.dat");
-  // }
+  for (size_t i = 0; i < 23; i++) {
+    size_t s = (1<<i);
+    cout << "TESTING on input size: " << s << " where we decrease 1 element at random" << endl;
+    rrr temp = test_decrease_key(s, 10, 1, true);
+    print_results(temp.first, "res2/dk/ndk_random_bh_1.dat");
+    print_results(temp.second.first, "res2/dk/ndk_random_fq_1.dat");
+    print_results(temp.second.second, "res2/dk/ndk_random_veb_1.dat");
+  }
 
-  // return;
-  // for (size_t i = 0; i < 23; i++) {
-  //   size_t s = (1<<i);
-  //   cout << "TESTING on input size: " << s << " where we decrease 1 element at worst" << endl;
-  //   rr temp = test_decrease_key(s, 40, 1, false);
-  //   print_results(temp.first, "res/dk/ndk_worst_bh_1.dat");
-  //   print_results(temp.second, "res/dk/ndk_worst_fq_1.dat");
-  // }
+  return;
+  for (size_t i = 0; i < 23; i++) {
+    size_t s = (1<<i);
+    cout << "TESTING on input size: " << s << " where we decrease 1 element at worst" << endl;
+    rrr temp = test_decrease_key(s, 10, 1, false);
+    print_results(temp.first, "res2/dk/ndk_worst_bh_1.dat");
+    print_results(temp.second.first, "res2/dk/ndk_worst_fq_1.dat");
+    print_results(temp.second.second, "res2/dk/ndk_worst_veb_1.dat");
+  }
 
-  // size_t TEST_SIZE = (1<<15);
-  // //random, vary on num of decrease key operations!
-  // for (size_t i = 0; i < 23; i++) {
-  //   size_t s = (1<<i);
-  //   cout << "TESTING : " << s << " DECREASE KEYS randomly" << endl;
-  //   rr temp = test_decrease_key(TEST_SIZE, 40, s, true);
-  //   print_results(temp.first, "res/dk/ndk_random_bh.dat");
-  //   print_results(temp.second, "res/dk/ndk_random_fq.dat");
-  // }
+  size_t TEST_SIZE = (1<<15);
+  //random, vary on num of decrease key operations!
+  for (size_t i = 0; i < 23; i++) {
+    size_t s = (1<<i);
+    cout << "TESTING : " << s << " DECREASE KEYS randomly" << endl;
+    rrr temp = test_decrease_key(TEST_SIZE, 10, s, true);
+    print_results(temp.first, "res2/dk/ndk_random_bh.dat");
+    print_results(temp.second.first, "res2/dk/ndk_random_fq.dat");
+    print_results(temp.second.first, "res2/dk/ndk_random_veb.dat");
+  }
 
-  // //worst case, vary on num of decrease key operations
-  // for (size_t i = 0; i < 23; i++) {
-  //   size_t s = (1<<i);
-  //   cout << "TESTING : " << s << " DECREASE KEYS worst case" << endl;
-  //   rr temp = test_decrease_key(TEST_SIZE, 40, s, false);
-  //   print_results(temp.first, "res/dk/ndk_worst_bh.dat");
-  //   print_results(temp.second, "res/dk/ndk_worst_fq.dat");
-  // }
+  //worst case, vary on num of decrease key operations
+  for (size_t i = 0; i < 23; i++) {
+    size_t s = (1<<i);
+    cout << "TESTING : " << s << " DECREASE KEYS worst case" << endl;
+    rrr temp = test_decrease_key(TEST_SIZE, 10, s, false);
+    print_results(temp.first, "res2/dk/ndk_worst_bh.dat");
+    print_results(temp.second.first, "res2/dk/ndk_worst_fq.dat");
+    print_results(temp.second.second, "res2/dk/ndk_worst_veb.dat");
+  }
 
   
 
@@ -436,14 +440,14 @@ void test_delmin() {
   //   print_results(temp.second, "res/delmin/worst_del_all_fq.dat");
   // }
 
-  // for (size_t i = 1; i < 22; i++) {
-  //   size_t s = (1<<i);
-  //   cout << "TESTING : " << s << " with " << 1 << " DELETE worst data" << endl;
-  //   rrr temp = test_deletemin(s, 5, 1, false);
-  //   print_results(temp.first, "res2/delmin/worst_del_1_bh.dat");
-  //   print_results(temp.second.first, "res2/delmin/worst_del_1_fq.dat");
-  //   print_results(temp.second.second, "res2/delmin/worst_del_1_veb.dat");
-  // }
+  for (size_t i = 1; i < 22; i++) {
+    size_t s = (1<<i);
+    cout << "TESTING : " << s << " with " << 1 << " DELETE worst data" << endl;
+    rrr temp = test_deletemin(s, 5, 1, false);
+    print_results(temp.first, "res2/delmin/worst_del_1_bh.dat");
+    print_results(temp.second.first, "res2/delmin/worst_del_1_fq.dat");
+    print_results(temp.second.second, "res2/delmin/worst_del_1_veb.dat");
+  }
 
   for (size_t i = 1; i < 22; i++) {
     size_t s = (1<<i);
@@ -476,8 +480,8 @@ void test_delmin() {
 int main() {
 
   //test_ins();
-  test_fm();
-  //test_dk(); //TODO THIS!
+  //test_fm();
+  test_dk(); //TODO THIS!
   //test_delmin();
 
   // cout << "insert randomly" << endl;
