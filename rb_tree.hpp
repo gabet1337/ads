@@ -236,17 +236,19 @@ namespace pq {
         if (w->left->color == BLACK && w->right->color == BLACK) {
           w->color = RED;
           x = x->p;
-        } else if (w->right->color == BLACK) {
-          w->left->color = BLACK;
-          w->color = RED;
-          rotate_right(w);
-          w = x->p->right;
+        } else {
+          if (w->right->color == BLACK) {
+            w->left->color = BLACK;
+            w->color = RED;
+            rotate_right(w);
+            w = x->p->right;
+          }
+          w->color = x->p->color;
+          x->p->color = BLACK;
+          w->right->color = BLACK;
+          rotate_left(x->p);
+          x = root;
         }
-        w->color = x->p->color;
-        x->p->color = BLACK;
-        w->right->color = BLACK;
-        rotate_left(x->p);
-        x = root;
       } else {
         node* w = x->p->left;
         if (w->color == RED) {
@@ -258,17 +260,19 @@ namespace pq {
         if (w->right->color == BLACK && w->left->color == BLACK) {
           w->color = RED;
           x = x->p;
-        } else if (w->left->color == BLACK) {
-          w->right->color = BLACK;
-          w->color = RED;
-          rotate_left(w);
-          w = x->p->left;
+        } else {
+          if (w->left->color == BLACK) {
+            w->right->color = BLACK;
+            w->color = RED;
+            rotate_left(w);
+            w = x->p->left;
+          }
+          w->color = x->p->color;
+          x->p->color = BLACK;
+          w->left->color = BLACK;
+          rotate_right(x->p);
+          x = root;
         }
-        w->color = x->p->color;
-        x->p->color = BLACK;
-        w->left->color = BLACK;
-        rotate_right(x->p);
-        x = root;
       }
     }
     x->color = BLACK;
