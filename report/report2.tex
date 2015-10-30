@@ -61,6 +61,8 @@ The code can be found at: \\\url{Insert link to code here!}.
 \subsection{van Emde Boas tree}
 The van Emde Boas tree was implemented as described in Introduction to Algorithms~\cite{clrs}. It is a non space-reduced tree and as such it will take time proportional to allocating the full universe of the tree in memory, to construct such a tree. However the tree will not grow in memory after allocation. A way to mitigate this, and thereby make the tree space-reduced would be to, instead of storing the complete structure, we should only store the substructures that actually contain elements. This could have been implemented by using hash maps instead of arrays.
 
+%TODO no page faults since we load everything in memory at beginning!
+
 \subsection{Red-Black tree}
 The Red-Black tree was implemented as described in Introduction to Algorithms~\cite{clrs}
 
@@ -104,6 +106,31 @@ Finding the minimum in all three priority queues are constant time operations. T
 The results clearly depict that finding the minimum does not depend on the input size and we conclude that the theoretical bound of $\mathcal{O}(1)$ also matches the experimental found results.
 
 \section{\texttt{Insert}}
+The asymptotic running times of the priority queues are as depicted in figure~\ref{fig:asymptotic_insert}.
+
+\begin{figure}[H]
+\includegraphics[scale=0.5]{../res2/inserts/runtime_plot.png}
+\caption{Asymptotic running times for inserting in the priority queues.}
+\label{fig:asymptotic_insert}
+\end{figure}
+
+We notice that inserting into the van Emde Boas tree does not depend on the size of the input but rather on the size of the universe that the tree hold. Since we support a universe of integers in the range from $0$ to $2^{24}$ we should have an insert that takes $\log\log 2^{24} = 4,5$ i.e. a larger constant than the Fibonacci heap but none the least a constant. What we expect to see in the worst case experiment is that the Fibonacci always performs best and at some point the van Emde Boas tree will outperform the Binary Heap with logarithmic asymptotic running time.
+
+In order to see this result we remember from our previous experiments with priority queues that we need to experiment with the worst case data for the binary heap in order to see the logarithmic behaviour of the heap. This observation also makes it obvious that we do not want to see the behaviour of the heaps on random data since these would be similar to previous results from our first report. In figure~\ref{fig:insert_worst_running} we depict the results of running on the worst case data 10 times and averaging the result. The results confirm our hypothesis and that the running time of the van Emde Boas tree is independent of the input size while the binary heap is logarithmically dependent.
+
+\begin{figure}[H]
+\includegraphics[scale=0.5]{../res2/inserts/runtime_worst.png}
+\caption{Worst case running time for the priority queues.}
+\label{fig:insert_worst_running}
+\end{figure}
+
+Looking at the number of branch operations in figure~\ref{fig:insert_worst_branch} we see that the number of branch operations is constant for the van Emde Boas tree and the Fibonacci heap while the binary heap increases logarithmically.
+
+\begin{figure}[H]
+\includegraphics[scale=0.5]{../res2/inserts/branch_worst.png}
+\caption{Worst case branching operations for the priority queues.}
+\label{fig:insert_worst_branch}
+\end{figure}
 
 
 \section{\texttt{DeleteMin}}
