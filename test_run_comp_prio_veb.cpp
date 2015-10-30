@@ -242,7 +242,7 @@ rrr test_decrease_key(size_t TEST_SIZE, size_t TEST_RUNS, size_t NUM_DECREASE_KE
     for (size_t j = 0; j < TEST_SIZE; j++) {
       bh.push(ii(bh_data[j], j));
       fq.push(ii(fq_data[j], j));
-      veb.push(ii(bh_data[j], j));
+      veb.push(ii(TEST_SIZE-j,0));
     }
     //pop to make sure fibonacci queue has consolidated!
     bh.pop(); fq.pop(); veb.pop();
@@ -274,16 +274,14 @@ rrr test_decrease_key(size_t TEST_SIZE, size_t TEST_RUNS, size_t NUM_DECREASE_KE
     pf.start();
     c.start(); p.start();
     for (size_t j = 0; j < NUM_DECREASE_KEY; j++) {
-      veb.decrease_key(veb.maximum, veb.minimum+j+1);
+      veb.decrease_key(TEST_SIZE-j, (TEST_MAX-TEST_SIZE)-j);
     }
     veb_clock += c.count();
     veb_papi[0] += values[0];
     veb_papi[1] += values[1];
     veb_papi[2] += values[2];
     veb_pf += pf.count();
-
   }
-
 
   return rrr( results(bh_clock, bh_pf, TEST_SIZE, TEST_RUNS, bh_papi[0], bh_papi[1], bh_papi[2]),
               rr(results(fq_clock, fq_pf, TEST_SIZE, TEST_RUNS, fq_papi[0], fq_papi[1], fq_papi[2]),
@@ -293,45 +291,44 @@ rrr test_decrease_key(size_t TEST_SIZE, size_t TEST_RUNS, size_t NUM_DECREASE_KE
 //test_decrease_key(size_t TEST_SIZE, size_t TEST_RUNS, size_t NUM_DECREASE_KEY, bool is_random) {
 void test_dk() {
 
-  for (size_t i = 0; i < 23; i++) {
-    size_t s = (1<<i);
-    cout << "TESTING on input size: " << s << " where we decrease 1 element at random" << endl;
-    rrr temp = test_decrease_key(s, 10, 1, true);
-    print_results(temp.first, "res2/dk/ndk_random_bh_1.dat");
-    print_results(temp.second.first, "res2/dk/ndk_random_fq_1.dat");
-    print_results(temp.second.second, "res2/dk/ndk_random_veb_1.dat");
-  }
+  // for (size_t i = 0; i < 23; i++) {
+  //   size_t s = (1<<i);
+  //   cout << "TESTING on input size: " << s << " where we decrease 1 element at random" << endl;
+  //   rrr temp = test_decrease_key(s, 10, 1, true);
+  //   print_results(temp.first, "res2/dk/ndk_random_bh_1.dat");
+  //   print_results(temp.second.first, "res2/dk/ndk_random_fq_1.dat");
+  //   print_results(temp.second.second, "res2/dk/ndk_random_veb_1.dat");
+  // }
 
-  return;
-  for (size_t i = 0; i < 23; i++) {
+  for (size_t i = 0; i < 24; i++) {
     size_t s = (1<<i);
     cout << "TESTING on input size: " << s << " where we decrease 1 element at worst" << endl;
     rrr temp = test_decrease_key(s, 10, 1, false);
-    print_results(temp.first, "res2/dk/ndk_worst_bh_1.dat");
-    print_results(temp.second.first, "res2/dk/ndk_worst_fq_1.dat");
-    print_results(temp.second.second, "res2/dk/ndk_worst_veb_1.dat");
+    print_results(temp.first, "res2/dk/bh_worst_1.dat");
+    print_results(temp.second.first, "res2/dk/fq_worst_1.dat");
+    print_results(temp.second.second, "res2/dk/veb_worst_1.dat");
   }
 
-  size_t TEST_SIZE = (1<<15);
-  //random, vary on num of decrease key operations!
-  for (size_t i = 0; i < 23; i++) {
-    size_t s = (1<<i);
-    cout << "TESTING : " << s << " DECREASE KEYS randomly" << endl;
-    rrr temp = test_decrease_key(TEST_SIZE, 10, s, true);
-    print_results(temp.first, "res2/dk/ndk_random_bh.dat");
-    print_results(temp.second.first, "res2/dk/ndk_random_fq.dat");
-    print_results(temp.second.first, "res2/dk/ndk_random_veb.dat");
-  }
+  // size_t TEST_SIZE = (1<<15);
+  // //random, vary on num of decrease key operations!
+  // for (size_t i = 0; i < 23; i++) {
+  //   size_t s = (1<<i);
+  //   cout << "TESTING : " << s << " DECREASE KEYS randomly" << endl;
+  //   rrr temp = test_decrease_key(TEST_SIZE, 10, s, true);
+  //   print_results(temp.first, "res2/dk/ndk_random_bh.dat");
+  //   print_results(temp.second.first, "res2/dk/ndk_random_fq.dat");
+  //   print_results(temp.second.first, "res2/dk/ndk_random_veb.dat");
+  // }
 
   //worst case, vary on num of decrease key operations
-  for (size_t i = 0; i < 23; i++) {
-    size_t s = (1<<i);
-    cout << "TESTING : " << s << " DECREASE KEYS worst case" << endl;
-    rrr temp = test_decrease_key(TEST_SIZE, 10, s, false);
-    print_results(temp.first, "res2/dk/ndk_worst_bh.dat");
-    print_results(temp.second.first, "res2/dk/ndk_worst_fq.dat");
-    print_results(temp.second.second, "res2/dk/ndk_worst_veb.dat");
-  }
+  // for (size_t i = 0; i < 23; i++) {
+  //   size_t s = (1<<i);
+  //   cout << "TESTING : " << s << " DECREASE KEYS worst case" << endl;
+  //   rrr temp = test_decrease_key(TEST_SIZE, 10, s, false);
+  //   print_results(temp.first, "res2/dk/ndk_worst_bh.dat");
+  //   print_results(temp.second.first, "res2/dk/ndk_worst_fq.dat");
+  //   print_results(temp.second.second, "res2/dk/ndk_worst_veb.dat");
+  // }
 
   
 
@@ -474,8 +471,8 @@ int main() {
 
   //test_ins();
   //test_fm();
-  //test_dk(); //TODO THIS!
-  test_delmin();
+  test_dk(); //TODO THIS!
+  //test_delmin();
 
   // cout << "insert randomly" << endl;
   // rr tir = test_insert(100000, 100,true);
