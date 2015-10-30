@@ -15,7 +15,7 @@ set logscale x 2
 #set logscale y 2
 set format x "2^{%L}"
 set key left top
-plot "bh.dat" using 1:5 ls 1 with linespoints title 'binary heap' , \
-     "fq.dat" using 1:5 ls 2 with linespoints title 'fibonacci heap',\
-     "veb.dat" using 1:5 ls 3 with linespoints title 'van emde boas'
+plot "bh.dat" using 1:($5/100) ls 1 with linespoints title 'binary heap' , \
+     "fq.dat" using 1:($5/100) ls 2 with linespoints title 'fibonacci heap',\
+     "veb.dat" using 1:($5/100) ls 3 with linespoints title 'van emde boas'
 

@@ -14,8 +14,8 @@ set grid xtics lc rgb "#bbbbbb" lw 1 lt 0
 set logscale x 2
 #set logscale y 2
 set format x "2^{%L}"
-set key right top
-plot "bh.dat" using 1:4 ls 1 with linespoints title 'binary heap' , \
-     "fq.dat" using 1:4 ls 2 with linespoints title 'fibonacci heap',\
-     "veb.dat" using 1:4 ls 3 with linespoints title 'van emde boas'
+set key right bottom
+plot "bh.dat" using 1:($4/100) ls 1 with linespoints title 'binary heap' , \
+     "fq.dat" using 1:($4/100) ls 2 with linespoints title 'fibonacci heap',\
+     "veb.dat" using 1:($4/100) ls 3 with linespoints title 'van emde boas'
 
