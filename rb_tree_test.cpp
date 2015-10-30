@@ -2,6 +2,12 @@
 #include <iostream>
 using namespace std;
 
+void print_test() {
+  pq::rb_tree rb;
+  for (int i = 1; i < 33; i++) rb.insert(i);
+  rb.print();
+}
+
 void test_rb(pq::rb_tree &rb) {
 
   rb.insert(100);
@@ -47,7 +53,8 @@ void test_pred_queue(predecessor_queue &rb) {
 
 
 int main() {
-
+  print_test();
+  return 0;
   pq::rb_tree rb;
 
   test_rb(rb);

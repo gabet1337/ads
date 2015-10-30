@@ -1,6 +1,8 @@
 #ifndef RB_TREE
 #define RB_TREE
 #include <cstddef>
+#include <iostream>
+#include <queue>
 #include "predecessor_queue.hpp"
 #define RED 1
 #define BLACK 0
@@ -90,16 +92,18 @@ namespace pq {
     x->p = y;
   }
 
-  void rb_tree::rotate_right(node *x) {
-    node *y = x->left;
-    x->left = y->right;
-    if (y->right != sentinel) y->right->p = x;
-    y->p = x->p;
-    if (x->p == sentinel) root = y;
-    else if (x == x->p->right) x->p->right = y;
-    else x->p->left = y;
-    y->right = x;
-    x->p = y;
+  void rb_tree::rotate_right(node *y) {
+    node *x = y->left;
+    y->left = x->right;
+    if (x->right != sentinel) x->right->p = y;
+    x->p = y->p;
+    if (y->p == sentinel) root = x;
+    else if (y == y->p->right) y->p->right = x;
+    else y->p->left = x;
+    x->right = y;
+    y->p = x;
+    // node *x = y->left;
+    // y->left = x->right;
   }
 
   void rb_tree::insert(int v) {
@@ -131,10 +135,11 @@ namespace pq {
           y->color = BLACK;
           z->p->p->color = RED;
           z = z->p->p;
-        } else if (z == z->p->right) {
-          z = z->p;
-          rotate_left(z);
         } else {
+          if (z == z->p->right) {
+            z = z->p;
+            rotate_left(z);
+          }
           z->p->color = BLACK;
           z->p->p->color = RED;
           rotate_right(z->p->p);
@@ -146,10 +151,11 @@ namespace pq {
           y->color = BLACK;
           z->p->p->color = RED;
           z = z->p->p;
-        } else if (z == z->p->left) {
-          z = z->p;
-          rotate_right(z);
         } else {
+          if (z == z->p->left) {
+            z = z->p;
+            rotate_right(z);
+          }
           z->p->color = BLACK;
           z->p->p->color = RED;
           rotate_left(z->p->p);
@@ -342,6 +348,48 @@ namespace pq {
   }
   
   void rb_tree::print() {
+    std::cout << "digraph G {" << std::endl;
+
+    std::queue<rb_tree::node*> q;
+    q.push(root);
+    while (!q.empty()) {
+      node* x = q.front(); q.pop();
+      std::cout << x->key << " -> " << x->left->key << std::endl;
+      std::cout << x->key << " -> " << x->right->key << std::endl;
+      if (x->left != sentinel)
+        q.push(x->left);
+      if (x->right != sentinel)
+        q.push(x->right);
+    }
+
+    // int next = (1<<25);
+    // std::queue<std::pair<int, rb_tree::node*> > q;
+    // q.push(std::make_pair(next++,root));
+    // while (!q.empty()) {
+    //   std::pair<int, rb_tree::node*> x = q.front(); q.pop();
+    //   std::cout << x.first << " [label=\""<<x.second->key<<"\"]" << std::endl;
+    //   if (x.second->left != sentinel) {
+    //     q.push(std::make_pair(next++, x.second->left));
+    //   }
+    //   if (x.second->right != sentinel) {
+    //     q.push(std::make_pair(next++, x.second->right));
+    //   }
+    // }
+    // next = (1<<25);
+    // q.push(std::make_pair(next++,root));
+    // while (!q.empty()) {
+    //   std::pair<int, rb_tree::node*> x = q.front(); q.pop();
+    //   if (x.second->left != sentinel) {
+    //     std::cout << x.first << " -> " << next++ << std::endl;
+    //     q.push(std::make_pair(next, x.second->left));
+    //   }
+    //   if (x.second->right != sentinel) {
+    //     std::cout << x.first << " -> " << next++ << std::endl;
+    //     q.push(std::make_pair(next, x.second->right));
+    //   }
+    // }
+
+    std::cout << "}" << std::endl;
   }
   
 
