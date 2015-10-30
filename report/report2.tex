@@ -59,10 +59,10 @@ The code can be found at: \\\url{Insert link to code here!}.
 
 
 \subsection{van Emde Boas tree}
-The van Emde Boas tree was implemented as described in Introduction to Algorithms~\cite{clrs}
+The van Emde Boas tree was implemented as described in Introduction to Algorithms~\cite{clrs}. It is a non space-reduced tree and as such it will take time proportional to allocating the full universe of the tree in memory, to construct such a tree. However the tree will not grow in memory after allocation. A way to mitigate this, and thereby make the tree space-reduced would be to, instead of storing the complete structure, we should only store the substructures that actually contain elements. This could have been implemented by using hash maps instead of arrays.
 
 \subsection{Red-Black tree}
-
+The Red-Black tree was implemented as described in Introduction to Algorithms~\cite{clrs}
 
 \chapter{Experimental setup}
 \label{chtp:experiment_setup}
@@ -85,7 +85,23 @@ We used \texttt{perf} to measure page faults.
 In this section we will design and perform experiments where we compare the van Emde Boas tree based priority queue with more standard priority queue implementations, namely the Fibonacci heap and binary heap. We will for each priority queue operation describe the experiments, present the results of said experiments and discuss those in detail.
 
 \section{\texttt{FindMin}}
+Finding the minimum in all three priority queues are constant time operations. They all just involve returning a stored element or dereferencing a pointer. We therefore expect to see all three queues perform similar and constant in the size of the input. In this experiment we do not measure running time since this is a constant time operation. Instead we measure the number of cycles and branch operations performed when calling find minimum in the respective queues. The experiments are repeated 10 times and averaged. The results are depicted in figure~\ref{fig:findmin_br} and~\ref{fig:findmin_cyc}.
 
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.5]{../res2/findmin/extract_min_branch.png}
+\caption{Number of branch operations for finding the minimum element}
+\label{fig:findmin_br}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.5]{../res2/findmin/extract_min_cycles.png}
+\caption{Number of cycles for finding the minimum element}
+\label{fig:findmin_cyc}
+\end{figure}
+
+The results clearly depict that finding the minimum does not depend on the input size and we conclude that the theoretical bound of $\mathcal{O}(1)$ also matches the experimental found results.
 
 \section{\texttt{Insert}}
 
