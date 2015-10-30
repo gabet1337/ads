@@ -276,6 +276,7 @@ rrr test_decrease_key(size_t TEST_SIZE, size_t TEST_RUNS, size_t NUM_DECREASE_KE
     for (size_t j = 0; j < NUM_DECREASE_KEY; j++) {
       veb.decrease_key(TEST_SIZE-j, (TEST_MAX-TEST_SIZE)-j);
     }
+    p.stop(); c.stop(); pf.stop();
     veb_clock += c.count();
     veb_papi[0] += values[0];
     veb_papi[1] += values[1];
