@@ -41,9 +41,9 @@ void print_results(results r, string file) {
   f << r.TEST_SIZE << "\t"
     << r.time/r.TEST_RUNS << "\t"
     << r.page_faults/r.TEST_RUNS << "\t"
-    << r.PAPI1 << "\t"
-    << r.PAPI2 << "\t"
-    << r.PAPI3 << "\t"
+    << r.PAPI1/r.TEST_RUNS << "\t"
+    << r.PAPI2/r.TEST_RUNS << "\t"
+    << r.PAPI3/r.TEST_RUNS << "\t"
     << endl;
   
 }
@@ -125,23 +125,23 @@ rrr test_insert(size_t TEST_SIZE, size_t TEST_RUNS, bool is_random) {
 //test powers of 2
 void test_ins() {
   //random:
-  for (size_t i = 0; i < 23; i++) {
+  for (size_t i = 0; i < 24; i++) {
     size_t s = (1<<i);
     cout << "TESTING INSERTS RANDOMLY ON SIZE: " << s << endl;
-    rrr temp = test_insert(s,1,true);
-    print_results(temp.first, "res2/inserts/inserts_random_bh_count.dat");
-    print_results(temp.second.first, "res2/inserts/inserts_random_fq_count.dat");
-    print_results(temp.second.second, "res2/inserts/inserts_random_veb_count.dat");
+    rrr temp = test_insert(s,10,true);
+    print_results(temp.first, "res2/inserts/bh_random.dat");
+    print_results(temp.second.first, "res2/inserts/fq_random.dat");
+    print_results(temp.second.second, "res2/inserts/veb_random.dat");
   }
 
   //worst case:
-  for (size_t i = 0; i < 23; i++) {
+  for (size_t i = 0; i < 24; i++) {
     size_t s = (1<<i);
     cout << "TESTING INSERTS WORST CASE ON SIZE: " << s << endl;
-    rrr temp = test_insert(s,1,false);
-    print_results(temp.first, "res2/inserts/inserts_worst_bh_count.dat");
-    print_results(temp.second.first, "res2/inserts/inserts_worst_fq_count.dat");
-    print_results(temp.second.second, "res2/inserts/inserts_worst_veb_count.dat");
+    rrr temp = test_insert(s,10,false);
+    print_results(temp.first, "res2/inserts/bh_worst.dat");
+    print_results(temp.second.first, "res2/inserts/fq_worst.dat");
+    print_results(temp.second.second, "res2/inserts/veb_worst.dat");
   }
   
 }
@@ -472,9 +472,9 @@ void test_delmin() {
 
 int main() {
 
-  //test_ins();
+  test_ins();
   //test_fm();
-  test_dk(); //TODO THIS!
+  //test_dk(); //TODO THIS!
   //test_delmin();
 
   // cout << "insert randomly" << endl;
