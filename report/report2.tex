@@ -52,8 +52,9 @@ The code can be found at: \\\url{Insert link to code here!}.
 \pagebreak
 
 \chapter{Introduction}
+van Emde Boas trees are interesting since they circumvent the sorting bound by restricting the keys in the data structure to be from $0$ to $n-1$ and with no duplicates similar to counting sort. With this restriction it allows the priority queue operations and some more in $\mathcal{O}(\log\log n)$ worst case time. In this project we will let our universe be 24-bit integer keys. We will run experiments that compare the van Emde Boas tree's priority queue operations to the binary heap~\cite{williams} and the Fibonacci heap~\cite{fred87}. Our findings can be found in section~\ref{chap:pqe}.
 
-
+The van Emde Boas tree also supports finding the predecessor of an element in $\mathcal{O}(\log\log u)$ time which we will experimentally compare to the $\mathcal{O}(\log n)$ time of the Red-Black tree. We will also experimentally compare other tree operations for these two trees. The results of these experiment are found in section~\ref{chap:treee}
 \chapter{Implementation}
 \label{cpt:implementation}
 
@@ -61,10 +62,29 @@ The code can be found at: \\\url{Insert link to code here!}.
 \subsection{van Emde Boas tree}
 The van Emde Boas tree was implemented as described in Introduction to Algorithms~\cite{clrs}. It is a non space-reduced tree and as such it will take time proportional to allocating the full universe of the tree in memory, to construct such a tree. However the tree will not grow in memory after allocation. A way to mitigate this, and thereby make the tree space-reduced would be to, instead of storing the complete structure, we should only store the substructures that actually contain elements. This could have been implemented by using hash maps instead of arrays.
 
+Decrease key in the van Emde Boas tree was implemented as a delete and an insert giving an $\mathcal{O}(\log\log u)$ bound for this operation. The other asymptotic bounds for the van Emde Boas tree can be found in table~\ref{tab:van_emde_boas}.
+\begin{figure}[H]
+\begin{center}
+\begin{tabular}{c|c}
+Operation & Running time \\\hline
+\texttt{FindMin} & $\mathcal{O}(1)$ \\\hline
+\texttt{Insert} & $\mathcal{O}(\log\log u)$ \\\hline
+\texttt{Delete} & $\mathcal{O}(\log\log u)$ \\\hline
+\texttt{DeleteMin} & $\mathcal{O}(\log\log u)$ \\\hline
+\texttt{PredecessorSearch} & $\mathcal{O}(\log\log u)$ \\\hline
+\texttt{DecreaseKey} & $\mathcal{O}(\log\log u)$
+\end{tabular}
+\end{center}
+\caption{Asymptotic running time for the van Emde Boas tree}
+\label{tab:van_emde_boas}
+\end{figure}
+
 %TODO no page faults since we load everything in memory at beginning!
 
 \subsection{Red-Black tree}
-The Red-Black tree was implemented as described in Introduction to Algorithms~\cite{clrs}
+The Red-Black tree was implemented as described in Introduction to Algorithms~\cite{clrs}.
+
+The Red-Black tree is a very popular balanced binary search tree and supports basic dynamic-set operations in time $\mathcal{O}(\log n)$.
 
 \chapter{Experimental setup}
 \label{chtp:experiment_setup}
@@ -83,7 +103,7 @@ CPU measurements were collected using \texttt{PAPI 5.3.0.0}
 We used \texttt{perf} to measure page faults.
 
 \chapter{Priority queue experiments}
-\label{heap_experiments}
+\label{chap:pqe}
 In this section we will design and perform experiments where we compare the van Emde Boas tree based priority queue with more standard priority queue implementations, namely the Fibonacci heap and binary heap. We will for each priority queue operation describe the experiments, present the results of said experiments and discuss those in detail.
 
 \section{\texttt{FindMin}}
@@ -128,21 +148,45 @@ Looking at the number of branch operations in figure~\ref{fig:insert_worst_branc
 
 \begin{figure}[H]
 \includegraphics[scale=0.5]{../res2/inserts/branch_worst.png}
-\caption{Worst case branching operations for the priority queues.}
+\caption{Worst case branching operations for the priority queues when inserting.}
 \label{fig:insert_worst_branch}
 \end{figure}
 
 
 \section{\texttt{DeleteMin}}
+Deleting the minimum element from a priority queue takes amortized logarithmic time for the Fibonacci heap. In the worst case it takes linear time if it is done after $n$ inserts due to the linear running time of consolidating the heap. The binary heap takes logarithmic time in the worst case since it might have to bubble the element all the way to the bottom again. The van Emde Boas tree deletes the minimum in $\mathcal{O}(\log\log u)$. In order to show these bounds experimentally we will make sure that the Fibonacci heap has consolidated and the binary heap operates in the worst case. The experiment will make two deletes to each priority queue and only measure the second. This way the Fibonacci queue has consolidated and we will only measure the amortized cost. The experiment was repeated 10 times and averaged. Since the operation is hard to measure using wall clock we measured the number of branching operations. The result of the experiment is depicted in figure~\ref{fig:insert_worst_branch}.
+
+\begin{figure}[H]
+\includegraphics[scale=0.5]{../res2/delmin/delmin_del_2_branch_worst.png}
+\caption{Worst case branching operations for the priority queues on delete minimum.}
+\label{fig:insert_worst_branch}
+\end{figure}
+
+Figure~\ref{fig:insert_worst_branch} shows that both the binary heap and the Fibonacci heap are logarithmic in the input size while van Emde Boas remains constant in the input size as hypothesized.
 
 \section{\texttt{DecreaseKey}}
+Decreasing the key in the Fibonacci heap is an amortized constant time operation. The binary heap is logarithmic in the worst case and finally the van Emde Boas tree is as usual $\mathcal{O}(\log\log u)$. We implemented decrease key as an erase and an insert in the van Emde Boas tree.
+
+The experiment tests the interesting worst case behaviour where we in the binary heap decrease the maximum element such that it has to bubble all the way to the top every time. The experiment first consolidates the Fibonacci heap and then runs 1 decrease key operation for various input sizes. The result are depicted in figure~\ref{fig:dk_worst_1}.
+
+\begin{figure}[H]
+\includegraphics[scale=0.5]{../res2/dk/dk_worst_1.png}
+\caption{Worst case branching operations for the priority queues on decrease key.}
+\label{fig:dk_worst_1}
+\end{figure}
 
 
 \section{Conclusion}
+Finding the minimum element took constant time for all three priority queue implementation as expected.
 
+Insert was found to be a constant time operation for the Fibonacci heap, a $\mathcal{O}(\log\log u)$ time operation for the van Emde Boas tree, and finally a logarithmic time operation for the binary heap in the worst case.
+
+Deleting the minimum element was found to be a constant time operation for the van Emde Boas tree, while is a logarithmic time operation for the binary heap and Fibonacci heap.
+
+Finally decrease key was found to be constant for the Fibonacci heap, logarithmic for the binary heap and %TODO what about van emde boas
 
 \chapter{Red-Black tree \& van Emde Boas}
-
+\label{chap:treee}
 
 \chapter{Conclusion}
 
