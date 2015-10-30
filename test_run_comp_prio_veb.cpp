@@ -162,30 +162,23 @@ rrr test_findmin(size_t TEST_SIZE, size_t TEST_RUNS) {
   long long bh_tc = 0, fq_tc = 0, veb_tc = 0;
   long long bh_br = 0, fq_br = 0, veb_br = 0;
   for (size_t i = 0; i < TEST_RUNS; i++) {
-    test::drop_cache();
     p.start();
     bh.top();
     p.stop();
     bh_tc += values[0];
     bh_br += values[1];
-    test::drop_cache();
     p.start();
     fq.top();
     p.stop();
     fq_tc += values[0];
     fq_br += values[1];
-    test::drop_cache();
     p.start();
     veb.top();
     p.stop();
     veb_tc += values[0];
-    veb_br +=values[1];
+    veb_br += values[1];
   }
 
-  // results(long long _time,
-  //         uint64_t _page_faults,
-  //         size_t _TEST_SIZE, size_t _TEST_RUNS,
-  //         size_t _PAPI1, size_t _PAPI2, size_t _PAPI3)
   return rrr( results(0, 0, TEST_SIZE, TEST_RUNS, bh_tc, bh_br, 0),
               rr(results(0, 0, TEST_SIZE, TEST_RUNS, fq_tc, fq_br, 0),
                  results(0, 0, TEST_SIZE, TEST_RUNS, veb_tc, veb_br, 0)));
