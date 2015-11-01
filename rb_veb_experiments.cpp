@@ -575,7 +575,7 @@ pair<results,results> insert_worst(size_t TEST_RUNS, size_t TEST_SIZE) {
     pf.start();
 
     for (size_t i = 0; i < TEST_SIZE; i++) {
-      rb->insert(i);
+      rb->insert(TEST_SIZE-i);
     }
 
     pf.stop();
@@ -596,7 +596,7 @@ pair<results,results> insert_worst(size_t TEST_RUNS, size_t TEST_SIZE) {
     pf.start();
 
     for (size_t i = 0; i < TEST_SIZE; i++) {
-      veb->insert(i);
+      veb->insert(TEST_SIZE-i);
     }
     
     pf.stop();
