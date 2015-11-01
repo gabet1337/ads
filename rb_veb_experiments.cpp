@@ -549,6 +549,91 @@ pair<results,results> pred_search(size_t TEST_RUNS, size_t TEST_SIZE) {
   
 }
 
+pair<results,results> insert_worst(size_t TEST_RUNS, size_t TEST_SIZE) {
+
+  test::pagefaults pf;
+  test::clock c;
+  int events[3] = {PAPI_BR_CN, PAPI_L2_TCA, PAPI_L2_TCM};
+  long long values[3];
+  test::PAPI p(events, values, 3);
+  
+  long long rb_clock = 0, veb_clock = 0;
+  long long rb_br = 0, veb_br = 0;
+  long long rb_tca = 0, veb_tca = 0;
+  long long rb_tcm = 0, veb_tcm = 0;
+  uint64_t rb_pf = 0, veb_pf = 0;
+
+  test::random rand;
+  
+  for (size_t i = 0; i < TEST_RUNS; i++) {
+    
+    test::drop_cache();
+    predecessor_queue *rb = new pq::rb_tree();
+
+    p.start();
+    c.start();
+    pf.start();
+
+    for (size_t i = 0; i < TEST_SIZE; i++) {
+      rb->insert(i);
+    }
+
+    pf.stop();
+    c.stop();
+    p.stop();
+    rb_clock+=c.count();
+    rb_br += values[0];
+    rb_tca += values[1];
+    rb_tcm += values[2];
+    rb_pf += pf.count();
+
+    delete rb;
+
+    predecessor_queue *veb = new pq::van_emde_boas(16777216);
+
+    p.start();
+    c.start();
+    pf.start();
+
+    for (size_t i = 0; i < TEST_SIZE; i++) {
+      veb->insert(i);
+    }
+    
+    pf.stop();
+    c.stop();
+    p.stop();
+    veb_clock+=c.count();
+    veb_br += values[0];
+    veb_tca += values[1];
+    veb_tcm += values[2];
+    veb_pf += pf.count();
+
+    delete veb;
+    
+  }
+
+  cout << "\tRB\tvEB" << endl;
+  cout << "br\t" << rb_br / TEST_RUNS << "\t" << veb_br / TEST_RUNS << endl;
+  cout << "tca\t" << rb_tca / TEST_RUNS << "\t" << veb_tca / TEST_RUNS << endl;
+  cout << "tcm\t" << rb_tcm / TEST_RUNS << "\t" << veb_tcm / TEST_RUNS << endl;
+  cout << "ti\t" << rb_clock / TEST_RUNS << "\t" << veb_clock /TEST_RUNS << endl;
+  cout << "pf\t" << rb_pf / TEST_RUNS << "\t" << veb_pf /TEST_RUNS << endl;
+  //cout << "dk\t" << bh_dk / TEST_RUNS << "\t" << fq_dk / TEST_RUNS << endl;
+  
+  return { results(rb_clock, rb_br, rb_pf, TEST_SIZE, TEST_RUNS, false, 0, rb_tca, rb_tcm),
+      results(veb_clock, veb_br, veb_pf, TEST_SIZE, TEST_RUNS, false, 0, veb_tca, veb_tcm)};
+  
+}
+
+void test_insert_worst() {
+  for (size_t i = 3; i <= 24; i++) {
+    size_t test_size = (1<<i);
+    pair<results,results> res = insert_worst(10,test_size);
+    print_results(res.first, "res/rbveb/insert_worst_rb.dat");
+    print_results(res.second, "res/rbveb/insert_worst_veb.dat");    
+  }
+}
+
 void test_pred_search() {
   for (size_t i = 10; i <= 24; i++) {
     size_t test_size = (1<<i);
@@ -563,8 +648,8 @@ int main() {
   //test_make_queue_pow_two_minus_one();
   //test_find_min();
   //test_insert();
-
-  test_deletemin();
-  test_delete();
-  test_pred_search();
+  //test_deletemin();
+  //test_delete();
+  //test_pred_search();
+  test_insert_worst();
 }
