@@ -85,8 +85,18 @@ In this exercise we will look at merging two sorted lists in-place. A merge algo
 A solution to the problem of in-place merging two pre-sorted lists will be presented in the next section. This solution is not stable but is shown to be optimal up to the values of constants of proportionality in the space-time bounds. The solution was first presented by Kronrod in 1969 \cite{Kronrod}
 
 \subsection{Kronrod}
-Initially we chop up the two pre-sorted lists into blocks of size $k$, i.e. $k$ is the number of elements in each block. We set $k =\sqrt{\min(m,n)}$. The last element in each block is selected. We call this element the mark of each block. The blocks are then rearranged in sorted order according to the mark of each block into a list $L$ of length $m+n$. We can now conclude that each element is at most $k$ positions away from their final position in the merged array.
-We now use the last block in $L$ as a temporary output location for our merge operation.
+Initially we chop up the two pre-sorted lists into blocks of size $k$, i.e. $k$ is the number of elements in each block. We set $k =\sqrt{m+n}$. The last element in each block is selected. We call this element the mark of each block. The blocks are then rearranged in sorted order according to the mark of each block into a list $L$ of length $m+n$. We can now conclude that each element is at most $k$ positions away from their final position in the merged array.
+
+We now use the last two blocks in $L$ as a temporary output location for our merge operation. This means that the last two blocks become unsorted. When the temporary buffer becomes full, i.e. we have merged two blocks fully, we swap the two merged blocks that reside in the temporary buffer with the old unmerged blocks such that the merged blocks find their correct position in the list. We do this for all blocks until we reach the final two blocks. These blocks are the unsorted temporary buffer. The two buffers can be sorted using a selection sort in time $\mathcal{O}(2\cdot\left(\sqrt{m+n}\right)^2) = \mathcal{O}(m+n)$.
+
+\subsection{Time complexity}
+The initial rearrangement is a sorting of the marks. We have $\mathcal{O}(\sqrt{m+n})$ such marks and running an insertion sort on these element will run in $\mathcal{O}( (\sqrt{m+n})^2) = \mathcal{O}(m+n)$ time.
+
+Merging two blocks consumes one comparison per element resulting in $m+n - 2\sqrt{m+n} = \mathcal{O}(m+n)$ comparisons.
+
+Finally the last two blocks which makes up the temporary buffer are sorted using selection sort in time $\mathcal{O}(2\cdot\left(\sqrt{m+n}\right)^2) = \mathcal{O}(m+n)$.
+
+In total we do $3\cdot\mathcal{O}(m+n) = \mathcal{O}(m+n)$ comparisons giving a linear time algorithm in the size of the input which is asymptotically optimal.
 
 \chapter{Prefix counting}
 \label{chp:prefix}
