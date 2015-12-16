@@ -22,7 +22,7 @@
 
 \usepackage{hyperref}
 
-\bibliographystyle{plain}
+\bibliographystyle{alpha}
 
 \title{Advanced Data Structures \\ Project 3 - Theory project 5}
 \author{Peter Gabrielsen 20114179 \\
@@ -58,7 +58,10 @@ Introduction to the four exercises.
 \textit{Optional: What is the best space bound you can achieve with $\mathcal{O}(1)$ query time? What is the best query time you can achieve with $\mathcal{O}(nm)$ space?}
 
 \subsection{Solution}
-Magic!
+In the rest of this section we let $N = n\cdot m$.
+
+There are several naïve solutions that comes to mind immediately. One such solution is to preprocess all possible ranges using dynamic programming giving $\mathcal{O}(N^2)$ preprocessing and space but with $\mathcal{O}(1)$ query time.
+This solution is not reasonable for larger inputs and we must come up with a better solution. Another trivial thing we could do is to extend the idea of using Cartesian Trees\cite{vuillemin80,tarjan84} on each row giving $\mathcal{O}(N)$ space and preprocessing time, and $\mathcal{O}(n)$ query time.
 
 \chapter{Nearest common ancestors under leaf insertions and deletions}
 \label{chp:LCA}
@@ -97,6 +100,8 @@ Merging two blocks consumes one comparison per element resulting in $m+n - 2\sqr
 Finally the last two blocks which makes up the temporary buffer are sorted using selection sort in time $\mathcal{O}(2\cdot\left(\sqrt{m+n}\right)^2) = \mathcal{O}(m+n)$.
 
 In total we do $3\cdot\mathcal{O}(m+n) = \mathcal{O}(m+n)$ comparisons giving a linear time algorithm in the size of the input which is asymptotically optimal.
+
+We can also argue about the number of data moves. Block rearrangement consumes 
 
 \chapter{Prefix counting}
 \label{chp:prefix}
