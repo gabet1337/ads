@@ -61,7 +61,7 @@ Introduction to the four exercises.
 In the rest of this section we let $N = n\cdot m$.
 
 There are several naïve solutions that comes to mind immediately. One such solution is to preprocess all possible ranges using dynamic programming giving $\mathcal{O}(N^2)$ preprocessing and space but with $\mathcal{O}(1)$ query time.
-This solution is not reasonable for larger inputs and we must come up with a better solution. Another trivial thing we could do is to extend the idea of using Cartesian Trees\cite{vuillemin80,tarjan84} on each row giving $\mathcal{O}(N)$ space and preprocessing time, and $\mathcal{O}(n)$ query time.
+This solution is not reasonable for larger inputs and we must come up with a better solution. Another trivial thing we could do is to extend the idea of using Cartesian Trees\cite{vuillemin80,tarjan84} to solve 1D-RMQ on each row giving $\mathcal{O}(N)$ space and preprocessing time, and $\mathcal{O}(n)$ query time. Demaine~et~al~\cite{demaine09} show that the equivalent of the Cartesian tree in 1D does not exist in 2D and as such we cannot use Cartesian trees in 2D to solve this problem optimally.
 
 \chapter{Nearest common ancestors under leaf insertions and deletions}
 \label{chp:LCA}
