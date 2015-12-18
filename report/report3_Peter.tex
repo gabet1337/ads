@@ -115,7 +115,7 @@ Merging is the process of combining two pre-sorted lists to create a single sort
 
 In this exercise we will look at merging two sorted lists in-place. A merge algorithm is said to be in-place if it uses no more than $\mathcal{O}(1)$ extra memory.
 
-A solution to the problem of in-place merging two pre-sorted lists will be presented in the next section. This solution is not stable but is shown to be optimal up to the values of constants of proportionality in the space-time bounds. The solution was first presented by Kronrod in 1969 \cite{Kronrod}
+A solution to the problem of in-place merging two pre-sorted lists will be presented in the next section. This solution is not stable but is shown to be optimal up to the values of constants of proportionality in the space-time bounds. The solution was first presented by Kronrod in 1969\cite{Kronrod}.
 
 \subsection{Kronrod}
 Initially we chop up the two pre-sorted lists into blocks of size $k$, i.e. $k$ is the number of elements in each block. We set $k =\sqrt{m+n}$. The last element in each block is selected. We call this element the mark of each block. The blocks are then rearranged in sorted order according to the mark of each block into a list $L$ of length $m+n$. We can now conclude that each element is at most $k$ positions away from their final position in the merged array.
