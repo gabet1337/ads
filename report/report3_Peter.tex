@@ -16,7 +16,7 @@
 \usepackage[font={small,it}]{caption}
 \usepackage{listings}
 \usepackage{units}
-
+\usepackage{subcaption}
 % Relative references
 \usepackage{varioref}
 
@@ -25,8 +25,7 @@
 \bibliographystyle{alpha}
 
 \title{Advanced Data Structures \\ Project 3 - Theory project 5}
-\author{Peter Gabrielsen 20114179 \\
-Christoffer Hansen 20114637}
+\author{Peter Gabrielsen 20114179}
 \newcounter{qcounter}
 \begin{document}
 
@@ -47,9 +46,6 @@ Christoffer Hansen 20114637}
 
 \pagebreak
 
-\chapter{Introduction}
-Introduction to the four exercises.
-
 \chapter{Range minimum queries in two dimensions}
 \label{chp:rmq2d}
 \subsection{Problem description}
@@ -62,6 +58,40 @@ In the rest of this section we let $N = n\cdot m$.
 
 There are several naïve solutions that comes to mind immediately. One such solution is to preprocess all possible ranges using dynamic programming giving $\mathcal{O}(N^2)$ preprocessing and space but with $\mathcal{O}(1)$ query time.
 This solution is not reasonable for larger inputs and we must come up with a better solution. Another trivial thing we could do is to extend the idea of using Cartesian Trees\cite{vuillemin80,tarjan84} to solve 1D-RMQ on each row giving $\mathcal{O}(N)$ space and preprocessing time, and $\mathcal{O}(n)$ query time. Demaine~et~al~\cite{demaine09} show that the equivalent of the Cartesian tree in 1D does not exist in 2D and as such we cannot use Cartesian trees in 2D to solve this problem optimally.
+
+Let us instead try to block the two dimensional array into blocks of size $\sqrt{n} \times \sqrt{m}$. This will construct $\Theta(N)$ blocks. For each block we create an optimal solution to the 1D RMQ $\left\langle \mathcal{O}(\sqrt{nm}),\ \mathcal{O}(1)\right\rangle$. On top of the blocks we build a Cartesian tree with leafs being the minimum in each block.
+We will now be able to answer queries. A typical query will look as in Figure~\ref{fig:rmq_query}.
+
+\begin{figure}[h!]
+\includegraphics[width=\textwidth]{../figures/rmq_query.png}
+\caption{\label{fig:rmq_query}A typical 2D range query. Green is the corners, blue is the sides, and purple is the full blocks.}
+\end{figure}
+
+It consists of four corners, four sides, and an area consisting of several full blocks. We will answer the query for each of the nine parts separately and take the minimum of them.
+A corner query will typically look as in Figure~\ref{fig:rmq_corner}. This type of query can trivially be answered in $\mathcal{O}(\max(\sqrt{n},\sqrt{m}))$ by taking the minimum of up to $\max(\sqrt{n},\sqrt{m})$ range queries each taking constant time.
+\begin{figure}[htbp!]
+    \centering
+    \begin{subfigure}[b]{0.49\textwidth}
+        \includegraphics[width=\textwidth]{../figures/RMQ_corner.png}
+        \caption{A typical corner query for 2D RMQ}
+        \label{fig:rmq_corner}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.49\textwidth}
+        \includegraphics[width=\textwidth]{../figures/RMQ_side.png}
+        \caption{A side in the 2D RMQ query}
+        \label{fig:rmq_side}
+    \end{subfigure}
+\end{figure}
+
+A side query may look as in Figure~\ref{fig:rmq_side}. The side query may be answered by a single range query to each block on the side since the elements queried is next to each other in the 1D RMQ structure. We know that we have at most $\Theta(\max(\sqrt{m},\sqrt{n}))$ such queries to make which gives a total time of $\mathcal{O}(\max(\sqrt{m},\sqrt{n}))$ for each side.
+Now we only need to handle the full blocks. Since we have built a Cartesian tree on top of the blocks we will be able to answer such queries in a similar way to the other types. We simply make up to $\Theta(\max(\sqrt{m},\sqrt{n}))$ range queries and take the minimum of those.
+
+This solution will require $\mathcal{O}(N)$ space since we use $\sqrt{nm} \cdot \sqrt{nm} = N$ for the $N$ blocks and $N$ space for the Cartesian tree on top of the blocks. We will be able to answer a query in $\mathcal{O}(\max(\sqrt{m},\sqrt{n}))$.
+
+Dividing in blocks of size $\log n \times \log m$ will give a solution with $\left\langle \mathcal{O}(N\log N),\ \mathcal{O}(\log N)\right\rangle$ space and time.
+
+It is shown by Brodal et al\cite{algorithmica12min} that the 2D RMQ can be solved with $\mathcal{O}(N)$ space and $\mathcal{O}(1)$ query time with an additional $\mathcal{O}(N)$ bits.
+
 
 \chapter{Nearest common ancestors under leaf insertions and deletions}
 \label{chp:LCA}
