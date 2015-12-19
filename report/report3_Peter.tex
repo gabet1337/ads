@@ -63,7 +63,7 @@ Let us instead try to block the two dimensional array into blocks of size $\sqrt
 We will now be able to answer queries. A typical query will look as in Figure~\ref{fig:rmq_query}.
 
 \begin{figure}[h!]
-\includegraphics[width=\textwidth]{../figures/rmq_query.png}
+\includegraphics[width=\textwidth]{../figures/RMQ_query.png}
 \caption{\label{fig:rmq_query}A typical 2D range query. Green is the corners, blue is the sides, and purple is the full blocks.}
 \end{figure}
 
@@ -131,19 +131,32 @@ Finally the last two blocks which makes up the temporary buffer are sorted using
 
 In total we do $3\cdot\mathcal{O}(m+n) = \mathcal{O}(m+n)$ comparisons giving a linear time algorithm in the size of the input which is asymptotically optimal.
 
-We can also argue about the number of data moves. Block rearrangement consumes 
+%We can also argue about the number of data moves. Block rearrangement consumes 
 
 \chapter{Prefix counting}
 \label{chp:prefix}
 \subsection{Problem description}
-\textit{Let $A$ be an array of size $n$, where each $A\left[i\right]$ is either $0$ or $1$. Describe a data structure that supports updating an entry of $A$ to either $0$ or $1$, and the query $sum_2\left(i\right)$ that returns $\left(A\left[1\right]+A\left[2\right]+\dots+A\left[i\right]\right) \mod 2$, i.e. decides if the sum of the first $i$ entries of $A$ is odd or even.}
+\textit{Let $A$ be an array of size $n$, where each $A\left[i\right]$ is either $0$ or $1$. Describe a data structure that supports updating an entry of $A$ to either $0$ or $1$, and the query $sum_2\left(i\right)$ that returns $\left(A\left[1\right]+A\left[2\right]+\dots+A\left[i\right]\right)\mod 2$, i.e. decides if the sum of the first $i$ entries of $A$ is odd or even.}
 
-\textit{ is the best query time and update time you can achieve? A lower bound of $\Omega(\log n/\log\log n)$ is known for the operations on the RAM.}
+\textit{What is the best query time and update time you can achieve? A lower bound of $\Omega(\log n/\log\log n)$ is known for the operations on the RAM.}
 
 \textit{Optional: Generalize the construction to return the sum $A[1]+A[2]+\dots+A[i]$, i.e. the number of entries equal one among the first $i$ entries.}
 
 \subsection{Solution}
-Build tree of height log n / loglog n and solve problem in constant time per node up to root.
+We construct a tree of height $\Theta(\nicefrac{\log n}{\log\log n})$ by having a fanout of size $\log n$. The leafs of the tree is the array elements, and internal nodes store the parity of the subtree. Furthermore we build a table of size $2^{\log n} = n$ storing every combination of parity for blocks of length $\log n$. This table will allow us to calculate the parity of a block in constant time by a single table lookup.
+
+We are now ready to describe how to update and query the structure:
+\begin{itemize}
+	\item{$Update(i, x)$ - Traverse down the tree to leaf $i$ and update the value. If the value changes then recursively change the parity of all the internal nodes up the tree.}
+	\item{$Query(i)$ - Figure~\ref{fig:pre_query} shows a typical query. To answer this query we traverse down the tree to $j$. Here we answer the subquery up to $k$ by a table lookup. This answer is combined with a table lookup for the missing partial block.}
+\end{itemize}
+
+\subsection{Complexity}
+Update will simply traverse the tree up and down and update a single value in each step. This will give a complexity equal the height of the tree, i.e. a complexity of $\mathcal{O}(\nicefrac{\log n}{\log\log n})$.
+
+A query is answered by traversing down the tree and doing two table lookups. Once again this gives a complexity equal the height of the tree, $\mathcal{O}(\nicefrac{\log n}{\log\log n})$.
+
+These bounds are optimal!
 
 \bibliography{references}
 
