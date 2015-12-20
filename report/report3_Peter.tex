@@ -151,6 +151,11 @@ We are now ready to describe how to update and query the structure:
 	\item{$Query(i)$ - Figure~\ref{fig:pre_query} shows a typical query. To answer this query we traverse down the tree to $j$. Here we answer the subquery up to $k$ by a table lookup. This answer is combined with a table lookup for the missing partial block.}
 \end{itemize}
 
+\begin{figure}
+\includegraphics[width=\textwidth]{../figures/pre_query.png}
+\caption{\label{fig:pre_query}A typical prefix query}
+\end{figure}
+
 \subsection{Complexity}
 Update will simply traverse the tree up and down and update a single value in each step. This will give a complexity equal the height of the tree, i.e. a complexity of $\mathcal{O}(\nicefrac{\log n}{\log\log n})$.
 
